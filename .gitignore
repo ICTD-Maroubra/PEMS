@@ -1,0 +1,36 @@
+.idea
+.gradle
+.classpath
+.project
+.settings
+target
+out
+build/
+dist/
+node_modules/
+coverage
+build.xml
+nbactions.xml
+
+data/*
+
+.DS_Store
+
+dependency-reduced-pom.xml
+
+*.iml
+*.ipr
+*.iws
+*.log
+
+# Ignore Gradle GUI config
+gradle-app.setting
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+
+# Cache of project
+.gradletasknamecache
+
+# # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
+# gradle/wrapper/gradle-wrapper.properties

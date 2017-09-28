@@ -1,0 +1,15 @@
+{
+  "name": "pems-interface",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron src/main.js"
+  },
+  "dependencies": {
+    "react": "15.6.1"
+  },
+  "devDependencies": {
+    "electron": "1.7.6"
+  }
+}
