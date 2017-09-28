@@ -21,6 +21,7 @@ jobs:
       - image: circleci/openjdk:8-jdk
     working_directory: ~/PEMS
     steps:
+      - checkout
       - run:
           command: |
             mkdir -p /tmp/workspace/PEMS
