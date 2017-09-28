@@ -22,14 +22,14 @@ jobs:
     working_directory: /root/PEMS
     steps:
       - run:
-        command: |
-          mkdir -p /tmp/workspace/PEMS
-          mv * .[!.]* /tmp/workspace/PEMS/
+          command: |
+            mkdir -p /tmp/workspace/PEMS
+            mv * .[!.]* /tmp/workspace/PEMS/
 
       - persist_to_workspace:
-        root: *workspace_root
-        paths:
-          - PEMS
+          root: *workspace_root
+          paths:
+            - PEMS
 
   build_backend:
     docker:
