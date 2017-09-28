@@ -1,0 +1,115 @@
+version: 2.0
+references:
+  workspace_root: &workspace_root
+    /tmp/workspace
+
+  attach_workspace: &attach_workspace
+    attach_workspace:
+      at: *workspace_root
+
+  load_code: &load_code
+    run:
+      name: Load code from workspace
+      command: |
+        # Move all files and dotfiles to current directory
+        mv /tmp/workspace/PEMS/* /tmp/workspace/PEMS/.[!.]* .
+
+jobs:
+  checkout_code:
+    docker:
+      # specify the version you desire here
+      - image: circleci/openjdk:8-jdk
+    working_directory: /root/PEMS
+    steps:
+      - run:
+        command: |
+          mkdir -p /tmp/workspace/PEMS
+          mv * .[!.]* /tmp/workspace/PEMS/
+
+      - persist_to_workspace:
+        root: *workspace_root
+        paths:
+          - PEMS
+
+  build_backend:
+    docker:
+      # specify the version you desire here
+      - image: circleci/openjdk:8-jdk
+      
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/postgres:9.4
+
+    working_directory: /root/PEMS
+
+    environment:
+      # Customize the JVM maximum heap limit
+      JVM_OPTS: -Xmx3200m
+      TERM: dumb
+    
+    steps:
+      - *attach_workspace
+      - *load_code
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "build.gradle" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run: gradle dependencies
+
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: v1-dependencies-{{ checksum "build.gradle" }}
+        
+      # run tests!
+      - run: gradle test
+
+  build_frontend:
+    docker:
+      # specify the version you desire here
+      - image: circleci/node:7.10
+      
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/mongo:3.4.4
+
+    working_directory: /root/PEMS
+
+    steps:
+      - *attach_workspace
+      - *load_code
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run: yarn install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+        
+      # run tests!
+      - run: yarn test
+
+workflows:
+  version: 2
+  build_test_deploy:
+    jobs:
+      - checkout_code
+      - build_backend:
+          requires:
+              - checkout_code
+      - build_frontend:
+          requires:
+              - checkout_code
