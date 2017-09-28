@@ -65,9 +65,11 @@ jobs:
           paths:
             - ~/.m2
           key: v1-dependencies-{{ checksum "build.gradle" }}
-        
+      
+      - run: gradle build
+      
       # run tests!
-      - run: gradle test
+      #- run: gradle test
 
   build_frontend:
     docker:
@@ -100,7 +102,7 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
         
       # run tests!
-      - run: yarn test
+      #- run: yarn test
 
 workflows:
   version: 2
