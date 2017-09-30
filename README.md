@@ -9,6 +9,8 @@ This repository contains the source for running the PEMS server and user interfa
 
 # Getting Started
 
+Starting development on PEMS is very simple. All prerequisites freely available, and you don't require a web server such as TomCat to run it.
+
 ## Prerequisites
 
 * Java JDK 8 (OpenJDK or Oracle) 
@@ -23,6 +25,8 @@ git clone https://github.com/ICTD-Maroubra/PEMS
 
 ## Server
 
+**NOTE**: The server requires a Linux environment with [BlueZ](http://www.bluez.org/) &ge; 5.37 installed if you wish to make use of the bluetooth monitoring module.
+
 ```bash
 cd pems-server
 ./gradlew build
@@ -31,10 +35,12 @@ cd pems-server
 
 ### Configuration
 
-```
-PEMS_HOST - The pems server host IP (default: 0.0.0.0)
-PEMS_PORT - The pems server port (default: 9005)
-```
+The following table lists environment variables that can be set to configure the server.
+
+| **Option**        | **Default**       | **Description**                   |
+|:------------------|-------------------|:----------------------------------|
+|PEMS_HOST          |0.0.0.0            |The pems server host IP            |
+|PEMS_PORT          |9005               |The pems server port               |
 
 ## Interface
 
@@ -71,6 +77,8 @@ Deploying PEMS is a multi stage process:
 PEMS server requires a Linux environment with [BlueZ](http://www.bluez.org/) &ge; 5.37 installed.
 An easy way to deploy has been provided through a [Docker](https://www.docker.com/) image.
 
+**NOTE**: Due to issues with device sharing in both MacOS xhyve and Windows Hyper-V virtualization layers, Docker for Mac and Docker for Windows will not be able to make use of the bluetooth devices for monitoring.
+
 First build the image:
 
 ```bash
@@ -80,10 +88,19 @@ cd ../
 docker build -t pems-server .
 ```
 
-Then run the image:
+Then run the container:
 
 ```bash
 docker run pems-server
+```
+
+## Interface
+
+To build installers:
+
+```bash
+cd pems-interface
+yarn install && yarn dist
 ```
 
 # Contributing
@@ -95,6 +112,8 @@ TBC
 TBC
 
 # Acknowledgement
+
+This project would not be possible without the contributions made by following individuals:
 
 * Aashish Singla ([@aashishs1994](https://github.com/aashishs1994))
 * Ali Kutlu Omeroglu ([@kutluo](https://github.com/kutluo))
