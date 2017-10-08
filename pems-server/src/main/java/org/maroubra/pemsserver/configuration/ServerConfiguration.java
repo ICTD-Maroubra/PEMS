@@ -3,11 +3,11 @@ package org.maroubra.pemsserver.configuration;
 import com.github.joschi.jadconfig.Parameter;
 
 public class ServerConfiguration {
-    @Parameter(value = "host", required = true)
-    public String host;
+    @Parameter(value = "host")
+    public String host = "0.0.0.0";
 
-    @Parameter(value = "port", required = true)
-    public String port;
+    @Parameter(value = "port")
+    public String port = "9005";
 
     public String fullHost() {
         return "http://" + host + ":" + port + "/";

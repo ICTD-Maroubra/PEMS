@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'application'
+    id 'com.github.johnrengelman.shadow' version '2.0.1'
 }
 
 group 'org.maroubra'
@@ -17,6 +18,10 @@ jar {
     manifest {
         attributes "Main-Class": "$mainClassName"
     }
+}
+
+shadowJar {
+    archiveName 'pems-all.jar'
 }
 
 dependencies {
@@ -43,9 +48,15 @@ dependencies {
 
     compile 'com.github.joschi:jadconfig:0.13.0'
 
+    compile files('lib/tinyb/tinyb-0.5.0-23.jar')
+
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
 tasks.withType(JavaCompile) {
     options.compilerArgs << '-parameters'
+}
+
+tasks.withType(JavaExec) {
+    systemProperty 'java.library.path', projectDir.toString() + '/lib/tinyb'
 }

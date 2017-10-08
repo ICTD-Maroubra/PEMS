@@ -1,15 +1,27 @@
 {
   "name": "pems-interface",
+  "description": "User interface for the PEMS",
   "version": "1.0.0",
-  "main": "index.js",
+  "author": "ICTD Maroubra",
+  "main": "src/main.js",
   "license": "MIT",
   "scripts": {
-    "start": "electron src/main.js"
+    "start": "electron src/main.js",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "build": {
+    "appId": "org.maroubra.pemsinterface",
+    "mac": {
+      "category": "public.app-category.productivity"
+    }
   },
   "dependencies": {
     "react": "15.6.1"
   },
   "devDependencies": {
-    "electron": "1.7.6"
+    "electron": "1.7.6",
+    "electron-builder": "^19.33.0"
   }
 }
