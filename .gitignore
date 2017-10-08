@@ -8,6 +8,7 @@ out
 build/
 dist/
 node_modules/
+pems-interface/package/
 coverage
 build.xml
 nbactions.xml
@@ -22,6 +23,7 @@ dependency-reduced-pom.xml
 *.ipr
 *.iws
 *.log
+*.tgz
 
 # Ignore Gradle GUI config
 gradle-app.setting

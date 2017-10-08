@@ -30,10 +30,15 @@ public class Main {
         try {
             httpServer.start();
 
-            System.out.println(String.format("Jersey app started at %s\nHit enter to stop it...", serverConfiguration.fullHost()));
-            System.in.read();
+            System.out.println(String.format("Jersey app started at %s", serverConfiguration.fullHost()));
+
+            Runtime.getRuntime().addShutdownHook(new Thread(httpServer::shutdownNow));
+
+            Thread.currentThread().join();
         } catch (IOException e) {
-            log.error("error starting server: " + e.getLocalizedMessage(), e);
+            log.error("Error starting server: " + e.getLocalizedMessage(), e);
+        } catch (InterruptedException e) {
+            log.error("Server crash: %s", e);
         }
     }
 
