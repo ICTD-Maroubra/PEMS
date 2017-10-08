@@ -1,13 +1,12 @@
 package org.maroubra.pemsserver.api.resources;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
+import org.maroubra.pemsserver.api.models.sensors.requests.UpdateSensorRequest;
+import org.maroubra.pemsserver.api.models.sensors.responses.SensorHistoryResponse;
+import org.maroubra.pemsserver.api.models.sensors.responses.SensorListResponse;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 @Api(value = "Sensors")
 @Path("/sensors")
@@ -16,7 +15,7 @@ public class SensorsResource {
 
     @GET
     @ApiOperation(value = "List sensors")
-    public Response listSensors() {
+    public SensorListResponse listSensors() {
         throw new UnsupportedOperationException();
     }
 
@@ -26,7 +25,7 @@ public class SensorsResource {
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Specified actuator does not exist")
     })
-    public void updateSensor(@PathParam("id") String id) {
+    public void updateSensor(@PathParam("id") String id, @ApiParam(name = "JSON body", required = true) UpdateSensorRequest usr) {
         throw new UnsupportedOperationException();
     }
 
@@ -36,7 +35,7 @@ public class SensorsResource {
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Specified actuator does not exist")
     })
-    public Response getHistory(@PathParam("id") String id) {
+    public SensorHistoryResponse getHistory(@PathParam("id") String id) {
         throw new UnsupportedOperationException();
     }
 }

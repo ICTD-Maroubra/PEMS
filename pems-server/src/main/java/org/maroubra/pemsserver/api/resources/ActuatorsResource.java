@@ -1,13 +1,11 @@
 package org.maroubra.pemsserver.api.resources;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
+import org.maroubra.pemsserver.api.models.actuators.requests.UpdateActuatorRequest;
+import org.maroubra.pemsserver.api.models.actuators.responses.ActuatorsListResponse;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 @Api(value = "Actuators")
 @Path("/actuators")
@@ -16,7 +14,7 @@ public class ActuatorsResource {
 
     @GET
     @ApiOperation(value = "List actuators")
-    public Response listActuators() {
+    public ActuatorsListResponse listActuators() {
         throw new UnsupportedOperationException();
     }
 
@@ -26,7 +24,7 @@ public class ActuatorsResource {
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Specified actuator does not exist")
     })
-    public void updateConfig(@PathParam("id") String id) {
+    public void updateConfig(@PathParam("id") String id, @ApiParam(value = "JSON body", required = true) UpdateActuatorRequest uar) {
         throw new UnsupportedOperationException();
     }
 }

@@ -1,13 +1,13 @@
 package org.maroubra.pemsserver.api.resources;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
+import org.maroubra.pemsserver.api.models.alarms.requests.CreateAlarmRequest;
+import org.maroubra.pemsserver.api.models.alarms.requests.UpdateAlarmRequest;
+import org.maroubra.pemsserver.api.models.alarms.responses.AlarmsListResponse;
+import org.maroubra.pemsserver.api.models.alarms.responses.CreatedAlarmResponse;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 @Api(value = "Alarms")
 @Path("/alarms")
@@ -16,13 +16,13 @@ public class AlarmsResource {
 
     @GET
     @ApiOperation(value = "List alarms")
-    public Response listAlarms() {
+    public AlarmsListResponse listAlarms() {
         throw new UnsupportedOperationException();
     }
 
     @POST
     @ApiOperation(value = "Create a new alarm condition")
-    public Response createAlarm() {
+    public CreatedAlarmResponse createAlarm(@ApiParam(value = "JSON body", required = true) CreateAlarmRequest car) {
         throw new UnsupportedOperationException();
     }
 
@@ -32,7 +32,7 @@ public class AlarmsResource {
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Specified alarm does not exist")
     })
-    public void updateAlarm(@PathParam("id") String id) {
+    public void updateAlarm(@PathParam("id") String id, @ApiParam(value = "JSON body", required = true) UpdateAlarmRequest uar) {
         throw new UnsupportedOperationException();
     }
 
