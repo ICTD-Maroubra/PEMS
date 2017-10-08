@@ -33,6 +33,8 @@ cd pems-server
 ./gradlew run
 ```
 
+For more documentation on the server's API, you can navigate to `http://HOST:PORT/api-browser` when running the server.
+
 ### Configuration
 
 The following table lists environment variables that can be set to configure the server.
