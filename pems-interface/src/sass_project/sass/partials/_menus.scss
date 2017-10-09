@@ -1,1 +1,47 @@
 //Menu Stylesheet
+.Menu {
+    width: 190px;
+    height: 100%;
+    position: absolute;
+    background: $primary-color;
+}
+
+.MenuItem {
+    font-size: 11px;
+    padding: 15px;
+    text-align: center;
+    word-wrap: break-word;
+    border-bottom: 1px solid $secondary-color;
+    height: 54px;
+    background:$primary-color;
+    transition: background-color 0.3s ease;
+    color:$white;
+}
+
+.MenuItem:hover {
+    font-size: 11px;
+    padding: 15px;
+    text-align: center;
+    word-wrap: break-word;
+    border-bottom: 1px solid $tertiary-color;
+    height: 54px;
+    background:$tertiary-color;
+    border-left:2px solid white;
+    color:$white;
+}
+
+.MenuItem:active {
+    font-size: 11px;
+    padding: 15px;
+    text-align: center;
+    word-wrap: break-word;
+    border-bottom: 1px solid $secondary-color;
+    height: 54px;
+    background:$secondary-color;
+    border-left:2px solid white;
+    color:$white;
+}
+
+img.menuIcon {
+    height: 38px;
+}
