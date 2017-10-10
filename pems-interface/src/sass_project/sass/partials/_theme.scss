@@ -29,8 +29,9 @@ body,
 html {
     font-family: 'Montserrat';
     font-weight: 300;
-    background-color: $white;
+    background-color: #efefef;
     color: $black;
+    margin: 0px;
 }
 
 .Header_background {
@@ -711,4 +712,32 @@ span.Bold.Heading3 {
     .TabletAlignCenter {
         text-align: center;
     }
+}
+h1, h2 {
+    margin: 0px;
+}
+
+.mainTitle {
+    margin: 0px;
+    top: -49px;
+    left: 54px;
+    position: relative;
+    font-size: 11px;
+}
+
+.appTitle {
+    height: 56px;
+}
+
+.header{
+  background:$white ;
+}
+
+.body{
+  margin-left: 190px;
+}
+
+.pageTitle{
+    padding: 22px;
+    border-bottom: 1px solid #ddd;
 }
