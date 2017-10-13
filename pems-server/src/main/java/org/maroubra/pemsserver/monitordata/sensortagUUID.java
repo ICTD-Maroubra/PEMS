@@ -1,5 +1,5 @@
 /*
-    This class contains the list of sensors available in the CC2650 Ti SensorTag
+    This class contains the list of sensors that are available in the CC2650 Ti SensorTag
 */
 
 public class sensortagUUID {
