@@ -1,8 +1,8 @@
+import java.util.UUID;
+
 /*
     This class contains the list of sensors that are available in the CC2650 Ti SensorTag
 */
-
-import java.util.UUID;
 
 public class sensortagUUID {
 
