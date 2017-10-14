@@ -1,8 +1,8 @@
 package org.maroubra.pemsserver.jersey;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.maroubra.pemsserver.bindings.MongoBindings;
 import org.maroubra.pemsserver.bindings.ObjectMapperFactory;
 import org.maroubra.pemsserver.bindings.ServerBindings;
 import org.slf4j.Logger;
@@ -20,5 +20,6 @@ public class JerseyApplication extends ResourceConfig {
         jacksonJaxbJsonProvider.setMapper(new ObjectMapperFactory().buildObjectMapper());
         register(jacksonJaxbJsonProvider);
         register(new ServerBindings());
+        register(new MongoBindings());
     }
 }
