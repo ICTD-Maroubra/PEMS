@@ -1,8 +1,8 @@
-/*
+package org.maroubra.pemsserver.monitoring.sensortag;/*
     This class contains the list of sensors that are available in the CC2650 Ti SensorTag
 */
 
-public class sensortagUUID {
+public class SensortagUUID {
 
 	/* Barometer UUIDs */
     public static final String BARO_SENSOR_ENABLE = "f000aa40-0451-4000-b000-000000000000";
