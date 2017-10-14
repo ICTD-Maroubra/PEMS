@@ -1,6 +1,7 @@
 package org.maroubra.pemsserver.monitoring;
 
 import com.mongodb.rx.client.MongoCollection;
+import org.maroubra.pemsserver.database.MongoCollectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rx.Completable;
@@ -24,6 +25,11 @@ public class MonitoringServiceImpl implements MonitoringService {
     public MonitoringServiceImpl(MongoCollection<AbstractSensor> sensorCollection, MongoCollection<SensorLog> sensorLogCollection) {
         this.sensorCollection = sensorCollection;
         this.sensorLogsCollection = sensorLogCollection;
+    }
+
+    @Inject
+    public MonitoringServiceImpl(MongoCollectionFactory collectionFactory) {
+        this(collectionFactory.getCollection(AbstractSensor.class), collectionFactory.getCollection(SensorLog.class));
     }
 
     @Override
