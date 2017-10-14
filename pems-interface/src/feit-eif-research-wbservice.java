@@ -14,6 +14,7 @@ public class TestWbService {
 
 		try
 		{
+			//dsadsadsa
 			URL url = new URL("http://eif-research.feit.uts.edu.au/api/json/?rFromDate=2017-10-10T01%3A59%3A38&rToDate=2017-10-10T12%3A22%3A38&rFamily=weather&rSensor=AT");
 			URLConnection conn = url.openConnection();
 			conn.setDoOutput(true);
