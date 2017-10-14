@@ -2,6 +2,7 @@ package org.maroubra.pemsserver.jersey;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.maroubra.pemsserver.bindings.BluetoothBindings;
 import org.maroubra.pemsserver.bindings.MongoBindings;
 import org.maroubra.pemsserver.bindings.ObjectMapperFactory;
 import org.maroubra.pemsserver.bindings.ServerBindings;
@@ -19,7 +20,9 @@ public class JerseyApplication extends ResourceConfig {
         JacksonJaxbJsonProvider jacksonJaxbJsonProvider = new JacksonJaxbJsonProvider();
         jacksonJaxbJsonProvider.setMapper(new ObjectMapperFactory().buildObjectMapper());
         register(jacksonJaxbJsonProvider);
+        
         register(new ServerBindings());
         register(new MongoBindings());
+        register(new BluetoothBindings());
     }
 }
