@@ -20,7 +20,7 @@ public class JerseyApplication extends ResourceConfig {
         JacksonJaxbJsonProvider jacksonJaxbJsonProvider = new JacksonJaxbJsonProvider();
         jacksonJaxbJsonProvider.setMapper(new ObjectMapperFactory().buildObjectMapper());
         register(jacksonJaxbJsonProvider);
-        
+
         register(new ServerBindings());
         register(new MongoBindings());
         register(new BluetoothBindings());

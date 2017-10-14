@@ -6,5 +6,5 @@ import rx.Observable;
 public interface MonitoringService {
 
     Completable initializeSensors();
-    Observable<AbstractSensor> listSensors();
+    Observable<SensorConfig> listSensors();
 }

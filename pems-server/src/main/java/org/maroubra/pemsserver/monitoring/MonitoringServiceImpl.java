@@ -8,33 +8,34 @@ import rx.Completable;
 import rx.Observable;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.util.List;
 
-@Singleton
 public class MonitoringServiceImpl implements MonitoringService {
 
     private static final Logger log = LoggerFactory.getLogger(MonitoringServiceImpl.class);
 
-    private final MongoCollection<AbstractSensor> sensorCollection;
+    private final SensorFactory sensorFactory;
+    private final MongoCollection<SensorConfig> sensorConfigCollection;
     private final MongoCollection<SensorLog> sensorLogsCollection;
 
     private List<AbstractSensor> runningSensors;
 
     @Inject
-    public MonitoringServiceImpl(MongoCollection<AbstractSensor> sensorCollection, MongoCollection<SensorLog> sensorLogCollection) {
-        this.sensorCollection = sensorCollection;
+    public MonitoringServiceImpl(SensorFactory sensorFactory, MongoCollection<SensorConfig> sensorConfigCollection, MongoCollection<SensorLog> sensorLogCollection) {
+        this.sensorFactory = sensorFactory;
+        this.sensorConfigCollection = sensorConfigCollection;
         this.sensorLogsCollection = sensorLogCollection;
     }
 
     @Inject
-    public MonitoringServiceImpl(MongoCollectionFactory collectionFactory) {
-        this(collectionFactory.getCollection(AbstractSensor.class), collectionFactory.getCollection(SensorLog.class));
+    public MonitoringServiceImpl(SensorFactory sensorFactory, MongoCollectionFactory collectionFactory) {
+        this(sensorFactory, collectionFactory.getCollection(SensorConfig.class), collectionFactory.getCollection(SensorLog.class));
     }
 
     @Override
     public Completable initializeSensors() {
-        return listSensors().flatMap(sensor -> {
+        return listSensors().flatMap(sensorConfig -> {
+            AbstractSensor sensor = sensorFactory.build(sensorConfig);
             if (sensor.start()) {
                 runningSensors.add(sensor);
                 sensor.logs().subscribe(this::recordSensorLog);
@@ -45,8 +46,8 @@ public class MonitoringServiceImpl implements MonitoringService {
     }
 
     @Override
-    public Observable<AbstractSensor> listSensors() {
-        return sensorCollection.find().toObservable();
+    public Observable<SensorConfig> listSensors() {
+        return sensorConfigCollection.find().toObservable();
     }
 
     private void recordSensorLog(SensorLog sensorLog) {
