@@ -7,39 +7,40 @@ import java.util.*;
 
 public class WebSensorService implements Runnable{
 
-    private List<WebSensor> webSensors = null;
-    private Map<WebSensor,String> webSensorData = null;
+    private Map<WebSensor,ArrayList<String>> webSensors = null;
     private int globalPollIntervalSeconds = 0;
     private boolean terminated = false;
 
     private static Logger log = LoggerFactory.getLogger(WebSensor.class);
 
     /* To test to code - put it to main
-        WebSensorService webSensorService = new WebSensorService();
-        webSensorService.addSensor(new WebSensor("wasp","ES_B_11_429_3E90","BAT"));
-        webSensorService.addSensor(new WebSensor("wasp","ES_B_11_429_3E90","TCA"));
-        webSensorService.setPollIntervalMinutes(10);
-        //global poll interval can be overwritten to shorten the thread execution for testing purposes
-        //global poll interval in seconds = 10
-        webSensorService.setGlobalPollInterval(10);
-        new Thread(webSensorService).start();
-
-        //webSensorService.terminate();
+        //put this in class
+        private static boolean started = false;
+        private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        private static WebSensorService webSensorService;
+        //put this in method
+        if (!started){
+            webSensorService = new WebSensorService();
+            webSensorService.addSensor(new WebSensor("wasp","ES_B_11_429_3E90","BAT"));
+            webSensorService.addSensor(new WebSensor("wasp","ES_B_11_429_3E90","TCA"));
+            webSensorService.setPollIntervalMinutes(10);
+            scheduler.scheduleAtFixedRate(webSensorService,0,5, TimeUnit.SECONDS);
+            started = true;
+        }
      */
 
     public WebSensorService() {
-        webSensors = new ArrayList<WebSensor>();
-        webSensorData = new HashMap<WebSensor,String>();
+        webSensors = new HashMap<>();
     }
 
-    public boolean addSensor(WebSensor webSensor) { return webSensors.add(webSensor); }
+    public void addSensor(WebSensor webSensor) { webSensors.put(webSensor, new ArrayList<>()); }
 
-    public boolean removeSensor(WebSensor webSensor) { return webSensors.remove(webSensor); }
+    public void removeSensor(WebSensor webSensor) { webSensors.remove(webSensor); }
 
-    public List<WebSensor> getWebSensors() { return webSensors; }
+    public Set<WebSensor> getWebSensors() { return webSensors.keySet(); }
 
     public void setPollIntervalMinutes(int pollIntervalMinutes) {
-        for(WebSensor webSensor : webSensors) {
+        for(WebSensor webSensor : webSensors.keySet()) {
             webSensor.setPollIntervalMinutes(pollIntervalMinutes);
             globalPollIntervalSeconds = pollIntervalMinutes * 60;
         }
@@ -48,8 +49,10 @@ public class WebSensorService implements Runnable{
     public void setGlobalPollInterval(int globalPollIntervalSeconds) {this.globalPollIntervalSeconds = globalPollIntervalSeconds;}
 
     public void pollAllSensors() {
-        for (WebSensor webSensor : webSensors) {
-            webSensorData.put(webSensor, webSensor.pollSensor());
+        for (Map.Entry<WebSensor,ArrayList<String>> entry : webSensors.entrySet()) {
+            ArrayList<String> sensorData = entry.getValue();
+            sensorData.add(entry.getKey().pollSensor());
+            entry.setValue(sensorData);
         }
     }
 
@@ -58,17 +61,19 @@ public class WebSensorService implements Runnable{
     }
 
     @Override
-    public void run() {
-        while (!terminated){
-            pollAllSensors();
-            try {
-                Thread.sleep(globalPollIntervalSeconds * 1000);
-            }
-            catch (InterruptedException e){
-                log.warn("WebSensorService was interrupted!");
-            }
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for(Map.Entry<WebSensor,ArrayList<String>> entry : webSensors.entrySet()) {
+            stringBuilder.append(System.lineSeparator() + "Sensor Details: " + entry.getKey().toString() +
+                    System.lineSeparator() + "Sensor Data:" + entry.getValue().toString());
         }
+        return stringBuilder.toString();
+    }
 
+    @Override
+    public void run() {
+        pollAllSensors();
+        log.info(toString());
     }
 
 

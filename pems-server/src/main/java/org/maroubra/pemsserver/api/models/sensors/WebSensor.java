@@ -7,6 +7,7 @@ import java.io.*;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.FutureTask;
 
 public class WebSensor {
     private LocalDateTime fromDate;
@@ -70,7 +71,7 @@ public class WebSensor {
         String data;
         WebSensorTask webSensorTask = new WebSensorTask(buildHTTPQuery());
         try {
-             data = webSensorTask.call();
+            data = webSensorTask.getData();
         }
         catch (Exception e) {
             log.info(e.getMessage());
