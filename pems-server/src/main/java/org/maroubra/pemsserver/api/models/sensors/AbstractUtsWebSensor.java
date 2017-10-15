@@ -3,27 +3,32 @@ package org.maroubra.pemsserver.api.models.sensors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.net.URLConnection;
 
 
 public class AbstractUtsWebSensor {
-    protected LocalDateTime fromDate;
-    protected LocalDateTime toDate;
-    protected int pollIntervalMinutes = 60;
-    protected String family;
-    protected String subSensor;
-    protected String sensor;
-    protected String apiLink = "https://eif-research.feit.uts.edu.au/api/";
-    protected String dataFormat = "json/";
-    protected String query = null;
+    private LocalDateTime fromDate;
+    private LocalDateTime toDate;
+    private int pollIntervalMinutes = 60;
+    private String family;
+    private String subSensor;
+    private String sensor;
+    private String apiLink = "http://eif-research.feit.uts.edu.au/api/";
+    private String dataFormat = "json/";
+    private String query = null;
     private static Logger log = LoggerFactory.getLogger(AbstractUtsWebSensor.class);
 
+
+    /*example implementation - stick it to the main
+        AbstractUtsWebSensor abstractUtsWebSensor = new AbstractUtsWebSensor("wasp","ES_B_11_429_3E90","BAT",120);
+        abstractUtsWebSensor.setDates();
+        abstractUtsWebSensor.buildHTTPQuery();
+        log.info(abstractUtsWebSensor.getData());
+     */
 
     public AbstractUtsWebSensor(String family, String sensor, String subSensor, int pollIntervalMinutes)
     {
@@ -48,14 +53,14 @@ public class AbstractUtsWebSensor {
         try {
             log.info(query);
             URL url = new URL(query);
-            URLConnection conn = url.openConnection();
-            conn.setDoOutput(true);
-            content = conn.getContent().toString();
-
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(url.openStream()));
+            while ((content = in.readLine()) != null)
+                System.out.println(content);
+            in.close();
         }
         catch (IOException e) {
             e.printStackTrace();
-
         }
         return content;
     }
@@ -73,7 +78,7 @@ public class AbstractUtsWebSensor {
             partialQuery = QueryBuilder.QueryBuilder(parameters);
         }
         catch (UnsupportedEncodingException e){
-
+            e.printStackTrace();
         }
         query = apiLink + "" + dataFormat + "" + partialQuery;
         return query;
