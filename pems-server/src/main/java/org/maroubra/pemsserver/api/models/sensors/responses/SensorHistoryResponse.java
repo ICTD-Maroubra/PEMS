@@ -5,6 +5,6 @@ public class SensorHistoryResponse {
 
     }
     public static void putHistory() {
-        
+
     }
 }

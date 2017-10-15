@@ -1,10 +1,13 @@
 package org.maroubra.pemsserver.api.models.alarms.responses;
 
+import org.maroubra.pemsserver.api.models.UserOffset;
 import org.maroubra.pemsserver.api.models.sensors.responses.SensorListResponse;
 
 public class AlarmsListResponse {
-    Private static String Array[];
-    public static void Response() {
+    private static int Array[];
+    private static int count = -1;
+    public static int [] Response() {
+        count = 0 ;
         if(SensorListResponse.tempMax >= UserOffset.tempMax) {
                 Array[count++] =  "WARNING : High temperatures"+ SensorListResponse.tempMax;
         }
@@ -20,5 +23,7 @@ public class AlarmsListResponse {
         if(SensorListResponse.O2 <= UserOffset.O2) {
             Array[count++] = "WARNING : Low Oxygen Levels"+ SensorListResponse.O2;
         }
+
+        return Array;
     }
 }
