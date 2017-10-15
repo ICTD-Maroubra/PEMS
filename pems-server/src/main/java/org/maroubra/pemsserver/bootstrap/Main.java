@@ -21,7 +21,7 @@ public class Main {
         log.info("Attempting to start application on " + serverConfiguration.fullHost());
 
         try {
-            ServletContainer sc = new ServletContainer(new JerseyApplication(serverConfiguration));
+            ServletContainer sc = new ServletContainer(new JerseyApplication());
             HttpServer httpServer = GrizzlyWebContainerFactory.create(URI.create(serverConfiguration.fullHost()), sc, null, null);
 
             httpServer.start();
