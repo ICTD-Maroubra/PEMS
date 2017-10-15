@@ -56,7 +56,7 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "build.gradle" }}
+          - v1-dependencies-{{ checksum "pems-server/build.gradle" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
@@ -65,7 +65,7 @@ jobs:
       - save_cache:
           paths:
             - ~/.m2
-          key: v1-dependencies-{{ checksum "build.gradle" }}
+          key: v1-dependencies-{{ checksum "pems-server/build.gradle" }}
       
       - run: gradle build
       
@@ -91,7 +91,7 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package.json" }}
+          - v1-dependencies-{{ checksum "pems-interface/package.json" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
@@ -100,7 +100,7 @@ jobs:
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+          key: v1-dependencies-{{ checksum "pems-interface/package.json" }}
         
       # run tests!
       #- run: yarn test
