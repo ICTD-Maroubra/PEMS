@@ -1,6 +1,8 @@
 package org.maroubra.pemsserver.monitoring.sensortag;
 
+import com.google.common.collect.ImmutableMap;
 import io.reactivex.Flowable;
+import io.reactivex.processors.PublishProcessor;
 import org.maroubra.pemsserver.monitoring.AbstractSensor;
 import org.maroubra.pemsserver.monitoring.SensorLog;
 import org.slf4j.Logger;
@@ -18,6 +20,7 @@ public class SensortagSensor extends AbstractSensor {
 
     private final SensortagSensorConfig config;
     private final BluetoothDevice sensortagDevice;
+    private final PublishProcessor<SensorLog> sensorLogPublisher = PublishProcessor.create();
 
     public SensortagSensor(SensortagSensorConfig config, BluetoothDevice sensortagDevice) {
         this.config = config;
@@ -46,7 +49,7 @@ public class SensortagSensor extends AbstractSensor {
 
     @Override
     protected Flowable<SensorLog> logs() {
-        return null;
+        return sensorLogPublisher.onBackpressureLatest();
     }
 
     private boolean startTemperatureCharacteristic() {
@@ -80,7 +83,17 @@ public class SensortagSensor extends AbstractSensor {
 
         @Override
         public void run(byte[] bytes) {
-            log.info("TEMPERATURE NOTIFICATION!!!");
+            float objectTemp = decodeTemperature(bytes[1], bytes[0]);
+            float ambientTemp = decodeTemperature(bytes[3], bytes[2]);
+
+            log.info("Sensortag temperature notification: Obj = {objTemp}, Amb = {ambTemp}", objectTemp, ambientTemp);
+
+            SensorLog sensorLog = new SensorLog(config.id(), ImmutableMap.of("object_temp", objectTemp, "ambient_temp", ambientTemp));
+            sensorLogPublisher.onNext(sensorLog);
+        }
+
+        private float decodeTemperature(byte msb, byte lsb) {
+            return ((msb << 8) | (lsb & 0xff)) / 128f;
         }
     }
 }
