@@ -53,7 +53,7 @@ public class SensortagSensor extends AbstractSensor {
         BluetoothGattService service = getService(SensortagUUID.UUID_TEMP_SENSOR_ENABLE);
 
         BluetoothGattCharacteristic tempValue = service.find(SensortagUUID.UUID_TEMP_SENSOR_DATA.toString());
-        BluetoothGattCharacteristic tempConfig = service.find(SensortagUUID.UUID_TEMP_SENSOR_DATA.toString());
+        BluetoothGattCharacteristic tempConfig = service.find(SensortagUUID.UUID_TEMP_SENSOR_CONFIG.toString());
         BluetoothGattCharacteristic tempPeriod = service.find(SensortagUUID.UUID_TEMP_SENSOR_PERIOD.toString());
 
         if (tempValue == null || tempConfig == null || tempPeriod == null) {
