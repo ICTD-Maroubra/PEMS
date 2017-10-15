@@ -2,16 +2,16 @@ package org.maroubra.pemsserver.monitoring.sensortag;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.primitives.Ints;
-import io.reactivex.processors.PublishProcessor;
+import io.reactivex.processors.FlowableProcessor;
 import org.maroubra.pemsserver.monitoring.SensorLog;
 import tinyb.BluetoothNotification;
 
 public class PressureNotification implements BluetoothNotification<byte[]> {
 
     private final SensortagSensorConfig config;
-    private final PublishProcessor<SensorLog> processor;
+    private final FlowableProcessor<SensorLog> processor;
 
-    public PressureNotification(SensortagSensorConfig config, PublishProcessor<SensorLog> processor) {
+    public PressureNotification(SensortagSensorConfig config, FlowableProcessor<SensorLog> processor) {
         this.config = config;
         this.processor = processor;
     }

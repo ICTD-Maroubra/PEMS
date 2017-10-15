@@ -1,16 +1,16 @@
 package org.maroubra.pemsserver.monitoring.sensortag;
 
 import com.google.common.collect.ImmutableMap;
-import io.reactivex.processors.PublishProcessor;
+import io.reactivex.processors.FlowableProcessor;
 import org.maroubra.pemsserver.monitoring.SensorLog;
 import tinyb.BluetoothNotification;
 
 public class HumidityNotification implements BluetoothNotification<byte[]> {
 
     private final SensortagSensorConfig config;
-    private final PublishProcessor<SensorLog> processor;
+    private final FlowableProcessor<SensorLog> processor;
 
-    public HumidityNotification(SensortagSensorConfig config, PublishProcessor<SensorLog> processor) {
+    public HumidityNotification(SensortagSensorConfig config, FlowableProcessor<SensorLog> processor) {
         this.config = config;
         this.processor = processor;
     }

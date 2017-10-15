@@ -1,16 +1,16 @@
 package org.maroubra.pemsserver.monitoring.sensortag;
 
 import com.google.common.collect.ImmutableMap;
-import io.reactivex.processors.PublishProcessor;
+import io.reactivex.processors.FlowableProcessor;
 import org.maroubra.pemsserver.monitoring.SensorLog;
 import tinyb.BluetoothNotification;
 
 public class OpticalNotification implements BluetoothNotification<byte[]> {
 
     private final SensortagSensorConfig config;
-    private final PublishProcessor<SensorLog> processor;
+    private final FlowableProcessor<SensorLog> processor;
 
-    public OpticalNotification(SensortagSensorConfig config, PublishProcessor<SensorLog> processor) {
+    public OpticalNotification(SensortagSensorConfig config, FlowableProcessor<SensorLog> processor) {
         this.config = config;
         this.processor = processor;
     }

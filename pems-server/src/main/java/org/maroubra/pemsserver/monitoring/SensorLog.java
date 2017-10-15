@@ -23,4 +23,12 @@ public class SensorLog {
         this.attributeValue = ImmutableMap.copyOf(attributeValue);
         this.timestamp = timestamp;
     }
+
+    public String getSensorId() {
+        return sensorId;
+    }
+
+    public ImmutableMap<String, Object> getAttributeValue() {
+        return attributeValue;
+    }
 }

@@ -53,6 +53,8 @@ dependencies {
     compile files('lib/tinyb/tinyb-0.5.0-23.jar')
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile 'com.google.truth:truth:0.36'
+    testCompile 'com.google.truth.extensions:truth-java8-extension:0.36'
 }
 
 tasks.withType(JavaCompile) {
