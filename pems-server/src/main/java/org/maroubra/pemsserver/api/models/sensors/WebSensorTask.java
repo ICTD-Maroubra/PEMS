@@ -18,7 +18,7 @@ public class WebSensorTask implements Callable <String>{
         return getData();
     }
 
-    public String getData() {
+    private String getData() {
         String content = null;
         try {
             URL url = new URL(query);

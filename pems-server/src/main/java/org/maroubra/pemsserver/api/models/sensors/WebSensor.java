@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class AbstractUtsWebSensorService {
+public class WebSensor {
     private LocalDateTime fromDate;
     private LocalDateTime toDate;
     private int pollIntervalMinutes;
@@ -17,34 +17,34 @@ public class AbstractUtsWebSensorService {
     private String sensor;
     private String apiLink = "http://eif-research.feit.uts.edu.au/api/";
     private String dataFormat = "json/";
-    private static Logger log = LoggerFactory.getLogger(AbstractUtsWebSensorService.class);
+    private static Logger log = LoggerFactory.getLogger(WebSensor.class);
 
 
     /*example implementation - stick it to the main
-        AbstractUtsWebSensorService abstractUtsWebSensor = new AbstractUtsWebSensorService("wasp","ES_B_11_429_3E90","BAT",60);
-        log.info(abstractUtsWebSensor.monitorSensor());
+        WebSensor webSensor = new WebSensor("wasp","ES_B_11_429_3E90","BAT",60);
+        log.info(webSensor.monitorSensor());
      */
 
-    public AbstractUtsWebSensorService(String family, String sensor, String subSensor, int pollIntervalMinutes) {
+    public WebSensor(String family, String sensor, String subSensor) {
         this.family = family;
         this.subSensor = subSensor;
         this.sensor = sensor;
-        this.pollIntervalMinutes = pollIntervalMinutes;
     }
 
     public void setPollIntervalMinutes(int pollIntervalMinutes) {
         this.pollIntervalMinutes = pollIntervalMinutes;
     }
 
-    public void setDates() {
+    public void setDatesPollInterval() {
         fromDate = LocalDateTime.now().minusMinutes(pollIntervalMinutes).withNano(0);
         toDate = LocalDateTime.now().withNano(0);
     }
 
-    public void setDatesSeconds() {
-        fromDate = LocalDateTime.now().minusSeconds(pollIntervalMinutes).withNano(0);
-        toDate = LocalDateTime.now().withNano(0);
+    public void setDates(LocalDateTime fromDate, LocalDateTime toDate) {
+        this.fromDate = fromDate;
+        this.toDate = toDate;
     }
+
 
     public String buildHTTPQuery() {
         String partialQuery = "";
@@ -65,8 +65,8 @@ public class AbstractUtsWebSensorService {
         return query;
     }
 
-    public String monitorSensor() {
-        setDates();
+    public String pollSensor() {
+        setDatesPollInterval();
         String data;
         WebSensorTask webSensorTask = new WebSensorTask(buildHTTPQuery());
         try {
@@ -77,5 +77,10 @@ public class AbstractUtsWebSensorService {
             data = "Error";
         }
         return data;
+    }
+
+    @Override
+    public String toString(){
+        return "Sensor Family: " + family + " Sensor: " + sensor + " Sub Sensor: " + subSensor;
     }
 }
