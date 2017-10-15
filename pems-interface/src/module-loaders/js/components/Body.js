@@ -7,7 +7,7 @@ export default class Body extends React.Component {
   render() {
     return (
       <div class="body">
-      <PageTitle />
+      <PageTitle title={this.props.title}/>
       </div>
     );
   }

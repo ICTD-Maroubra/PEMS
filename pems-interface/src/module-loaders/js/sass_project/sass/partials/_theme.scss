@@ -2,7 +2,7 @@
 /*------------------------------------*\
              Import Font
 \*------------------------------------*/
-@import url( 'https://fonts.googleapis.com/css?family=Montserrat:300,300i,600i,700');
+@import url( 'https://fonts.googleapis.com/css?family=Saira+Extra+Condensed');
 
 /*------------------------------------*\
  Font Definition
@@ -22,13 +22,13 @@ option,
 select,
 select,
 textarea {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Saira Extra Condensed', sans-serif;
 }
 
 body,
 html {
-    font-family: 'Montserrat';
-    font-weight: 300;
+    font-family: 'Saira Extra Condensed';
+    font-weight: 400;
     background-color: #efefef;
     color: $black;
     margin: 0px;
@@ -294,10 +294,11 @@ div.Menu_DropDownPanel a:visited:hover {
 a {
     font-size: 14px;
     font-weight: bold;
+    text-decoration: none;
 }
 
 a:hover {
-    text-decoration: underline;
+    text-decoration: none;
 }
 
 a[disabled="disabled"],
@@ -738,6 +739,6 @@ h1, h2 {
 }
 
 .pageTitle{
-    padding: 22px;
+    padding: 17px;
     border-bottom: 1px solid #ddd;
 }

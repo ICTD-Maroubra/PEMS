@@ -1,6 +1,6 @@
 /*------------------------------------*             Import Font
 \*------------------------------------*/
-@import url("https://fonts.googleapis.com/css?family=Montserrat:300,300i,600i,700");
+@import url("https://fonts.googleapis.com/css?family=Saira+Extra+Condensed");
 /*------------------------------------* Font Definition
 \*------------------------------------*/
 /* html, body, a, select, form, fieldset, table, tr, td, img, input, button, select, textarea, optgroup, option {
@@ -17,12 +17,12 @@ option,
 select,
 select,
 textarea {
-  font-family: 'Montserrat', sans-serif; }
+  font-family: 'Saira Extra Condensed', sans-serif; }
 
 body,
 html {
-  font-family: 'Montserrat';
-  font-weight: 300;
+  font-family: 'Saira Extra Condensed';
+  font-weight: 400;
   background-color: #efefef;
   color: #333333;
   margin: 0px; }
@@ -234,10 +234,11 @@ div.Menu_DropDownPanel a:visited:hover {
 
 a {
   font-size: 14px;
-  font-weight: bold; }
+  font-weight: bold;
+  text-decoration: none; }
 
 a:hover {
-  text-decoration: underline; }
+  text-decoration: none; }
 
 a[disabled="disabled"],
 a[disabled="disabled"]:hover {
@@ -583,7 +584,7 @@ h1, h2 {
   margin-left: 190px; }
 
 .pageTitle {
-  padding: 22px;
+  padding: 17px;
   border-bottom: 1px solid #ddd; }
 
 img.logo {
@@ -605,7 +606,8 @@ img.logo {
   height: 54px;
   background: #4e5d67;
   transition: background-color 0.3s ease;
-  color: #ffffff; }
+  color: #ffffff;
+  text-decoration: none; }
 
 .MenuItem:hover {
   font-size: 11px;
@@ -616,18 +618,25 @@ img.logo {
   height: 54px;
   background: #414b52;
   border-left: 2px solid white;
-  color: #ffffff; }
+  color: #ffffff;
+  text-decoration: none; }
 
-.MenuItem:active {
+.MenuItemFocus {
   font-size: 11px;
-  padding: 15px;
   text-align: center;
   word-wrap: break-word;
   border-bottom: 1px solid #38444c;
   height: 54px;
-  background: #38444c;
+  background: #38444c !important;
   border-left: 2px solid white;
-  color: #ffffff; }
+  color: #ffffff;
+  text-decoration: none; }
 
 img.menuIcon {
-  height: 38px; }
+  height: 38px;
+  image-rendering: -webkit-optimize-contrast; }
+
+h2.menuItemTitle {
+  font-weight: 200;
+  text-transform: uppercase;
+  font-size: 14px; }
