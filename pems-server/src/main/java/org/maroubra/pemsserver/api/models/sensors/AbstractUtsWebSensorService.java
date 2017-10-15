@@ -3,14 +3,10 @@ package org.maroubra.pemsserver.api.models.sensors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.ws.Service;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-
 
 public class AbstractUtsWebSensorService {
     private LocalDateTime fromDate;
@@ -22,16 +18,11 @@ public class AbstractUtsWebSensorService {
     private String apiLink = "http://eif-research.feit.uts.edu.au/api/";
     private String dataFormat = "json/";
     private static Logger log = LoggerFactory.getLogger(AbstractUtsWebSensorService.class);
-    private String sensorLog = "";
-    private Timer timer;
-    private TimerTask timerTask;
 
 
     /*example implementation - stick it to the main
         AbstractUtsWebSensorService abstractUtsWebSensor = new AbstractUtsWebSensorService("wasp","ES_B_11_429_3E90","BAT",60);
-        abstractUtsWebSensor.setDates();
-        abstractUtsWebSensor.buildHTTPQuery();
-        log.info(abstractUtsWebSensor.monitor());
+        log.info(abstractUtsWebSensor.monitorSensor());
      */
 
     public AbstractUtsWebSensorService(String family, String sensor, String subSensor, int pollIntervalMinutes) {
@@ -74,20 +65,17 @@ public class AbstractUtsWebSensorService {
         return query;
     }
 
-
-    public void monitorSensor() {
-        timer = new Timer();
-        timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    setDates();
-                    sensorLog += ""+ (new WebSensorTask(buildHTTPQuery()).call()).toString();
-                } catch (Exception e) {
-                    log.info(e.getMessage());
-                }
-            }
-        };
-        timer.schedule(timerTask, pollIntervalMinutes * 60 * 1000);
+    public String monitorSensor() {
+        setDates();
+        String data;
+        WebSensorTask webSensorTask = new WebSensorTask(buildHTTPQuery());
+        try {
+             data = webSensorTask.call();
+        }
+        catch (Exception e) {
+            log.info(e.getMessage());
+            data = "Error";
+        }
+        return data;
     }
 }
