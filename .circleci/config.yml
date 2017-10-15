@@ -69,7 +69,11 @@ jobs:
       
       - run: cd pems-server && ./gradlew build
       
+      # Run tests
       - run: cd pems-server && ./gradlew test
+
+      # Run code coverage
+      - run: cd pems-server && ./gradlew jacocoTestReport && bash <(curl -s https://codecov.io/bash)
 
   build_frontend:
     docker:
