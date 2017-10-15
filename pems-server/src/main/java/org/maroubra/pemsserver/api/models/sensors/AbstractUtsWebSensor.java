@@ -13,7 +13,7 @@ import java.util.Map;
 public class AbstractUtsWebSensor {
     private LocalDateTime fromDate;
     private LocalDateTime toDate;
-    private int pollIntervalMinutes = 60;
+    private int pollIntervalMinutes;
     private String family;
     private String subSensor;
     private String sensor;
@@ -24,7 +24,7 @@ public class AbstractUtsWebSensor {
 
 
     /*example implementation - stick it to the main
-        AbstractUtsWebSensor abstractUtsWebSensor = new AbstractUtsWebSensor("wasp","ES_B_11_429_3E90","BAT",120);
+        AbstractUtsWebSensor abstractUtsWebSensor = new AbstractUtsWebSensor("wasp","ES_B_11_429_3E90","BAT",60);
         abstractUtsWebSensor.setDates();
         abstractUtsWebSensor.buildHTTPQuery();
         log.info(abstractUtsWebSensor.getData());
@@ -43,7 +43,7 @@ public class AbstractUtsWebSensor {
     }
 
     public void setDates() {
-        fromDate = LocalDateTime.now().minusMinutes(60).withNano(0);
+        fromDate = LocalDateTime.now().minusMinutes(pollIntervalMinutes).withNano(0);
         toDate = LocalDateTime.now().withNano(0);
     }
 
