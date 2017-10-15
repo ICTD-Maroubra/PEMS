@@ -3,14 +3,16 @@ package org.maroubra.pemsserver.api.models.sensors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.xml.ws.Service;
 import java.io.*;
-import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
-public class AbstractUtsWebSensor {
+public class AbstractUtsWebSensorService {
     private LocalDateTime fromDate;
     private LocalDateTime toDate;
     private int pollIntervalMinutes;
@@ -19,19 +21,20 @@ public class AbstractUtsWebSensor {
     private String sensor;
     private String apiLink = "http://eif-research.feit.uts.edu.au/api/";
     private String dataFormat = "json/";
-    private String query = null;
-    private static Logger log = LoggerFactory.getLogger(AbstractUtsWebSensor.class);
+    private static Logger log = LoggerFactory.getLogger(AbstractUtsWebSensorService.class);
+    private String sensorLog = "";
+    private Timer timer;
+    private TimerTask timerTask;
 
 
     /*example implementation - stick it to the main
-        AbstractUtsWebSensor abstractUtsWebSensor = new AbstractUtsWebSensor("wasp","ES_B_11_429_3E90","BAT",60);
+        AbstractUtsWebSensorService abstractUtsWebSensor = new AbstractUtsWebSensorService("wasp","ES_B_11_429_3E90","BAT",60);
         abstractUtsWebSensor.setDates();
         abstractUtsWebSensor.buildHTTPQuery();
-        log.info(abstractUtsWebSensor.getData());
+        log.info(abstractUtsWebSensor.monitor());
      */
 
-    public AbstractUtsWebSensor(String family, String sensor, String subSensor, int pollIntervalMinutes)
-    {
+    public AbstractUtsWebSensorService(String family, String sensor, String subSensor, int pollIntervalMinutes) {
         this.family = family;
         this.subSensor = subSensor;
         this.sensor = sensor;
@@ -47,22 +50,9 @@ public class AbstractUtsWebSensor {
         toDate = LocalDateTime.now().withNano(0);
     }
 
-    public String getData()
-    {
-        String content = null;
-        try {
-            log.info(query);
-            URL url = new URL(query);
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(url.openStream()));
-            while ((content = in.readLine()) != null)
-                System.out.println(content);
-            in.close();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        return content;
+    public void setDatesSeconds() {
+        fromDate = LocalDateTime.now().minusSeconds(pollIntervalMinutes).withNano(0);
+        toDate = LocalDateTime.now().withNano(0);
     }
 
     public String buildHTTPQuery() {
@@ -80,15 +70,24 @@ public class AbstractUtsWebSensor {
         catch (UnsupportedEncodingException e){
             e.printStackTrace();
         }
-        query = apiLink + "" + dataFormat + "" + partialQuery;
+        String query = apiLink + "" + dataFormat + "" + partialQuery;
         return query;
     }
 
 
-
-
-
-
-
-
+    public void monitorSensor() {
+        timer = new Timer();
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    setDates();
+                    sensorLog += ""+ (new WebSensorTask(buildHTTPQuery()).call()).toString();
+                } catch (Exception e) {
+                    log.info(e.getMessage());
+                }
+            }
+        };
+        timer.schedule(timerTask, pollIntervalMinutes * 60 * 1000);
+    }
 }
