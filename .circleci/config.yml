@@ -67,9 +67,9 @@ jobs:
             - ~/.m2
           key: v1-dependencies-{{ checksum "pems-server/build.gradle" }}
       
-      - run: ./PEMS/pems-server/gradlew build
+      - run: ./pems-server/gradlew build
       
-      - run: ./PEMS/pems-server/gradlew test
+      - run: ./pems-server/gradlew test
 
   build_frontend:
     docker:
