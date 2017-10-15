@@ -1,6 +1,5 @@
 package org.maroubra.pemsserver.monitoring.sensortag;
 
-import com.google.common.collect.ImmutableMap;
 import io.reactivex.Flowable;
 import io.reactivex.processors.PublishProcessor;
 import org.maroubra.pemsserver.monitoring.AbstractSensor;
@@ -10,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import tinyb.BluetoothDevice;
 import tinyb.BluetoothGattCharacteristic;
 import tinyb.BluetoothGattService;
-import tinyb.BluetoothNotification;
 
 import java.util.UUID;
 
@@ -32,12 +30,16 @@ public class SensortagSensor extends AbstractSensor {
         if (!sensortagDevice.connect())
             return false;
 
-        // TODO: Loop through all configured services for sensor tag and initialize them
-        // They should be hooked up so that they contribute to a rx subject/flowable/whatever
-        // that can be watched by the #logs() method.
+        boolean allCharacteristicsStarted =
+                startTemperatureCharacteristic() &&
+                startHumidityCharacteristic() &&
+                startBarometerCharacteristic() &&
+                startOpticalCharacteristic();
 
-        if (!startTemperatureCharacteristic())
+        if (!allCharacteristicsStarted) {
+            sensortagDevice.disconnect();
             return false;
+        }
 
         return true;
     }
@@ -70,7 +72,76 @@ public class SensortagSensor extends AbstractSensor {
         // enable the temperature sensor
         tempConfig.writeValue(new byte[] { 0x01 });
 
-        tempValue.enableValueNotifications(new TemperatureNotification());
+        tempValue.enableValueNotifications(new TemperatureNotification(config, sensorLogPublisher));
+
+        return true;
+    }
+
+    private boolean startHumidityCharacteristic() {
+        BluetoothGattService service = getService(SensortagUUID.UUID_HUM_SENSOR_ENABLE);
+
+        BluetoothGattCharacteristic humidityValue = service.find(SensortagUUID.UUID_HUM_SENSOR_DATA.toString());
+        BluetoothGattCharacteristic humidityConfig = service.find(SensortagUUID.UUID_HUM_SENSOR_CONFIG.toString());
+        BluetoothGattCharacteristic humidityPeriod = service.find(SensortagUUID.UUID_HUM_SENSOR_PERIOD.toString());
+
+        if (humidityValue == null || humidityConfig == null || humidityPeriod == null) {
+            log.error("Could not find the correct characteristics.");
+            return false;
+        }
+
+        // 1 second update period
+        humidityPeriod.writeValue(new byte[] { 0x64 });
+
+        // enable the temperature sensor
+        humidityConfig.writeValue(new byte[] { 0x01 });
+
+        humidityValue.enableValueNotifications(new HumidityNotification(config, sensorLogPublisher));
+
+        return true;
+    }
+
+    private boolean startBarometerCharacteristic() {
+        BluetoothGattService service = getService(SensortagUUID.UUID_BARO_SENSOR_ENABLE);
+
+        BluetoothGattCharacteristic barometerValue = service.find(SensortagUUID.UUID_BARO_SENSOR_DATA.toString());
+        BluetoothGattCharacteristic barometerConfig = service.find(SensortagUUID.UUID_BARO_SENSOR_CONFIG.toString());
+        BluetoothGattCharacteristic barometerPeriod = service.find(SensortagUUID.UUID_BARO_SENSOR_PERIOD.toString());
+
+        if (barometerValue == null || barometerConfig == null || barometerPeriod == null) {
+            log.error("Could not find the correct characteristics.");
+            return false;
+        }
+
+        // 1 second update period
+        barometerPeriod.writeValue(new byte[] { 0x64 });
+
+        // enable the temperature sensor
+        barometerConfig.writeValue(new byte[] { 0x01 });
+
+        barometerValue.enableValueNotifications(new PressureNotification(config, sensorLogPublisher));
+
+        return true;
+    }
+
+    private boolean startOpticalCharacteristic() {
+        BluetoothGattService service = getService(SensortagUUID.UUID_LUXO_SENSOR_ENABLE);
+
+        BluetoothGattCharacteristic opticalValue = service.find(SensortagUUID.UUID_LUXO_SENSOR_DATA.toString());
+        BluetoothGattCharacteristic opticalConfig = service.find(SensortagUUID.UUID_LUXO_SENSOR_CONFIG.toString());
+        BluetoothGattCharacteristic opticalPeriod = service.find(SensortagUUID.UUID_LUXO_SENSOR_PERIOD.toString());
+
+        if (opticalValue == null || opticalConfig == null || opticalPeriod == null) {
+            log.error("Could not find the correct characteristics.");
+            return false;
+        }
+
+        // 1 second update period
+        opticalPeriod.writeValue(new byte[] { 0x64 });
+
+        // enable the temperature sensor
+        opticalConfig.writeValue(new byte[] { 0x01 });
+
+        opticalValue.enableValueNotifications(new OpticalNotification(config, sensorLogPublisher));
 
         return true;
     }
@@ -79,21 +150,4 @@ public class SensortagSensor extends AbstractSensor {
         return sensortagDevice.find(uuid.toString());
     }
 
-    private class TemperatureNotification implements BluetoothNotification<byte[]> {
-
-        @Override
-        public void run(byte[] bytes) {
-            float objectTemp = decodeTemperature(bytes[1], bytes[0]);
-            float ambientTemp = decodeTemperature(bytes[3], bytes[2]);
-
-            log.info("Sensortag temperature notification: Obj = {objTemp}, Amb = {ambTemp}", objectTemp, ambientTemp);
-
-            SensorLog sensorLog = new SensorLog(config.id(), ImmutableMap.of("object_temp", objectTemp, "ambient_temp", ambientTemp));
-            sensorLogPublisher.onNext(sensorLog);
-        }
-
-        private float decodeTemperature(byte msb, byte lsb) {
-            return ((msb << 8) | (lsb & 0xff)) / 128f;
-        }
-    }
 }
