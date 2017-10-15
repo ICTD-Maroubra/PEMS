@@ -11,6 +11,7 @@ export default class SideMenu extends React.Component {
       <MenuPlaceholder/>
       <MenuPlaceholder/>
       <MenuPlaceholder/>
+    
       </div>
     );
   }
