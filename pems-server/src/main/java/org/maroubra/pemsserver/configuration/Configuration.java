@@ -9,9 +9,9 @@ public class Configuration {
 
     private static final String ENVIRONMENT_PREFIX = "PEMS_";
 
-    private static ServerConfiguration serverConfiguration;
-    private static MongoDbConfiguration mongoDbConfiguration;
-    private static BluetoothConfiguration bluetoothConfiguration;
+    private static ServerConfiguration serverConfiguration = new ServerConfiguration();
+    private static MongoDbConfiguration mongoDbConfiguration = new MongoDbConfiguration();
+    private static BluetoothConfiguration bluetoothConfiguration = new BluetoothConfiguration();
 
     public static ServerConfiguration getServerConfiguration() {
         if (serverConfiguration == null)
