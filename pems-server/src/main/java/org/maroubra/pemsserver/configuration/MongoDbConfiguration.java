@@ -1,10 +1,11 @@
 package org.maroubra.pemsserver.configuration;
 
-import com.mongodb.ConnectionString;
+import com.github.joschi.jadconfig.Parameter;
 
 public class MongoDbConfiguration {
+    @Parameter(value = "mongodb_connection")
+    public String connectionString = "mongodb://0.0.0.0:27017";
 
-    public ConnectionString getConnectionString() {
-        return new ConnectionString("");
-    }
+    @Parameter(value = "mongodb_database")
+    public String databaseName = "pems";
 }

@@ -60,17 +60,20 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
-      - run: gradle dependencies
+      - run: cd pems-server && ./gradlew dependencies
 
       - save_cache:
           paths:
             - ~/.m2
           key: v1-dependencies-{{ checksum "pems-server/build.gradle" }}
       
-      - run: gradle build
+      - run: cd pems-server && ./gradlew build
       
-      # run tests!
-      #- run: gradle test
+      # Run tests
+      - run: cd pems-server && ./gradlew test
+
+      # Run code coverage
+      - run: cd pems-server && ./gradlew jacocoTestReport && bash <(curl -s https://codecov.io/bash)
 
   build_frontend:
     docker:
