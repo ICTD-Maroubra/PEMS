@@ -611,8 +611,16 @@ img.logo {
   font-weight: 600;
   color: #414b52; }
 
+.split1 {
+  display: inline-flex;
+  width: 100%; }
+
 .split2 {
   width: 50%;
+  display: inline-flex; }
+
+.split3 {
+  width: 33.33%;
   display: inline-flex; }
 
 .switch {
@@ -662,6 +670,9 @@ input:checked + .slider:before {
 
 .toggle-label {
   font-size: 27px; }
+
+.chart {
+  padding-top: 10px; }
 
 .Menu {
   width: 190px;

@@ -19,6 +19,7 @@ export default class SideMenu extends React.Component {
 
     return (
       <div class="Menu">
+
       <MenuPlaceholder title={menuItemOne} icon={menuItemOneIcon}/>
       <MenuPlaceholder title={menuItemTwo} icon={menuItemTwoIcon}/>
       <MenuPlaceholder title={menuItemThree} icon={menuItemThreeIcon}/>

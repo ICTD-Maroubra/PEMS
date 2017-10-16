@@ -25,8 +25,18 @@ img.logo {
   color:$tertiary-color;
 }
 
+.split1{
+  display: inline-flex;
+  width: 100%;
+}
+
 .split2 {
     width: 50%;
+    display: inline-flex;
+}
+
+.split3 {
+    width: 33.33%;
     display: inline-flex;
 }
 
@@ -87,4 +97,10 @@ input:checked + .slider:before {
 
 .toggle-label {
     font-size: 27px;
+}
+
+//Graph
+
+.chart {
+    padding-top: 10px;
 }

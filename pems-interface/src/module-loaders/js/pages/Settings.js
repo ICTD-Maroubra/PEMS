@@ -1,6 +1,5 @@
 import React from "react";
 
-import Body from "../components/Body";
 import DoubleCards from "../components/Card/DoubleCards";
 import SingleCard from "../components/Card/SingleCard";
 import Button from "../components/Widgets/Button";
@@ -23,7 +22,7 @@ render() {
     ]
 
     const ToggleList =[
-      <div><Toggle key={1} title="Toggle 1"/></div>
+      <div><Toggle title="Toggle 1"/></div>
 
     ]
 
