@@ -39,10 +39,13 @@ For more documentation on the server's API, you can navigate to `http://HOST:POR
 
 The following table lists environment variables that can be set to configure the server.
 
-| **Option**        | **Default**       | **Description**                   |
-|:------------------|-------------------|:----------------------------------|
-|PEMS_HOST          |0.0.0.0            |The pems server host IP            |
-|PEMS_PORT          |9005               |The pems server port               |
+| **Option**                | **Default**               | **Description**                                       |
+|:--------------------------|---------------------------|:------------------------------------------------------|
+|PEMS_HOST                  |0.0.0.0                    |The pems server host IP                                |
+|PEMS_PORT                  |9005                       |The pems server port                                   |
+|PEMS_MONGODB_CONNECTION    |mongodb://0.0.0.0:27017    |MongoDB connection string                              |
+|PEMS_MONGODB_DATABASE      |pems                       |MongoDB database to use                                |
+|PEMS_BLE_ENABLED           |false                      |Bluetooth connections enabled (requires Linux w/ Bluez)|
 
 ## Interface
 
