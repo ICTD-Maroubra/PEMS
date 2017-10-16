@@ -1,0 +1,31 @@
+//Component Stylesheet
+img.logo {
+    height: 43px;
+    padding: 5px;
+}
+
+.card{
+  background: white;
+  border-radius: 5px;
+  width: 100%;
+  margin: 20px;
+  padding: 20px;
+  height: 140px;
+}
+
+.card-content{
+  font-size: 65px;
+  text-align: -webkit-center;
+  color:$tertiary-color;
+}
+
+.card-title{
+  font-size: 25px;
+  font-weight: 600;
+  color:$tertiary-color;
+}
+
+.split2 {
+    width: 50%;
+    display: inline-flex;
+}
