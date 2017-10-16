@@ -8,7 +8,9 @@ public class ActuatorsListResponse {
             return 0;
     }
     public static int ActiveAcutators() {
-            //return Actuators.getCount();
-        }
+            //
+    }
+    public static String Error() {
+        return "";
     }
 }

@@ -4,9 +4,9 @@ import org.maroubra.pemsserver.api.models.UserOffset;
 import org.maroubra.pemsserver.api.models.sensors.responses.SensorListResponse;
 
 public class AlarmsListResponse {
-    private static int Array[];
+    private static String Array[];
     private static int count = -1;
-    public static int [] Response() {
+    public static String [] Response() {
         count = 0 ;
         if(SensorListResponse.tempMax >= UserOffset.tempMax) {
                 Array[count++] =  "WARNING : High temperatures"+ SensorListResponse.tempMax;
