@@ -613,6 +613,10 @@ img.logo {
   width: 50%;
   display: inline-flex; }
 
+.split3 {
+  width: 33.33%;
+  display: inline-flex; }
+
 .Menu {
   width: 190px;
   height: 100%;
