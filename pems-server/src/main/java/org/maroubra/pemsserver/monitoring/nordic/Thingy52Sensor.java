@@ -30,6 +30,14 @@ public class Thingy52Sensor extends AbstractSensor {
         if (!thingyDevice.connect())
             return false;
 
+        boolean allCharacteristicsStarted =
+                startTemperatureCharacteristic();
+
+        if (!allCharacteristicsStarted) {
+            thingyDevice.disconnect();
+            return false;
+        }
+        
         return true;
     }
 

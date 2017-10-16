@@ -24,6 +24,6 @@ public class TemperatureNotification implements BluetoothNotification<byte[]> {
     }
 
     private float decodeTemperature(byte msb, byte lsb) {
-        return ((msb << 8) | (lsb & 0xff)) / 128f;
+        return ((msb << 8) | (lsb & 0xff)) / 256f;
     }
 }
