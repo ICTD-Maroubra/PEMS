@@ -8,7 +8,7 @@ public class AlarmsListResponse {
     private static int count = -1;
     public static String [] Response() {
         count = 0 ;
-        if(SensorListResponse.tempMax >= UserOffset.tempMax) {
+        if(SensorListResponse.tempMax > UserOffset.tempMax) {
                 Array[count++] =  "WARNING : High temperatures"+ SensorListResponse.tempMax;
         }
         if(SensorListResponse.tempLow >= UserOffset.tempLow) {
