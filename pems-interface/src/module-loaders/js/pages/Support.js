@@ -1,6 +1,8 @@
 import React from "react";
 
-import Body from "../components/Body";
+import SingleCard from "../components/Card/SingleCard";
+import PageTitle from "../components/Widgets/PageTitle";
+
 
 export default class Support extends React.Component {
 
@@ -11,7 +13,9 @@ constructor(){
 render() {
     return (
       <div>
-      <Body title="Support"/>
+        <PageTitle title="Support"/>
+        <SingleCard title= "Support" content="99"/>
+
       </div>
     );
   }

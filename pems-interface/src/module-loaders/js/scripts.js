@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import Emergency from "./pages/Emergency";
 import Support from "./pages/Support";
 import Users from "./pages/Users";
+import Settings from "./pages/Settings";
 
 const app = document.getElementById('app');
 ReactDOM.render(
@@ -17,6 +18,7 @@ ReactDOM.render(
       <Route path="emergency" component={Emergency}></Route>
       <Route path="support" component={Support}></Route>
       <Route path="users" component={Users}></Route>
+      <Route path="settings" component={Settings}></Route>
     </Route>
   </Router>, app
 );

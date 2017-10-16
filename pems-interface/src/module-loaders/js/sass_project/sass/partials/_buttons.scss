@@ -1,1 +1,21 @@
 // Buttons Stylesheet
+button.btn-primary {
+    background: $primary-color;
+    width: 250px;
+    padding: 6px;
+    color: white;
+    font-size: 22px;
+    border-radius: 8px;
+    border-style: none;
+    transition: background-color 0.3s ease;
+}
+
+button.btn-primary:hover {
+    background: #414b52;
+    width: 250px;
+    padding: 6px;
+    color: white;
+    font-size: 22px;
+    border-radius: 8px;
+    border-style: none;
+}
