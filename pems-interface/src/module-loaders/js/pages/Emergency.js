@@ -12,7 +12,7 @@ constructor(){
 
 render() {
     return (
-      <div class="body">
+      <div>
         <PageTitle title="Emergency"/>
         <SingleCard title= "Emergency" content="99"/>
 

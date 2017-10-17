@@ -16,7 +16,7 @@ constructor(){
 render() {
   const supportIcon = "../../assets/images/edited/HelpIcon.png";
     return (
-      <div class="body">
+      <div>
         <PageTitle title="Support"/>
 
           <DoubleIconCard title1= "support" icon1={supportIcon}  title2= "Counter 2" icon2={supportIcon}/>

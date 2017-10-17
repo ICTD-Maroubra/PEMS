@@ -5,6 +5,7 @@ export default class SingleCard extends React.Component {
   render() {
     console.log(this.props);
     return (
+
 <div class="card">
   <div class="card-title">
     {this.props.title}
@@ -14,6 +15,7 @@ export default class SingleCard extends React.Component {
     {this.props.unit}
   </div>
 </div>
+
 
     );
   }

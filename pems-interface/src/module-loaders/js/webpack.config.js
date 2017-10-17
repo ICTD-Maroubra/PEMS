@@ -10,6 +10,7 @@ module.exports = {
      {
        test: /\.jsx?$/, //any js files are run via babel loader
        exclude: /(node_modules|bower_components)/,
+       //loaders: ['react-hot', 'babel-loader?presets[]=react,presets[]=es2015'],
        loader: 'babel-loader',
        query: {
          presets: ['react', 'es2015', 'stage-0'],

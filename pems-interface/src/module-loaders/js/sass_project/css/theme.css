@@ -581,11 +581,13 @@ h1, h2 {
   background: #ffffff; }
 
 .body {
-  margin-left: 190px; }
+  margin-left: 190px;
+  margin-right: 20px; }
 
 .pageTitle {
   padding: 17px;
-  border-bottom: 1px solid #ddd; }
+  border-bottom: 1px solid #ddd;
+  width: 100%; }
 
 img.logo {
   height: 43px;
@@ -597,8 +599,12 @@ img.logo {
   width: 100%;
   margin: 20px;
   padding: 20px;
+<<<<<<< HEAD
   height: 140px;
   margin-right: 20px; }
+=======
+  min-height: 140px; }
+>>>>>>> 7c105664454533a4d1e68233919adc160d9798c7
 
 .card-content {
   font-size: 65px;
@@ -610,6 +616,10 @@ img.logo {
   font-weight: 600;
   color: #414b52; }
 
+.split1 {
+  display: inline-flex;
+  width: 100%; }
+
 .split2 {
   width: 50%;
   display: inline-flex; }
@@ -618,6 +628,7 @@ img.logo {
   width: 33.33%;
   display: inline-flex; }
 
+<<<<<<< HEAD
 .supportsplit1 {
   width: 60%;
   display: inline-flex; }
@@ -628,6 +639,58 @@ img.logo {
 
 .card-icon {
   text-align: -webkit-center; }
+=======
+.switch {
+  display: inline-block;
+  height: 34px;
+  position: relative;
+  width: 60px; }
+
+.switch input {
+  display: none; }
+
+.slider {
+  background-color: #ccc;
+  bottom: 0;
+  cursor: pointer;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: .4s; }
+
+.slider:before {
+  background-color: #fff;
+  bottom: 4px;
+  content: "";
+  height: 26px;
+  left: 4px;
+  position: absolute;
+  transition: .4s;
+  width: 26px; }
+
+input:checked + .slider {
+  background-color: #4e5d67; }
+
+input:checked + .slider:before {
+  transform: translateX(26px); }
+
+.slider.round {
+  border-radius: 34px; }
+
+.slider.round:before {
+  border-radius: 50%; }
+
+.toggle-container {
+  margin: 0 auto;
+  font-size: 38px; }
+
+.toggle-label {
+  font-size: 27px; }
+
+.chart {
+  padding-top: 10px; }
+>>>>>>> 7c105664454533a4d1e68233919adc160d9798c7
 
 .Menu {
   width: 190px;
@@ -678,3 +741,22 @@ h2.menuItemTitle {
   font-weight: 200;
   text-transform: uppercase;
   font-size: 14px; }
+
+button.btn-primary {
+  background: #4e5d67;
+  width: 250px;
+  padding: 6px;
+  color: white;
+  font-size: 22px;
+  border-radius: 8px;
+  border-style: none;
+  transition: background-color 0.3s ease; }
+
+button.btn-primary:hover {
+  background: #414b52;
+  width: 250px;
+  padding: 6px;
+  color: white;
+  font-size: 22px;
+  border-radius: 8px;
+  border-style: none; }
