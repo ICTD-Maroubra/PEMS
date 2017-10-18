@@ -138,6 +138,9 @@ workflows:
           requires:
               - checkout_code
       - deploy_develop:
+          requires:
+              - build_backend
+              - build_frontend
           filters:
             branches:
               only:
