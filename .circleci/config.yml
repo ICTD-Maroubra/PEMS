@@ -121,8 +121,8 @@ jobs:
             - "05:13:6d:97:79:f9:3a:b2:a9:ab:62:15:e2:66:7f:de"
 
       - deploy:
-        name: Deploy Development to Heroku
-        command: |
+          name: Deploy Development to Heroku
+          command: |
             git push --force git@heroku.com:pems-server.git HEAD:refs/heads/master
             #heroku restart
 
