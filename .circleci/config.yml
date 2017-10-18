@@ -124,7 +124,7 @@ jobs:
       - deploy:
           name: Deploy Development to Heroku
           command: |
-            git push --force git@heroku.com:pems-server.git HEAD:refs/heads/master
+            git push --force git@heroku.com:pems-server.git `git subtree split --prefix pems-server master`:refs/heads/master
             #heroku restart
 
 workflows:
