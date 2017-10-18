@@ -1,30 +1,33 @@
-package org.maroubra.pemsserver.api.models.sensors;
+package org.maroubra.pemsserver.monitoring.utsapi;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import retrofit2.Call;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.FutureTask;
 
 public class WebSensor {
     private LocalDateTime fromDate;
     private LocalDateTime toDate;
-    private int pollIntervalMinutes;
+    private int pollIntervalMinutes = 60;
     private String family;
     private String subSensor;
     private String sensor;
     private String apiLink = "http://eif-research.feit.uts.edu.au/api/";
-    private String dataFormat = "json/";
     private static Logger log = LoggerFactory.getLogger(WebSensor.class);
 
+    private Retrofit retrofit = new Retrofit.Builder()
+            .baseUrl(apiLink)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
 
-    /*example implementation - stick it to the main
-        WebSensor webSensor = new WebSensor("wasp","ES_B_11_429_3E90","BAT",60);
-        log.info(webSensor.monitorSensor());
-     */
+    private WebApiRequest service = retrofit.create(WebApiRequest.class);
 
     public WebSensor(String family, String sensor, String subSensor) {
         this.family = family;
@@ -47,41 +50,31 @@ public class WebSensor {
     }
 
 
-    public String buildHTTPQuery() {
-        String partialQuery = "";
-        Map<String,String> parameters = new LinkedHashMap<>();
-        parameters.put("rFromDate",fromDate.toString());
-        parameters.put("rToDate",toDate.toString());
-        parameters.put("rFamily",family);
-        parameters.put("rSensor",sensor);
+    private Map<String, String> getQueryParameters() {
+        Map<String, String> parameters = new LinkedHashMap<>();
         parameters.put("rSubSensor", subSensor);
-
-        try {
-            partialQuery = QueryBuilder.QueryBuilder(parameters);
-        }
-        catch (UnsupportedEncodingException e){
-            e.printStackTrace();
-        }
-        String query = apiLink + "" + dataFormat + "" + partialQuery;
-        return query;
+        parameters.put("rSensor", sensor);
+        parameters.put("rFamily", family);
+        parameters.put("rToDate", toDate.toString());
+        parameters.put("rFromDate", fromDate.toString());
+        return parameters;
     }
 
-    public String pollSensor() {
+    public List<String[]> pollSensor() {
         setDatesPollInterval();
-        String data;
-        WebSensorTask webSensorTask = new WebSensorTask(buildHTTPQuery());
+        List<String[]> data = null;
+        Call<List<String[]>> call = service.getJsonData(getQueryParameters());
         try {
-            data = webSensorTask.getData();
-        }
-        catch (Exception e) {
-            log.info(e.getMessage());
-            data = "Error";
+            data = call.execute().body();
+        } catch (IOException e) {
+            e.getMessage();
+            log.warn("This sensor may not be returning data please check the sensor api webpage.");
         }
         return data;
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "Sensor Family: " + family + " Sensor: " + sensor + " Sub Sensor: " + subSensor;
     }
 }

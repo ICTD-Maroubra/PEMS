@@ -1,4 +1,4 @@
-package org.maroubra.pemsserver.api.models.sensors;
+package org.maroubra.pemsserver.monitoring.utsapi;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,7 +7,7 @@ import java.util.*;
 
 public class WebSensorService implements Runnable{
 
-    private Map<WebSensor,ArrayList<String>> webSensors = null;
+    private Map<WebSensor,List<Object>> webSensors = null;
     private int globalPollIntervalSeconds = 0;
     private boolean terminated = false;
 
@@ -49,8 +49,8 @@ public class WebSensorService implements Runnable{
     public void setGlobalPollInterval(int globalPollIntervalSeconds) {this.globalPollIntervalSeconds = globalPollIntervalSeconds;}
 
     public void pollAllSensors() {
-        for (Map.Entry<WebSensor,ArrayList<String>> entry : webSensors.entrySet()) {
-            ArrayList<String> sensorData = entry.getValue();
+        for (Map.Entry<WebSensor,List<Object>> entry : webSensors.entrySet()) {
+            List<Object> sensorData = entry.getValue();
             sensorData.add(entry.getKey().pollSensor());
             entry.setValue(sensorData);
         }
@@ -63,9 +63,9 @@ public class WebSensorService implements Runnable{
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        for(Map.Entry<WebSensor,ArrayList<String>> entry : webSensors.entrySet()) {
+        for(Map.Entry<WebSensor,List<Object>> entry : webSensors.entrySet()) {
             stringBuilder.append(System.lineSeparator() + "Sensor Details: " + entry.getKey().toString() +
-                    System.lineSeparator() + "Sensor Data:" + entry.getValue().toString());
+                    System.lineSeparator() + "Sensor Data Count:" + entry.getValue().size());
         }
         return stringBuilder.toString();
     }
