@@ -21,7 +21,8 @@ public class WebSensorTest {
         dataList.add(webSensor1.pollSensor());
 
         for (List<String[]> data : dataList) {
-            assertThat(data.get(0)).hasLength(2);
+            if (data != null)
+                assertThat(data.get(0)).hasLength(2);
         }
    }
 
