@@ -14,3 +14,5 @@ cat >> ~/.ssh/config << EOF
 VerifyHostKeyDNS yes
 StrictHostKeyChecking no
 EOF
+
+ssh-keyscan heroku.com >> ~/.ssh/known_hosts
