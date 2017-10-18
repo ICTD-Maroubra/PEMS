@@ -115,10 +115,11 @@ jobs:
     steps:
       - *attach_workspace
       - *load_code
-      - run: bash .circleci/setup-heroku.sh
       - add_ssh_keys:
           fingerprints:
             - "05:13:6d:97:79:f9:3a:b2:a9:ab:62:15:e2:66:7f:de"
+
+      - run: bash .circleci/setup-heroku.sh
 
       - deploy:
           name: Deploy Development to Heroku
