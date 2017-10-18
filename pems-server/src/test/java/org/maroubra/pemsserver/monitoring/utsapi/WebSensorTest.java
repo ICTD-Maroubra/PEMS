@@ -1,12 +1,16 @@
 package org.maroubra.pemsserver.monitoring.utsapi;
 
 
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 
 public class WebSensorTest {
+
+    @Test
     public void getSensorData() {
         WebSensor webSensor1 = new  WebSensor("wasp","ES_B_11_429_3E90","BAT");
         WebSensor webSensor2 = new WebSensor("wasp", "ES_B_05_174_7BE3", "BAT");
