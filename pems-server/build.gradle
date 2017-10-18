@@ -72,3 +72,7 @@ tasks.withType(JavaCompile) {
 tasks.withType(JavaExec) {
     systemProperty 'java.library.path', projectDir.toString() + '/lib/tinyb'
 }
+
+shadowJar {
+    mergeServiceFiles()
+}
