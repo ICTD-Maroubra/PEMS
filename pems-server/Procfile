@@ -1,1 +1,1 @@
-web: java $JAVA_OPTS -jar build/libs/pems-all.jar
+web: PEMS_SERVER_PORT=$PORT java $JAVA_OPTS -jar build/libs/pems-all.jar
