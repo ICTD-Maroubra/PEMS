@@ -1,29 +1,29 @@
 package org.maroubra.pemsserver.monitoring.nordic;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.primitives.Ints;
 import io.reactivex.processors.FlowableProcessor;
 import org.maroubra.pemsserver.monitoring.SensorLog;
 import tinyb.BluetoothNotification;
 
-public class TemperatureNotification implements BluetoothNotification<byte[]> {
-
+public class PressureNotification implements BluetoothNotification<byte[]> {
     private final Thingy52SensorConfig config;
     private final FlowableProcessor<SensorLog> processor;
 
-    TemperatureNotification(Thingy52SensorConfig config, FlowableProcessor<SensorLog> processor) {
+    PressureNotification(Thingy52SensorConfig config, FlowableProcessor<SensorLog> processor) {
         this.config = config;
         this.processor = processor;
     }
 
     @Override
     public void run(byte[] bytes) {
-        float ambientTemp = decodeTemperature(bytes[0], bytes[1]);
+        float pressure = decodePressure(bytes);
 
-        SensorLog sensorLog = new SensorLog(config.id(), ImmutableMap.of("temp", ambientTemp));
+        SensorLog sensorLog = new SensorLog(config.id(), ImmutableMap.of("pressure", pressure));
         processor.onNext(sensorLog);
     }
 
-    private float decodeTemperature(byte msb, byte lsb) {
-        return ((msb << 8) | (lsb & 0xff)) / 256f;
+    private float decodePressure(byte[] bytes) {
+        return Ints.fromBytes(bytes[3], bytes[2], bytes[1], bytes[0]) + ((bytes[4] & 0xff) / 256f);
     }
 }

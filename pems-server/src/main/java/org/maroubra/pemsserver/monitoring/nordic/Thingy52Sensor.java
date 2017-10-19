@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import tinyb.BluetoothDevice;
 import tinyb.BluetoothGattCharacteristic;
 import tinyb.BluetoothGattService;
+import tinyb.BluetoothNotification;
 
 import java.util.UUID;
 
@@ -30,8 +31,14 @@ public class Thingy52Sensor extends AbstractSensor {
         if (!thingyDevice.connect())
             return false;
 
+        BluetoothGattService weatherService = getService(Thingy52UUID.UUID_WEATHER_SERVICE);
+
         boolean allCharacteristicsStarted =
-                startTemperatureCharacteristic();
+                startCharacteristic(weatherService, Thingy52UUID.UUID_TEMP_SENSOR_DATA.toString(), new TemperatureNotification(config, sensorLogPublisher)) &&
+                startCharacteristic(weatherService, Thingy52UUID.UUID_COLOR_SENSOR_DATA.toString(), new ColorNotification(config, sensorLogPublisher)) &&
+                startCharacteristic(weatherService, Thingy52UUID.UUID_GAS_SENSOR_DATA.toString(), new AirQualityNotification(config, sensorLogPublisher)) &&
+                startCharacteristic(weatherService, Thingy52UUID.UUID_PRES_SENSOR_DATA.toString(), new PressureNotification(config, sensorLogPublisher)) &&
+                startCharacteristic(weatherService, Thingy52UUID.UUID_HUM_SENSOR_DATA.toString(), new HumidityNotification(config, sensorLogPublisher));
 
         if (!allCharacteristicsStarted) {
             thingyDevice.disconnect();
@@ -51,18 +58,13 @@ public class Thingy52Sensor extends AbstractSensor {
         return sensorLogPublisher.onBackpressureLatest();
     }
 
-    private boolean startTemperatureCharacteristic() {
-        BluetoothGattService service = getService(Thingy52UUID.UUID_TEMP_SENSOR_ENABLE);
+    private boolean startCharacteristic(BluetoothGattService gattService, String characteristicUuid, BluetoothNotification<byte[]> notification) {
+        BluetoothGattCharacteristic value = gattService.find(characteristicUuid);
 
-        BluetoothGattCharacteristic tempValue = service.find(Thingy52UUID.UUID_TEMP_SENSOR_DATA.toString());
-
-        if (tempValue == null) {
-            log.error("Could not find the correct characteristics.");
+        if (value == null) {
+            log.error("Could not find the characteristic for UUID {}.", characteristicUuid);
             return false;
         }
-
-        tempValue.enableValueNotifications(new TemperatureNotification(config, sensorLogPublisher));
-
 
         return true;
     }
