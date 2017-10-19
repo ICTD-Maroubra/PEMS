@@ -7,6 +7,9 @@ import org.maroubra.pemsserver.monitoring.SensorLog;
 import tinyb.BluetoothNotification;
 
 public class PressureNotification implements BluetoothNotification<byte[]> {
+
+    public static final String PRESSURE_VALUE_ID = "pressure";
+
     private final Thingy52SensorConfig config;
     private final FlowableProcessor<SensorLog> processor;
 
@@ -19,7 +22,7 @@ public class PressureNotification implements BluetoothNotification<byte[]> {
     public void run(byte[] bytes) {
         float pressure = decodePressure(bytes);
 
-        SensorLog sensorLog = new SensorLog(config.id(), ImmutableMap.of("pressure", pressure));
+        SensorLog sensorLog = new SensorLog(config.id(), ImmutableMap.of(PRESSURE_VALUE_ID, pressure));
         processor.onNext(sensorLog);
     }
 

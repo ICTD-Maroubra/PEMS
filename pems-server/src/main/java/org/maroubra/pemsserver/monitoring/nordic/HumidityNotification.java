@@ -6,6 +6,9 @@ import org.maroubra.pemsserver.monitoring.SensorLog;
 import tinyb.BluetoothNotification;
 
 public class HumidityNotification implements BluetoothNotification<byte[]> {
+
+    public static final String HUMIDITY_VALUE_ID = "relative_humidity";
+
     private final Thingy52SensorConfig config;
     private final FlowableProcessor<SensorLog> processor;
 

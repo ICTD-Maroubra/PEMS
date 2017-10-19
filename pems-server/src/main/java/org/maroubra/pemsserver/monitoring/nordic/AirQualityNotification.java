@@ -7,6 +7,9 @@ import tinyb.BluetoothNotification;
 
 public class AirQualityNotification implements BluetoothNotification<byte[]> {
 
+    public static final String CO2_VALUE_ID = "eCO2";
+    public static final String TVOC_VALUE_ID = "TVOC";
+
     private final Thingy52SensorConfig config;
     private final FlowableProcessor<SensorLog> processor;
 
@@ -20,7 +23,7 @@ public class AirQualityNotification implements BluetoothNotification<byte[]> {
         int eCO2 = decodePPM(bytes[1], bytes[0]);
         int tvoc = decodeTVOC(bytes[3], bytes[2]);
 
-        SensorLog sensorLog = new SensorLog(config.id(), ImmutableMap.of("eCO2", eCO2, "TVOC", tvoc));
+        SensorLog sensorLog = new SensorLog(config.id(), ImmutableMap.of(CO2_VALUE_ID, eCO2, TVOC_VALUE_ID, tvoc));
         processor.onNext(sensorLog);
     }
 

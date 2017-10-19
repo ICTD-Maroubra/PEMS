@@ -58,13 +58,15 @@ public class Thingy52Sensor extends AbstractSensor {
         return sensorLogPublisher.onBackpressureLatest();
     }
 
-    private boolean startCharacteristic(BluetoothGattService gattService, String characteristicUuid, BluetoothNotification<byte[]> notification) {
+    private boolean startCharacteristic(BluetoothGattService gattService, String characteristicUuid, BluetoothNotification<byte[]> notificationCallback) {
         BluetoothGattCharacteristic value = gattService.find(characteristicUuid);
 
         if (value == null) {
             log.error("Could not find the characteristic for UUID {}.", characteristicUuid);
             return false;
         }
+
+        value.enableValueNotifications(notificationCallback);
 
         return true;
     }
