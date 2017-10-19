@@ -64,7 +64,7 @@ jobs:
 
       - save_cache:
           paths:
-            - ~/.m2
+            - ~/.gradle
           key: v1-dependencies-{{ checksum "pems-server/build.gradle" }}
       
       - run: cd pems-server && ./gradlew build
@@ -125,7 +125,6 @@ jobs:
           name: Deploy Development to Heroku
           command: |
             git push --force git@heroku.com:pems-server.git `git subtree split --prefix pems-server master`:refs/heads/master
-            #heroku restart
 
 workflows:
   version: 2
