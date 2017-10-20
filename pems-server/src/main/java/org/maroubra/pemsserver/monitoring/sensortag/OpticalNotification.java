@@ -7,6 +7,8 @@ import tinyb.BluetoothNotification;
 
 public class OpticalNotification implements BluetoothNotification<byte[]> {
 
+    public static final String LIGHT_INTENSITY_VALUE_ID = "light_intensity";
+
     private final SensortagSensorConfig config;
     private final FlowableProcessor<SensorLog> processor;
 
@@ -19,7 +21,7 @@ public class OpticalNotification implements BluetoothNotification<byte[]> {
     public void run(byte[] bytes) {
         float lux = decodeLux(bytes[1], bytes[0]);
 
-        SensorLog sensorLog = new SensorLog(config.id(), ImmutableMap.of("lux", lux));
+        SensorLog sensorLog = new SensorLog(config.id(), ImmutableMap.of(LIGHT_INTENSITY_VALUE_ID, lux));
         processor.onNext(sensorLog);
     }
 

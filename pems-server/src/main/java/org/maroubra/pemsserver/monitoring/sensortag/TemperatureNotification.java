@@ -7,6 +7,9 @@ import tinyb.BluetoothNotification;
 
 public class TemperatureNotification implements BluetoothNotification<byte[]> {
 
+    public static final String OBJECT_TEMP_VALUE_ID = "object_temperature";
+    public static final String AMBIENT_TEMP_VALUE_ID = "ambient_temperature";
+
     private final SensortagSensorConfig config;
     private final FlowableProcessor<SensorLog> processor;
 
@@ -20,7 +23,7 @@ public class TemperatureNotification implements BluetoothNotification<byte[]> {
         float objectTemp = decodeTemperature(bytes[1], bytes[0]);
         float ambientTemp = decodeTemperature(bytes[3], bytes[2]);
 
-        SensorLog sensorLog = new SensorLog(config.id(), ImmutableMap.of("object_temp", objectTemp, "ambient_temp", ambientTemp));
+        SensorLog sensorLog = new SensorLog(config.id(), ImmutableMap.of(OBJECT_TEMP_VALUE_ID, objectTemp, AMBIENT_TEMP_VALUE_ID, ambientTemp));
         processor.onNext(sensorLog);
     }
 

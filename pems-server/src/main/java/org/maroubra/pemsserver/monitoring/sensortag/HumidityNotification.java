@@ -7,6 +7,9 @@ import tinyb.BluetoothNotification;
 
 public class HumidityNotification implements BluetoothNotification<byte[]> {
 
+    public static final String HUMIDITY_VALUE_ID = "humidity";
+    public static final String TEMPERATURE_VALUE_ID = "temperature";
+
     private final SensortagSensorConfig config;
     private final FlowableProcessor<SensorLog> processor;
 
@@ -20,7 +23,7 @@ public class HumidityNotification implements BluetoothNotification<byte[]> {
         float temperature = decodeTemperature(bytes[1], bytes[0]);
         float humidity = decodeHumidity(bytes[3], bytes[2]);
 
-        SensorLog sensorLog = new SensorLog(config.id(), ImmutableMap.of("humidity", humidity, "temperature", temperature));
+        SensorLog sensorLog = new SensorLog(config.id(), ImmutableMap.of(HUMIDITY_VALUE_ID, humidity, TEMPERATURE_VALUE_ID, temperature));
         processor.onNext(sensorLog);
     }
 

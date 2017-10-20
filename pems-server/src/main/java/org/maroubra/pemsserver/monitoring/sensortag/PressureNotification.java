@@ -8,6 +8,8 @@ import tinyb.BluetoothNotification;
 
 public class PressureNotification implements BluetoothNotification<byte[]> {
 
+    public static final String PRESSURE_VALUE_ID = "pressure";
+
     private final SensortagSensorConfig config;
     private final FlowableProcessor<SensorLog> processor;
 
