@@ -5,12 +5,20 @@ import io.reactivex.processors.FlowableProcessor;
 import org.maroubra.pemsserver.monitoring.SensorLog;
 import tinyb.BluetoothNotification;
 
+/**
+ * A notification from the Sensortag temperature characteristic
+ * @see <a href="http://processors.wiki.ti.com/index.php/CC2650_SensorTag_User%27s_Guide#Barometric_Pressure_Sensor">Barometer sensor spec</a>
+ */
 public class TemperatureNotification implements BluetoothNotification<byte[]> {
 
+    // Id's stored in created sensor log's attribute value maps
     public static final String OBJECT_TEMP_VALUE_ID = "object_temperature";
     public static final String AMBIENT_TEMP_VALUE_ID = "ambient_temperature";
 
+    // Configuration for the sensortag that is subscribed to this notification
     private final SensortagSensorConfig config;
+
+    // Sensorlog processor to publish events too
     private final FlowableProcessor<SensorLog> processor;
 
     public TemperatureNotification(SensortagSensorConfig config, FlowableProcessor<SensorLog> processor) {
@@ -27,6 +35,12 @@ public class TemperatureNotification implements BluetoothNotification<byte[]> {
         processor.onNext(sensorLog);
     }
 
+    /**
+     * Decode the temperature from bytes sent by the Sensortag
+     * @param msb most significant byte
+     * @param lsb least significant byte
+     * @return decoded temperature in celsius (as floating point)
+     */
     private float decodeTemperature(byte msb, byte lsb) {
         return ((msb << 8) | (lsb & 0xff)) / 128f;
     }

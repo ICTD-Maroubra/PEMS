@@ -5,11 +5,19 @@ import io.reactivex.processors.FlowableProcessor;
 import org.maroubra.pemsserver.monitoring.SensorLog;
 import tinyb.BluetoothNotification;
 
+/**
+ * A notification from the Sensortag humidity characteristic
+ * @see <a href="http://processors.wiki.ti.com/index.php/CC2650_SensorTag_User%27s_Guide#Optical_Sensor">Optical sensor spec</a>
+ */
 public class OpticalNotification implements BluetoothNotification<byte[]> {
 
+    // Id's stored in created sensor log's attribute value maps
     public static final String LIGHT_INTENSITY_VALUE_ID = "light_intensity";
 
+    // Configuration for the sensortag that is subscribed to this notification
     private final SensortagSensorConfig config;
+
+    // Sensorlog processor to publish events too
     private final FlowableProcessor<SensorLog> processor;
 
     public OpticalNotification(SensortagSensorConfig config, FlowableProcessor<SensorLog> processor) {
@@ -25,6 +33,12 @@ public class OpticalNotification implements BluetoothNotification<byte[]> {
         processor.onNext(sensorLog);
     }
 
+    /**
+     * Decode the light intensity from bytes sent by the Sensortag
+     * @param msb most significant byte
+     * @param lsb least significant byte
+     * @return decoded light intensity in lux (as floating point)
+     */
     private float decodeLux(byte msb, byte lsb) {
         float exponent = (msb & 0xf0) >> 4;
         float mantissa = (msb & 0x0f) << 8 | (lsb & 0xff);

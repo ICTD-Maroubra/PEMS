@@ -5,15 +5,22 @@ import io.reactivex.processors.FlowableProcessor;
 import org.maroubra.pemsserver.monitoring.SensorLog;
 import tinyb.BluetoothNotification;
 
+/**
+ * A notification from the Thingy52 color (light) characteristic
+ * @see <a href="https://nordicsemiconductor.github.io/Nordic-Thingy52-FW/documentation/firmware_architecture.html#arch_env">Environment service spec</a>
+ */
 public class ColorNotification implements BluetoothNotification<byte[]> {
 
+    // Id's stored in created sensor log's attribute value maps
     public static final String COLOUR_RED_VALUE_ID = "colour_red";
     public static final String COLOUR_GREEN_VALUE_ID = "colour_green";
     public static final String COLOUR_BLUE_VALUE_ID = "colour_blue";
     public static final String COLOUR_CLEAR_VALUE_ID = "colour_clear";
 
-
+    // Configuration for the sensortag that is subscribed to this notification
     private final Thingy52SensorConfig config;
+
+    // Sensorlog processor to publish events too
     private final FlowableProcessor<SensorLog> processor;
 
     ColorNotification(Thingy52SensorConfig config, FlowableProcessor<SensorLog> processor) {
@@ -32,6 +39,12 @@ public class ColorNotification implements BluetoothNotification<byte[]> {
         processor.onNext(sensorLog);
     }
 
+    /**
+     * Decode a color from bytes sent by the Thingy52
+     * @param msb most significant byte
+     * @param lsb least significant byte
+     * @return decoded color
+     */
     private int decodeColor(byte msb, byte lsb) {
         return ((msb << 8) | (lsb & 0xff));
     }

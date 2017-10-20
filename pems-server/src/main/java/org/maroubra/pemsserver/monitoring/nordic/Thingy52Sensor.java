@@ -14,6 +14,15 @@ import tinyb.BluetoothNotification;
 
 import java.util.UUID;
 
+/**
+ * Nordic Thingy52 Sensor. Enables subscription to a subset of bluetooth
+ * characteristics available to the sensor:
+ *  - Temperature
+ *  - Humidity
+ *  - Pressure
+ *  - Color
+ *  - Air Quality
+ */
 public class Thingy52Sensor extends AbstractSensor {
 
     private static final Logger log = LoggerFactory.getLogger(Thingy52Sensor.class);
@@ -58,6 +67,13 @@ public class Thingy52Sensor extends AbstractSensor {
         return sensorLogPublisher.onBackpressureLatest();
     }
 
+    /**
+     * Start and subscribe to a bluetooth GATT characteristic on a Thingy52 service
+     * @param gattService Bluetooth GATT service containing characteristic
+     * @param characteristicUuid UUID of characteristic to subscribe too
+     * @param notificationCallback Notification callback to run on event
+     * @return successfully subscribed to bluetooth characteristic
+     */
     private boolean startCharacteristic(BluetoothGattService gattService, String characteristicUuid, BluetoothNotification<byte[]> notificationCallback) {
         BluetoothGattCharacteristic value = gattService.find(characteristicUuid);
 
@@ -71,6 +87,10 @@ public class Thingy52Sensor extends AbstractSensor {
         return true;
     }
 
+    /**
+     * Gets a Thingy52 bluetooth GATT service
+     * @return Bluetooth service
+     */
     private BluetoothGattService getService(UUID uuid) {
         return thingyDevice.find(uuid.toString());
     }

@@ -5,12 +5,20 @@ import io.reactivex.processors.FlowableProcessor;
 import org.maroubra.pemsserver.monitoring.SensorLog;
 import tinyb.BluetoothNotification;
 
+/**
+ * A notification from the Thingy52 air quality characteristic
+ * @see <a href="https://nordicsemiconductor.github.io/Nordic-Thingy52-FW/documentation/firmware_architecture.html#arch_env">Environment service spec</a>
+ */
 public class AirQualityNotification implements BluetoothNotification<byte[]> {
 
+    // Id's stored in created sensor log's attribute value maps
     public static final String CO2_VALUE_ID = "eCO2";
     public static final String TVOC_VALUE_ID = "TVOC";
 
+    // Configuration for the Thingy52 that is subscribed to this notification
     private final Thingy52SensorConfig config;
+
+    // Sensorlog processor to publish events too
     private final FlowableProcessor<SensorLog> processor;
 
     AirQualityNotification(Thingy52SensorConfig config, FlowableProcessor<SensorLog> processor) {
@@ -20,17 +28,29 @@ public class AirQualityNotification implements BluetoothNotification<byte[]> {
 
     @Override
     public void run(byte[] bytes) {
-        int eCO2 = decodePPM(bytes[1], bytes[0]);
+        int eCO2 = decodeECO2(bytes[1], bytes[0]);
         int tvoc = decodeTVOC(bytes[3], bytes[2]);
 
         SensorLog sensorLog = new SensorLog(config.id(), ImmutableMap.of(CO2_VALUE_ID, eCO2, TVOC_VALUE_ID, tvoc));
         processor.onNext(sensorLog);
     }
 
-    private int decodePPM(byte msb, byte lsb) {
+    /**
+     * Decode the carbon saturation from bytes sent by the Thingy52
+     * @param msb most significant byte
+     * @param lsb least significant byte
+     * @return decoded eCO2 in ppm
+     */
+    private int decodeECO2(byte msb, byte lsb) {
         return (msb << 8) | (lsb & 0xff);
     }
 
+    /**
+     * Decode the TVOC from bytes sent by the Thingy52
+     * @param msb most significant byte
+     * @param lsb least significant byte
+     * @return decoded TVOC in ppb
+     */
     private int decodeTVOC(byte msb, byte lsb) {
         return (msb << 8) | (lsb & 0xff);
     }
