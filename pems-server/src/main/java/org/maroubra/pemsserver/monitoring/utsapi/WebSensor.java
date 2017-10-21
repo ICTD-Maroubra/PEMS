@@ -1,6 +1,7 @@
 package org.maroubra.pemsserver.monitoring.utsapi;
 
 import io.reactivex.Flowable;
+import io.reactivex.processors.PublishProcessor;
 import org.maroubra.pemsserver.monitoring.AbstractSensor;
 import org.maroubra.pemsserver.monitoring.SensorLog;
 import org.slf4j.Logger;
@@ -18,21 +19,17 @@ import java.util.Map;
 public class WebSensor extends AbstractSensor{
 
     private static final Logger log = LoggerFactory.getLogger(WebSensor.class);
+    private final PublishProcessor<SensorLog> sensorLogPublisher = PublishProcessor.create();
 
     private LocalDateTime fromDate;
     private LocalDateTime toDate;
     private int pollIntervalMinutes = 60;
-    private String family;
-    private String subSensor;
-    private String sensor;
-    private UtsWebApi service;
-    private Retrofit retrofit;
+    private WebSensorConfig config;
+    private UtsWebApi webApi;
 
-
-    public WebSensor(String family, String sensor, String subSensor) {
-        this.family = family;
-        this.subSensor = subSensor;
-        this.sensor = sensor;
+    public WebSensor(WebSensorConfig config, UtsWebApi webApi) {
+        this.config = config;
+        this.webApi = webApi;
     }
 
     public void setPollIntervalMinutes(int pollIntervalMinutes) {
@@ -52,9 +49,9 @@ public class WebSensor extends AbstractSensor{
 
     private Map<String, String> getQueryParameters() {
         Map<String, String> parameters = new LinkedHashMap<>();
-        parameters.put("rSubSensor", subSensor);
-        parameters.put("rSensor", sensor);
-        parameters.put("rFamily", family);
+        parameters.put("rSubSensor", config.getConfig().get("rSubSensor"));
+        parameters.put("rSensor", config.getConfig().get("rSensor"));
+        parameters.put("rFamily", config.getConfig().get("rFamily"));
         parameters.put("rToDate", toDate.toString());
         parameters.put("rFromDate", fromDate.toString());
         return parameters;
@@ -63,7 +60,7 @@ public class WebSensor extends AbstractSensor{
     public List<String[]> pollSensor() {
         setDatesPollInterval();
         List<String[]> data = null;
-        Call<List<String[]>> call = service.getHcJsonData(getQueryParameters());
+        Call<List<String[]>> call = webApi.getHcJsonData(getQueryParameters());
         try {
             data = call.execute().body();
             log.info(data.get(0)[0] + " Data: " + data.get(0)[1]);
@@ -76,7 +73,7 @@ public class WebSensor extends AbstractSensor{
 
     @Override
     public String toString() {
-        return "Sensor Family: " + family + " Sensor: " + sensor + " Sub Sensor: " + subSensor;
+        return "Sensor Family: " + config.getConfig().get("rFamily") + " Sensor: " + config.getConfig().get("rSensor") + " Sub Sensor: " + config.getConfig().get("rSubSensor");
     }
 
     @Override
