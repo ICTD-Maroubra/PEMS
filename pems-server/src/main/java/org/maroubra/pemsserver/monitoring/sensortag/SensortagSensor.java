@@ -12,6 +12,14 @@ import tinyb.BluetoothGattService;
 
 import java.util.UUID;
 
+/**
+ * Texas Instruments Sensortag CC2650 Sensor. Enables subscription to a subset of bluetooth
+ * characteristics available to the sensor:
+ *  - Temperature
+ *  - Humidity
+ *  - Barometer
+ *  - Optical
+ */
 public class SensortagSensor extends AbstractSensor {
 
     private static final Logger log = LoggerFactory.getLogger(SensortagSensor.class);
@@ -54,6 +62,11 @@ public class SensortagSensor extends AbstractSensor {
         return sensorLogPublisher.onBackpressureLatest();
     }
 
+    /**
+     * Gets the temperature characteristic on the Sensortag, configures, enables, and subscribes
+     * to notifications from it.
+     * @return successfully subscribed to temperature characteristic
+     */
     private boolean startTemperatureCharacteristic() {
         BluetoothGattService service = getService(SensortagUUID.UUID_TEMP_SENSOR_ENABLE);
 
@@ -69,7 +82,7 @@ public class SensortagSensor extends AbstractSensor {
         // 1 second update period
         tempPeriod.writeValue(new byte[] { 0x64 });
 
-        // enable the temperature sensor
+        // Enable the temperature sensor
         tempConfig.writeValue(new byte[] { 0x01 });
 
         tempValue.enableValueNotifications(new TemperatureNotification(config, sensorLogPublisher));
@@ -77,6 +90,11 @@ public class SensortagSensor extends AbstractSensor {
         return true;
     }
 
+    /**
+     * Gets the humidity characteristic on the Sensortag, configures, enables, and subscribes
+     * to notifications from it.
+     * @return successfully subscribed to humidity characteristic
+     */
     private boolean startHumidityCharacteristic() {
         BluetoothGattService service = getService(SensortagUUID.UUID_HUM_SENSOR_ENABLE);
 
@@ -92,7 +110,7 @@ public class SensortagSensor extends AbstractSensor {
         // 1 second update period
         humidityPeriod.writeValue(new byte[] { 0x64 });
 
-        // enable the temperature sensor
+        // Enable the humidity sensor
         humidityConfig.writeValue(new byte[] { 0x01 });
 
         humidityValue.enableValueNotifications(new HumidityNotification(config, sensorLogPublisher));
@@ -100,6 +118,11 @@ public class SensortagSensor extends AbstractSensor {
         return true;
     }
 
+    /**
+     * Gets the barometer (pressure) characteristic on the Sensortag, configures, enables, and subscribes
+     * to notifications from it.
+     * @return successfully subscribed to temperature characteristic
+     */
     private boolean startBarometerCharacteristic() {
         BluetoothGattService service = getService(SensortagUUID.UUID_BARO_SENSOR_ENABLE);
 
@@ -115,7 +138,7 @@ public class SensortagSensor extends AbstractSensor {
         // 1 second update period
         barometerPeriod.writeValue(new byte[] { 0x64 });
 
-        // enable the temperature sensor
+        // Enable the barometer sensor
         barometerConfig.writeValue(new byte[] { 0x01 });
 
         barometerValue.enableValueNotifications(new PressureNotification(config, sensorLogPublisher));
@@ -123,6 +146,11 @@ public class SensortagSensor extends AbstractSensor {
         return true;
     }
 
+    /**
+     * Gets the optical (light) characteristic on the Sensortag, configures, enables, and subscribes
+     * to notifications from it.
+     * @return successfully subscribed to temperature characteristic
+     */
     private boolean startOpticalCharacteristic() {
         BluetoothGattService service = getService(SensortagUUID.UUID_LUXO_SENSOR_ENABLE);
 
@@ -138,7 +166,7 @@ public class SensortagSensor extends AbstractSensor {
         // 1 second update period
         opticalPeriod.writeValue(new byte[] { 0x64 });
 
-        // enable the temperature sensor
+        // Enable the optical sensor
         opticalConfig.writeValue(new byte[] { 0x01 });
 
         opticalValue.enableValueNotifications(new OpticalNotification(config, sensorLogPublisher));
@@ -146,6 +174,10 @@ public class SensortagSensor extends AbstractSensor {
         return true;
     }
 
+    /**
+     * Gets the base Sensortag bluetooth GATT service
+     * @return Bluetooth service
+     */
     private BluetoothGattService getService(UUID uuid) {
         return sensortagDevice.find(uuid.toString());
     }

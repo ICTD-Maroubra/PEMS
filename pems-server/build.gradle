@@ -56,6 +56,7 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile 'com.google.truth:truth:0.36'
     testCompile 'com.google.truth.extensions:truth-java8-extension:0.36'
+    testCompile 'com.github.javafaker:javafaker:0.13'
 }
 
 jacocoTestReport {

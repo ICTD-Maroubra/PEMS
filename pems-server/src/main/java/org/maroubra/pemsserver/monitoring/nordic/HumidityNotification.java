@@ -6,13 +6,13 @@ import org.maroubra.pemsserver.monitoring.SensorLog;
 import tinyb.BluetoothNotification;
 
 /**
- * A notification from the Thingy52 temperature characteristic
+ * A notification from the Thingy52 humidity characteristic
  * @see <a href="https://nordicsemiconductor.github.io/Nordic-Thingy52-FW/documentation/firmware_architecture.html#arch_env">Environment service spec</a>
  */
-public class TemperatureNotification implements BluetoothNotification<byte[]> {
+public class HumidityNotification implements BluetoothNotification<byte[]> {
 
     // Id's stored in created sensor log's attribute value maps
-    public static final String TEMP_VALUE_ID = "temperature";
+    public static final String HUMIDITY_VALUE_ID = "relative_humidity";
 
     // Configuration for the Thingy52 that is subscribed to this notification
     private final Thingy52SensorConfig config;
@@ -20,26 +20,25 @@ public class TemperatureNotification implements BluetoothNotification<byte[]> {
     // Sensorlog processor to publish events too
     private final FlowableProcessor<SensorLog> processor;
 
-    TemperatureNotification(Thingy52SensorConfig config, FlowableProcessor<SensorLog> processor) {
+    public HumidityNotification(Thingy52SensorConfig config, FlowableProcessor<SensorLog> processor) {
         this.config = config;
         this.processor = processor;
     }
 
     @Override
     public void run(byte[] bytes) {
-        float ambientTemp = decodeTemperature(bytes[0], bytes[1]);
+        int relativeHumidity = decodeHumidity(bytes[0]);
 
-        SensorLog sensorLog = new SensorLog(config.id(), ImmutableMap.of(TEMP_VALUE_ID, ambientTemp));
+        SensorLog sensorLog = new SensorLog(config.id(), ImmutableMap.of("relative_humidity", relativeHumidity));
         processor.onNext(sensorLog);
     }
 
     /**
-     * Decode temperature from bytes sent by the Thingy52
-     * @param msb most significant byte
-     * @param lsb least significant byte
-     * @return decoded temperature in celsius
+     * Decode relative humidity from bytes sent by the Thingy52
+     * @param data byte representing humidity
+     * @return decoded relative humidity %
      */
-    private float decodeTemperature(byte msb, byte lsb) {
-        return ((msb << 8) | (lsb & 0xff)) / 256f;
+    private int decodeHumidity(byte data) {
+        return data & 0xff;
     }
 }
