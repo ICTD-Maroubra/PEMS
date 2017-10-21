@@ -1,6 +1,8 @@
 package org.maroubra.pemsserver.monitoring.utsapi;
 
+import com.google.common.collect.ImmutableMap;
 import io.reactivex.Flowable;
+import io.reactivex.processors.FlowableProcessor;
 import io.reactivex.processors.PublishProcessor;
 import org.maroubra.pemsserver.monitoring.AbstractSensor;
 import org.maroubra.pemsserver.monitoring.SensorLog;
@@ -11,10 +13,11 @@ import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import java.io.*;
+import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.*;
 
 public class WebSensor extends AbstractSensor{
 
@@ -46,7 +49,6 @@ public class WebSensor extends AbstractSensor{
         this.toDate = toDate;
     }
 
-
     private Map<String, String> getQueryParameters() {
         Map<String, String> parameters = new LinkedHashMap<>();
         parameters.put("rSubSensor", config.getConfig().get("rSubSensor"));
@@ -63,11 +65,19 @@ public class WebSensor extends AbstractSensor{
         Call<List<String[]>> call = webApi.getHcJsonData(getQueryParameters());
         try {
             data = call.execute().body();
-            log.info(data.get(0)[0] + " Data: " + data.get(0)[1]);
+            for (String[] dataArray: data) {
+                SensorLog sensorLog = new SensorLog(
+                        config.id(),
+                        ImmutableMap.of(config.getConfig().get("rSubSensor"), dataArray[1]),
+                        ZonedDateTime.ofInstant(Instant.ofEpochSecond( Long.getLong(dataArray[0])), ZoneId.systemDefault() ));
+                //processor.onNext(sensorLog);
+
+            }
         } catch (IOException e) {
             e.getMessage();
             log.warn("This sensor may not be returning data please check the sensor api webpage.");
         }
+        
         return data;
     }
 
@@ -77,12 +87,7 @@ public class WebSensor extends AbstractSensor{
     }
 
     @Override
-    protected boolean start() {
-        if (pollSensor() != null){
-            return true;
-        }
-        return false;
-    }
+    protected boolean start() { return false; }
 
     @Override
     protected boolean stop() {
@@ -90,7 +95,5 @@ public class WebSensor extends AbstractSensor{
     }
 
     @Override
-    protected Flowable<SensorLog> logs() {
-        return null;
-    }
+    protected Flowable<SensorLog> logs() { return sensorLogPublisher.onBackpressureLatest();  }
 }
