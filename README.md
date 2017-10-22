@@ -1,6 +1,7 @@
 # Portable Energy Management (and Monitoring) System
 
 [![CircleCI](https://circleci.com/gh/ICTD-Maroubra/PEMS/tree/master.svg?style=svg)](https://circleci.com/gh/ICTD-Maroubra/PEMS/tree/master)
+[![codecov](https://codecov.io/gh/ICTD-Maroubra/PEMS/branch/master/graph/badge.svg)](https://codecov.io/gh/ICTD-Maroubra/PEMS)
 
 > *"The Portable Energy Management System is designed to maintain human life in rough terrain
 for an unlimited amounts of time."* - Dr. David Davis
