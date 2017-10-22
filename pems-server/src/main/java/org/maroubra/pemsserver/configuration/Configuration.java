@@ -12,6 +12,7 @@ public class Configuration {
     private static ServerConfiguration serverConfiguration;
     private static MongoDbConfiguration mongoDbConfiguration;
     private static BluetoothConfiguration bluetoothConfiguration;
+    private static ActuatorConfiguration actuatorConfiguration;
 
     public static ServerConfiguration getServerConfiguration() {
         if (serverConfiguration == null)
@@ -34,10 +35,18 @@ public class Configuration {
         return bluetoothConfiguration;
     }
 
+    public static ActuatorConfiguration getActuatorConfiguration() {
+        if (actuatorConfiguration == null)
+            loadConfigurations();
+
+        return actuatorConfiguration;
+    }
+
     private static void loadConfigurations() {
         serverConfiguration = new ServerConfiguration();
         mongoDbConfiguration = new MongoDbConfiguration();
         bluetoothConfiguration = new BluetoothConfiguration();
+        actuatorConfiguration = new ActuatorConfiguration();
 
         JadConfig jadConfig = new JadConfig(new EnvironmentRepository(ENVIRONMENT_PREFIX), serverConfiguration, mongoDbConfiguration, bluetoothConfiguration);
         try {
