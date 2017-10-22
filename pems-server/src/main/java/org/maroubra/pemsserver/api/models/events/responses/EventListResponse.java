@@ -1,5 +1,7 @@
 package org.maroubra.pemsserver.api.models.events.responses;
 
-public class EventListResponse {
+import org.maroubra.pemsserver.api.models.sensors.requests.UpdateSensorRequest;
 
+public class EventListResponse {
+        private UpdateSensorRequest
 }

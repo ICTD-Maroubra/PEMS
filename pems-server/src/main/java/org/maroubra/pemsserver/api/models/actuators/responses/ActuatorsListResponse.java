@@ -7,9 +7,7 @@ public class ActuatorsListResponse {
     public static int deactivate() {
             return 0;
     }
-    public static int ActiveAcutators() {
-            //
-    }
+    public static int ActiveAcutators() { }
     public static String Error() {
         return "";
     }
