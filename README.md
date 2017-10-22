@@ -138,7 +138,7 @@ This project would not be possible without the contributions made by following i
 * Jeremy Yiu ([@Jeremyyiu](https://github.com/Jeremyyiu))
 * Liekun Shen ([@alberty4573](https://github.com/alberty4573))
 * Mohammad Azimi ([@yasinazimi](https://github.com/yasinazimi))
-* Ossama Ghanem
+* Ossama Ghanem ([@OssamaGh](https://github.com/orgs/ICTD-Maroubra/people/OssamaGh))
 * Prasanth Ambikaipalan ([@PA1984](https://github.com/PA1984))
 * Raymond Deng ([@rayziqideng](https://github.com/rayziqideng))
 * Robert McDonald
