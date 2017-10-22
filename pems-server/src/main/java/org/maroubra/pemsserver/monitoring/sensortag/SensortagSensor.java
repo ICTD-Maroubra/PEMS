@@ -2,6 +2,7 @@ package org.maroubra.pemsserver.monitoring.sensortag;
 
 import io.reactivex.Flowable;
 import io.reactivex.processors.PublishProcessor;
+import io.reactivex.processors.ReplayProcessor;
 import org.maroubra.pemsserver.monitoring.AbstractSensor;
 import org.maroubra.pemsserver.monitoring.SensorLog;
 import org.slf4j.Logger;
@@ -20,6 +21,12 @@ public class SensortagSensor extends AbstractSensor {
     private final BluetoothDevice sensortagDevice;
     private final PublishProcessor<SensorLog> sensorLogPublisher = PublishProcessor.create();
 
+    private boolean thermometerSensorEnabled = false;
+    private boolean hygrometerSensorEnabled = false;
+    private boolean barometerSensorEnabled = false;
+    private boolean luxometerSensorEnabled = false;
+    private boolean accelerometerSensorEnabled = false;
+
     public SensortagSensor(SensortagSensorConfig config, BluetoothDevice sensortagDevice) {
         this.config = config;
         this.sensortagDevice = sensortagDevice;
@@ -27,21 +34,48 @@ public class SensortagSensor extends AbstractSensor {
 
     @Override
     protected boolean start() {
+        log.info("attempting to connect..");
         if (!sensortagDevice.connect())
             return false;
+        log.info("successfully connected!");
 
         boolean allCharacteristicsStarted =
                 startTemperatureCharacteristic() &&
                 startHumidityCharacteristic() &&
                 startBarometerCharacteristic() &&
-                startOpticalCharacteristic();
+                startOpticalCharacteristic() &&
+                startAccelerometerCharacteristic();
 
         if (!allCharacteristicsStarted) {
+            log.info("Error in enabling sensors");
             sensortagDevice.disconnect();
             return false;
         }
 
         return true;
+    }
+
+    public void stopSelectedSensor(String sensor) {
+        switch(sensor) {
+            case "Thermometer":
+                stopTemperatureCharacteristic();
+                break;
+            case "Barometer":
+                stopBarometerCharacteristic();
+                break;
+            case "Hygrometer":
+                stopHumidityCharacteristic();
+                break;
+            case "Luxometer":
+                stopOpticalCharacteristic();
+                break;
+            case "Accelerometer":
+                stopAccelerationCharacteristic();
+                break;
+            default:
+                log.info("Sensor does not exist!, please input a valid sensor.");
+
+        }
     }
 
     @Override
@@ -55,6 +89,7 @@ public class SensortagSensor extends AbstractSensor {
     }
 
     private boolean startTemperatureCharacteristic() {
+        log.info("checking...");
         BluetoothGattService service = getService(SensortagUUID.UUID_TEMP_SENSOR_ENABLE);
 
         BluetoothGattCharacteristic tempValue = service.find(SensortagUUID.UUID_TEMP_SENSOR_DATA.toString());
@@ -66,6 +101,7 @@ public class SensortagSensor extends AbstractSensor {
             return false;
         }
 
+        log.info("Temperature sensor characteristics found");
         // 1 second update period
         tempPeriod.writeValue(new byte[] { 0x64 });
 
@@ -73,6 +109,23 @@ public class SensortagSensor extends AbstractSensor {
         tempConfig.writeValue(new byte[] { 0x01 });
 
         tempValue.enableValueNotifications(new TemperatureNotification(config, sensorLogPublisher));
+        thermometerSensorEnabled = true;
+
+        return true;
+    }
+
+    private boolean stopTemperatureCharacteristic() {
+        BluetoothGattService service = getService(SensortagUUID.UUID_TEMP_SENSOR_ENABLE);
+
+        BluetoothGattCharacteristic tempConfig = service.find(SensortagUUID.UUID_TEMP_SENSOR_CONFIG.toString());
+
+        if (tempConfig == null) {
+            log.error("Could not find the correct characteristic.");
+            return false;
+        }
+        // disable the temperature sensor
+        tempConfig.writeValue(new byte[] { 0x00 });
+        thermometerSensorEnabled = false;
 
         return true;
     }
@@ -92,11 +145,27 @@ public class SensortagSensor extends AbstractSensor {
         // 1 second update period
         humidityPeriod.writeValue(new byte[] { 0x64 });
 
-        // enable the temperature sensor
+        // enable the humidity sensor
         humidityConfig.writeValue(new byte[] { 0x01 });
 
         humidityValue.enableValueNotifications(new HumidityNotification(config, sensorLogPublisher));
+        hygrometerSensorEnabled = true;
 
+        return true;
+    }
+
+    private boolean stopHumidityCharacteristic() {
+        BluetoothGattService service = getService(SensortagUUID.UUID_HUM_SENSOR_ENABLE);
+
+        BluetoothGattCharacteristic humidityConfig = service.find(SensortagUUID.UUID_HUM_SENSOR_CONFIG.toString());
+
+        if (humidityConfig == null) {
+            log.error("Could not find the correct characteristic.");
+            return false;
+        }
+        // disable the humidity sensor
+        humidityConfig.writeValue(new byte[] { 0x00 });
+        hygrometerSensorEnabled = false;
         return true;
     }
 
@@ -115,11 +184,27 @@ public class SensortagSensor extends AbstractSensor {
         // 1 second update period
         barometerPeriod.writeValue(new byte[] { 0x64 });
 
-        // enable the temperature sensor
+        // enable the barometer sensor
         barometerConfig.writeValue(new byte[] { 0x01 });
 
         barometerValue.enableValueNotifications(new PressureNotification(config, sensorLogPublisher));
+        barometerSensorEnabled = true;
 
+        return true;
+    }
+
+    private boolean stopBarometerCharacteristic() {
+        BluetoothGattService service = getService(SensortagUUID.UUID_BARO_SENSOR_ENABLE);
+
+        BluetoothGattCharacteristic barometerConfig = service.find(SensortagUUID.UUID_BARO_SENSOR_CONFIG.toString());
+
+        if (barometerConfig == null) {
+            log.error("Could not find the correct characteristic.");
+            return false;
+        }
+        // disable the barometer sensor
+        barometerConfig.writeValue(new byte[] { 0x00 });
+        barometerSensorEnabled = false;
         return true;
     }
 
@@ -138,11 +223,66 @@ public class SensortagSensor extends AbstractSensor {
         // 1 second update period
         opticalPeriod.writeValue(new byte[] { 0x64 });
 
-        // enable the temperature sensor
+        // enable the optical sensor
         opticalConfig.writeValue(new byte[] { 0x01 });
 
         opticalValue.enableValueNotifications(new OpticalNotification(config, sensorLogPublisher));
+        luxometerSensorEnabled = true;
 
+        return true;
+    }
+
+    private boolean stopOpticalCharacteristic() {
+        BluetoothGattService service = getService(SensortagUUID.UUID_LUXO_SENSOR_ENABLE);
+
+        BluetoothGattCharacteristic opticalConfig = service.find(SensortagUUID.UUID_LUXO_SENSOR_CONFIG.toString());
+
+        if (opticalConfig == null) {
+            log.error("Could not find the correct characteristic.");
+            return false;
+        }
+        // disable the optical sensor
+        opticalConfig.writeValue(new byte[] { 0x00 });
+        luxometerSensorEnabled = false;
+        return true;
+    }
+
+
+    private boolean startAccelerometerCharacteristic() {
+        BluetoothGattService service = getService(SensortagUUID.UUID_ACC_SENSOR_ENABLE);
+
+        BluetoothGattCharacteristic accelValue = service.find(SensortagUUID.UUID_ACC_SENSOR_DATA.toString());
+        BluetoothGattCharacteristic accelConfig = service.find(SensortagUUID.UUID_ACC_SENSOR_CONFIG.toString());
+        BluetoothGattCharacteristic accelPeriod = service.find(SensortagUUID.UUID_ACC_SENSOR_PERIOD.toString());
+
+        if (accelValue == null || accelConfig == null || accelPeriod == null) {
+            log.error("Could not find the correct characteristics.");
+            return false;
+        }
+
+        // 1 second update period
+        accelPeriod.writeValue(new byte[] { 0x64 });
+
+        // enable the accelerometer sensor
+        accelConfig.writeValue(new byte[] { (byte) 0x07 , (byte) 0x00});
+
+        accelValue.enableValueNotifications(new AccelerationNotification(config, sensorLogPublisher));
+        accelerometerSensorEnabled = true;
+        return true;
+    }
+
+    private boolean stopAccelerationCharacteristic() {
+        BluetoothGattService service = getService(SensortagUUID.UUID_ACC_SENSOR_ENABLE);
+
+        BluetoothGattCharacteristic accelerationConfig = service.find(SensortagUUID.UUID_ACC_SENSOR_CONFIG.toString());
+
+        if (accelerationConfig == null) {
+            log.error("Could not find the correct characteristic.");
+            return false;
+        }
+        // disable the accelerometer sensor
+        accelerationConfig.writeValue(new byte[] { 0x00 });
+        accelerometerSensorEnabled = false;
         return true;
     }
 
