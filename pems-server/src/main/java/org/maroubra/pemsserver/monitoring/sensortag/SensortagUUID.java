@@ -1,9 +1,11 @@
-package org.maroubra.pemsserver.monitoring.sensortag;/*
-    This class contains the list of sensors that are available in the CC2650 Ti SensorTag
-*/
+package org.maroubra.pemsserver.monitoring.sensortag;
 
 import java.util.UUID;
 
+/**
+ * Contains UUIDs of bluetooth GATT services and characteristics
+ * for the Sensortag CC2650.
+ */
 public class SensortagUUID {
 
 	/* Barometer Sensor */

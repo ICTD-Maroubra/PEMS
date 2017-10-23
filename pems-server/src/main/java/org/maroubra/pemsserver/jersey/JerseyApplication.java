@@ -2,13 +2,15 @@ package org.maroubra.pemsserver.jersey;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import io.swagger.jaxrs.config.BeanConfig;
+import io.swagger.jaxrs.config.SwaggerContextService;
 import io.swagger.jaxrs.listing.ApiListingResource;
 import io.swagger.jaxrs.listing.SwaggerSerializers;
+import io.swagger.models.Contact;
+import io.swagger.models.Info;
+import io.swagger.models.License;
 import org.glassfish.jersey.server.ResourceConfig;
-import org.maroubra.pemsserver.bindings.BluetoothBindings;
-import org.maroubra.pemsserver.bindings.MongoBindings;
+import org.maroubra.pemsserver.api.resources.HelloWorldResource;
 import org.maroubra.pemsserver.bindings.ObjectMapperFactory;
-import org.maroubra.pemsserver.bindings.ServerBindings;
 import org.maroubra.pemsserver.configuration.Configuration;
 import org.maroubra.pemsserver.configuration.ServerConfiguration;
 import org.slf4j.Logger;
@@ -28,20 +30,22 @@ public class JerseyApplication extends ResourceConfig {
         jacksonJaxbJsonProvider.setMapper(new ObjectMapperFactory().buildObjectMapper());
         register(jacksonJaxbJsonProvider);
 
-        register(new ServerBindings());
-        register(new MongoBindings());
-        register(new BluetoothBindings());
-
         // Swagger
+        Info info = new Info();
+        info.setTitle("PEMS Server API");
+        info.setVersion("1.0.0");
+        info.setLicense(new License().name("MIT"));
+        info.setContact(new Contact().url("https://github.com/ICTD-Maroubra/PEMS"));
+        info.setDescription("This following document describes the HTTP(S) API for interacting with the PEMS server.");
+
         BeanConfig beanConfig = new BeanConfig();
-        beanConfig.setTitle("PEMS Server API");
-        beanConfig.setVersion("1.0.0");
+        beanConfig.setInfo(info);
         beanConfig.setSchemes(new String[]{"http"});
         beanConfig.setHost(serverConfiguration.host + ":" + serverConfiguration.port);
         beanConfig.setBasePath("/");
-        beanConfig.setResourcePackage("org.maroubra.pemsserver.api.resources");
-        beanConfig.setServletConfig(null);
-        beanConfig.setScan(true);
+        beanConfig.setResourcePackage(HelloWorldResource.class.getPackage().getName());
+
+        new SwaggerContextService().withSwaggerConfig(beanConfig).withBasePath(beanConfig.getBasePath()).initConfig(beanConfig.getSwagger());
 
         register(ApiListingResource.class);
         register(SwaggerSerializers.class);

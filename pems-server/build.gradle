@@ -33,6 +33,10 @@ dependencies {
 
     compile 'org.glassfish.hk2:hk2-locator:2.4.0'
     compile 'org.glassfish.hk2:hk2-metadata-generator:2.4.0'
+    compile 'org.glassfish.hk2:guice-bridge:2.4.0'
+    compile 'com.google.inject:guice:4.1.0'
+    compile 'com.google.inject.extensions:guice-multibindings:4.1.0'
+    compile 'com.google.inject.extensions:guice-assistedinject:4.1.0'
 
     compile 'com.fasterxml.jackson.module:jackson-module-parameter-names:2.9.1'
     compile 'com.fasterxml.jackson.core:jackson-core:2.8.+'
@@ -61,6 +65,7 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile 'com.google.truth:truth:0.36'
     testCompile 'com.google.truth.extensions:truth-java8-extension:0.36'
+    testCompile 'com.github.javafaker:javafaker:0.13'
 }
 
 jacocoTestReport {
@@ -76,4 +81,8 @@ tasks.withType(JavaCompile) {
 
 tasks.withType(JavaExec) {
     systemProperty 'java.library.path', projectDir.toString() + '/lib/tinyb'
+}
+
+shadowJar {
+    mergeServiceFiles()
 }
