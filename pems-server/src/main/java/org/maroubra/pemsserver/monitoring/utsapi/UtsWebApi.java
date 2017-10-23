@@ -10,14 +10,6 @@ import java.util.Map;
 
 public interface UtsWebApi {
 
-
-
-
-    @GET("hc/{rFromDate}{rToDate}{rFamily}{rSensor}{rSubSensor}")
-    Call<List<String[]>> getHcJsonData(@Path("rFromDate") String rFromDate, @Path("rToDate") String toDate,
-                                   @Path("rFamily") String rFamily, @Path("rSensor") String rSensor,
-                                   @Path("rSubSensor") String rSubSensor);
-
     /**
      * This call returns an array of sensor data in json format.
      * The parameters of query are provided by the WebSensor class.
