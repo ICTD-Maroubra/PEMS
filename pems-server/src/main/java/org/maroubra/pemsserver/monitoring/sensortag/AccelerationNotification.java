@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tinyb.BluetoothNotification;
 
+import java.text.DecimalFormat;
+
 public class AccelerationNotification implements BluetoothNotification<byte[]> {
 
 
@@ -24,16 +26,17 @@ public class AccelerationNotification implements BluetoothNotification<byte[]> {
     public void run(byte[] bytes) {
         double [] acceleration = new double[3];
 
-        final float scale = (float) 4096.0;
+        final float scale = (float) (32768 / 8);
 
-        log.info("The bytes: {}", bytes); //display all the bytes - only the first 6 has input.
-        int x = shortSignedAtOffset(bytes, 6); //this should be the correct method but doesn't work atm
-        int y = shortSignedAtOffset(bytes, 8);
-        int z = shortSignedAtOffset(bytes, 10);
+        double x = shortSignedAtOffset(bytes, 6);
+        double y = shortSignedAtOffset(bytes, 8);
+        double z = shortSignedAtOffset(bytes, 10);
 
-        acceleration [0] = x / scale * -1;
-        acceleration [1] = y / scale;
-        acceleration [2] = z / scale * -1;
+        DecimalFormat df = new DecimalFormat("#.###");
+
+        acceleration [0] = Double.parseDouble(df.format(x / scale * -1));
+        acceleration [1] = Double.parseDouble(df.format(y / scale));
+        acceleration [2] = Double.parseDouble(df.format(z / scale * -1));
 
         log.info("The acceleration: X: {}g, Y: {}g, Z: {}g", acceleration[0], acceleration[1], acceleration[2]);
 

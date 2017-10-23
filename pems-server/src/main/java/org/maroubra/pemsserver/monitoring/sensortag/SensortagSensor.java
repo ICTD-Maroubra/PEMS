@@ -333,7 +333,7 @@ public class SensortagSensor implements Sensor {
         accelPeriod.writeValue(new byte[] { 0x64 });
 
         // enable the accelerometer sensor
-        accelConfig.writeValue(new byte[] { (byte) 0x07 , (byte) 0x00});
+        accelConfig.writeValue(new byte[] { (byte) 0x7F , (byte) 0x00});
 
         accelValue.enableValueNotifications(new AccelerationNotification(config, sensorLogPublisher));
         accelerometerSensorEnabled = true;
