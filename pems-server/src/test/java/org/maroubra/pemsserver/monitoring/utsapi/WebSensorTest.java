@@ -10,7 +10,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 public class WebSensorTest {
 
-    @Test
+
     public void testWebSensorStart() {
 
         WebSensor.Config webSensorConfig1 = new WebSensor.Config();
