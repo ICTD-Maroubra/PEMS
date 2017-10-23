@@ -12,10 +12,10 @@ public class AccelerationNotification implements BluetoothNotification<byte[]> {
 
     private static final Logger log = LoggerFactory.getLogger(SensortagSensor.class);
 
-    private final SensortagSensorConfig config;
+    private final SensortagSensor.Config config;
     private final FlowableProcessor<SensorLog> processor;
 
-    public AccelerationNotification(SensortagSensorConfig config, FlowableProcessor<SensorLog> processor) {
+    public AccelerationNotification(SensortagSensor.Config config, FlowableProcessor<SensorLog> processor) {
         this.config = config;
         this.processor = processor;
     }
@@ -37,7 +37,7 @@ public class AccelerationNotification implements BluetoothNotification<byte[]> {
 
         log.info("The acceleration: X: {}g, Y: {}g, Z: {}g", acceleration[0], acceleration[1], acceleration[2]);
 
-        SensorLog sensorLog = new SensorLog(config.id(), ImmutableMap.of("accel_x", acceleration[0], "accel_y", acceleration[1], "accel_z", acceleration[2]));
+        SensorLog sensorLog = new SensorLog(config.getId(), ImmutableMap.of("accel_x", acceleration[0], "accel_y", acceleration[1], "accel_z", acceleration[2]));
 
         processor.onNext(sensorLog);
     }
@@ -48,4 +48,6 @@ public class AccelerationNotification implements BluetoothNotification<byte[]> {
         Integer upperByte = (int) c[offset + 1]; //Interpret MSB as singedan
         return (upperByte << 8) + lowerByte;
     }
+
+
 }
