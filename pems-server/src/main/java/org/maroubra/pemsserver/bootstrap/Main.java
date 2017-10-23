@@ -49,7 +49,8 @@ public class Main {
                 new ServerBindings(),
                 new MongoBindings(),
                 new BluetoothBindings(),
-                new SensorBindings()
+                new SensorBindings(),
+                new UtsApiBindings()
         );
 
         return modules.build();

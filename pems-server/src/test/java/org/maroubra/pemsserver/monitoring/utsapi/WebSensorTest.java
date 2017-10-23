@@ -13,13 +13,16 @@ public class WebSensorTest {
     @Test
     public void getSensorData() {
 
-        WebSensorConfig webSensorConfig1 = new WebSensorConfig("Web001");
+        WebSensor.Config webSensorConfig1 = new WebSensor.Config();
+        webSensorConfig1.setId("Web001");
         webSensorConfig1.setConfig("wasp","ES_B_05_416_7C15","BAT");
 
-        WebSensorConfig webSensorConfig2 = new WebSensorConfig("Web002");
+        WebSensor.Config webSensorConfig2 = new WebSensor.Config();
+        webSensorConfig2.setId("Web002");
         webSensorConfig2.setConfig("wasp","ES_B_11_429_3E90","BAT");
 
-        WebSensorConfig webSensorConfig3 = new WebSensorConfig("Web003");
+        WebSensor.Config webSensorConfig3 = new WebSensor.Config();
+        webSensorConfig3.setId("Web003");
         webSensorConfig3.setConfig("wasp","ES_B_11_429_3E90","TCA");
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -32,7 +35,7 @@ public class WebSensorTest {
         SensorLog createdLog = webSensor1.logs().blockingFirst();
 
         assertThat(createdLog).isNotNull();
-        assertThat(createdLog.getSensorId()).matches(webSensorConfig1.id());
+        assertThat(createdLog.getSensorId()).matches(webSensorConfig1.getId());
         assertThat(createdLog.getAttributeValue()).hasSize(2);
 
         /*

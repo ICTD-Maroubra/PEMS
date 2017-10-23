@@ -17,7 +17,7 @@ import java.util.TimerTask;
 public class WebSensorTask extends TimerTask {
 
     private static final Logger log = LoggerFactory.getLogger(WebSensor.class);
-    private WebSensorConfig config;
+    private WebSensor.Config config;
     private UtsWebApi webApi;
     private ZonedDateTime fromDate;
     private ZonedDateTime toDate;
@@ -25,7 +25,7 @@ public class WebSensorTask extends TimerTask {
     private final FlowableProcessor<SensorLog> processor;
 
 
-    WebSensorTask(WebSensorConfig webSensorConfig, int pollIntervalMinutes, FlowableProcessor<SensorLog> processor, UtsWebApi webApi) {
+    WebSensorTask(WebSensor.Config webSensorConfig, int pollIntervalMinutes, FlowableProcessor<SensorLog> processor, UtsWebApi webApi) {
         this.config = webSensorConfig;
         this.processor = processor;
         this.webApi = webApi;
@@ -57,7 +57,7 @@ public class WebSensorTask extends TimerTask {
             data = call.execute().body();
             for (String[] dataArray: data) {
                 SensorLog sensorLog = new SensorLog(
-                        config.id(),
+                        config.getId(),
                         ImmutableMap.of(config.getConfig().get("rSubSensor"), dataArray[1]),
                         ZonedDateTime.ofInstant(Instant.ofEpochSecond( Long.getLong(dataArray[0])), ZoneId.systemDefault() ));
                 processor.onNext(sensorLog);

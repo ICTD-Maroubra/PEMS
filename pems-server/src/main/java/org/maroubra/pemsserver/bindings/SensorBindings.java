@@ -9,6 +9,7 @@ import org.maroubra.pemsserver.monitoring.Sensor;
 import org.maroubra.pemsserver.monitoring.annotations.FactoryClass;
 import org.maroubra.pemsserver.monitoring.nordic.Thingy52Sensor;
 import org.maroubra.pemsserver.monitoring.sensortag.SensortagSensor;
+import org.maroubra.pemsserver.monitoring.utsapi.WebSensor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +26,7 @@ public class SensorBindings extends AbstractModule {
 
         installSensor(sensorMapBinder, SensortagSensor.class);
         installSensor(sensorMapBinder, Thingy52Sensor.class);
+        installSensor(sensorMapBinder, WebSensor.class);
     }
 
     private <T extends Sensor> void installSensor(MapBinder<String, Sensor.Factory<? extends Sensor>> sensorMapBinder,

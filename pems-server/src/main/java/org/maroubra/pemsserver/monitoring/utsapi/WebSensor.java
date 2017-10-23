@@ -1,25 +1,32 @@
 package org.maroubra.pemsserver.monitoring.utsapi;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.inject.assistedinject.Assisted;
+import com.google.inject.assistedinject.AssistedInject;
 import io.reactivex.Flowable;
 import io.reactivex.processors.PublishProcessor;
-import org.maroubra.pemsserver.monitoring.AbstractSensor;
+import org.maroubra.pemsserver.monitoring.Sensor;
+import org.maroubra.pemsserver.monitoring.SensorConfig;
 import org.maroubra.pemsserver.monitoring.SensorLog;
+import org.maroubra.pemsserver.monitoring.annotations.ConfigClass;
+import org.maroubra.pemsserver.monitoring.annotations.FactoryClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.*;
 
-public class WebSensor extends AbstractSensor{
+public class WebSensor implements Sensor {
 
     private static final Logger log = LoggerFactory.getLogger(WebSensor.class);
     private final UtsWebApi webAPi;
     private final PublishProcessor<SensorLog> sensorLogPublisher = PublishProcessor.create();
     private int pollIntervalMinutes = 60;
-    private WebSensorConfig config;
+    private Config config;
     private TimerTask webSensorTask;
     private Timer timer;
 
-    public WebSensor(WebSensorConfig config, UtsWebApi webApi) {
-        this.config = config;
+    @AssistedInject
+    public WebSensor(@Assisted SensorConfig config, UtsWebApi webApi) {
+        this.config = (Config) config;
         this.webAPi = webApi;
     }
 
@@ -32,7 +39,7 @@ public class WebSensor extends AbstractSensor{
     }
 
     @Override
-    protected boolean start() {
+    public boolean start() {
         timer = new Timer(true);
         webSensorTask = new WebSensorTask(config,pollIntervalMinutes, sensorLogPublisher, webAPi);
         timer.schedule(webSensorTask, 0, pollIntervalMinutes * 60 * 1000);
@@ -40,11 +47,50 @@ public class WebSensor extends AbstractSensor{
     }
 
     @Override
-    protected boolean stop() {
+    public boolean stop() {
         timer.cancel();
         return true;
     }
 
     @Override
-    protected Flowable<SensorLog> logs() { return sensorLogPublisher.onBackpressureLatest();  }
+    public Flowable<SensorLog> logs() { return sensorLogPublisher.onBackpressureLatest();  }
+
+    @FactoryClass
+    public interface Factory extends Sensor.Factory<WebSensor> {
+        @Override
+        WebSensor create(@Assisted SensorConfig config);
+
+        @Override
+        Config getConfig();
+    }
+
+    @ConfigClass
+    public static class Config implements SensorConfig {
+
+        private String id;
+        private String family;
+        private String subSensor;
+        private String sensor;
+
+        @Override
+        public String getId() { return id; }
+
+        @Override
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        @Override
+        public String type() { return WebSensor.class.getCanonicalName(); }
+
+        public Map<String,String> getConfig() {
+            return ImmutableMap.of("rFamily", family, "rSensor", sensor, "rSubSensor", subSensor);
+        }
+
+        public void setConfig(String family, String sensor , String subSensor) {
+            this.family = family;
+            this.sensor = sensor;
+            this.subSensor = subSensor;
+        }
+    }
 }
