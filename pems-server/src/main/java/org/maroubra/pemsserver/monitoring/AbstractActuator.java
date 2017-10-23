@@ -1,16 +1,19 @@
-package org.maroubra.pemsserver.monitoring.actuators;
+package org.maroubra.pemsserver.monitoring;
 
-public class Actuator {
+public abstract class AbstractActuator {
 
     private int id;
     private String name;
 
-    public Actuator() {}
+    public AbstractActuator() {}
 
-    public Actuator(int id, String name) {
+    public AbstractActuator(int id, String name) {
         this.id = id;
         this.name = name;
     }
+
+    // implementation details of specific actuators
+    public abstract void operate();
 
     public int getId() {
         return id;
@@ -33,7 +36,7 @@ public class Actuator {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Actuator actuator = (Actuator) o;
+        AbstractActuator actuator = (AbstractActuator) o;
 
         if (id != actuator.id) return false;
         return name != null ? name.equals(actuator.name) : actuator.name == null;

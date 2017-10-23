@@ -1,7 +1,9 @@
 package org.maroubra.pemsserver.monitoring.control;
 
 import org.junit.Test;
-import org.maroubra.pemsserver.monitoring.actuators.Actuator;
+import org.maroubra.pemsserver.monitoring.AbstractActuator;
+import org.maroubra.pemsserver.monitoring.ActuatorFactory;
+import org.maroubra.pemsserver.monitoring.actuators.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,16 +12,21 @@ import java.util.List;
 
 public class ActuatorControlTest {
 
+    Logger logger = LoggerFactory.getLogger(ActuatorControlTest.class);
+
     @Test
     public void actuatorControl() {
 
-        Logger logger = LoggerFactory.getLogger(ActuatorControlTest.class);
+        List<AbstractActuator> actuators = new ArrayList<>();
 
-        Actuator actuator1 = new Actuator(1, "actuator 1");
-        Actuator actuator2 = new Actuator(2, "actuator 2");
-        List<Actuator> actuators = new ArrayList<>();
-        actuators.add(actuator1);
-        actuators.add(actuator2);
+        SpringActuator springActuator = (SpringActuator) ActuatorFactory.getActuator("SPRING");
+        LinearActuator linearActuator = (LinearActuator) ActuatorFactory.getActuator("LINEAR");
+        ElectricActuator electricActuator = (ElectricActuator) ActuatorFactory.getActuator("ELECTRIC");
+
+        actuators.add(springActuator);
+        actuators.add(linearActuator);
+        actuators.add(electricActuator);
+
         Task myTask1 = new Task(1, TaskPriority.LOW, actuators) {
             @Override
             public void run() {
@@ -38,6 +45,7 @@ public class ActuatorControlTest {
                 logger.debug("task{} with {} priority is running", this.getId(), this.getPriority());
             }
         };
+
         TaskManager manager = new TaskManager();
         manager.add(myTask2);
         manager.add(myTask3);

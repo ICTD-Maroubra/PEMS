@@ -1,6 +1,6 @@
 package org.maroubra.pemsserver.monitoring.control;
 
-import org.maroubra.pemsserver.monitoring.actuators.Actuator;
+import org.maroubra.pemsserver.monitoring.AbstractActuator;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -11,13 +11,13 @@ public abstract class Task implements Runnable, Comparable<Task> {
     private int id;
     private int priority;
     private TaskStatus status;
-    private List<Actuator> actuators;
+    private List<AbstractActuator> actuators;
 
     public Task() {
         actuators = new ArrayList<>();
     }
 
-    public Task(int id, int priority, List<Actuator> actuators) {
+    public Task(int id, int priority, List<AbstractActuator> actuators) {
         this.id = id;
         this.priority = priority;
         this.actuators = actuators;
@@ -62,21 +62,21 @@ public abstract class Task implements Runnable, Comparable<Task> {
         this.status = status;
     }
 
-    public List<Actuator> getActuators() {
+    public List<AbstractActuator> getActuators() {
         return actuators;
     }
 
-    public void setActuators(List<Actuator> actuators) {
+    public void setActuators(List<AbstractActuator> actuators) {
         this.actuators = actuators;
     }
 
-    public void addActuator(Actuator actuator) { this.actuators.add(actuator); }
+    public void addActuator(AbstractActuator actuator) { this.actuators.add(actuator); }
 
-    public void removeActuator(Actuator actuator) {
+    public void removeActuator(AbstractActuator actuator) {
         if (actuator == null) {
             return;
         }
-        Iterator<Actuator> iterator = actuators.iterator();
+        Iterator<AbstractActuator> iterator = actuators.iterator();
         while (iterator.hasNext()) {
             if (iterator.next().equals(actuator)) {
                 iterator.remove();
