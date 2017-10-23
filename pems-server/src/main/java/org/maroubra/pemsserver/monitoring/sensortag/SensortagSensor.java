@@ -51,11 +51,11 @@ public class SensortagSensor extends AbstractSensor {
             sensortagDevice.disconnect();
             return false;
         }
-
+        log.info("Starting up works");
         return true;
     }
 
-    public void stopSelectedSensor(String sensor) {
+    public boolean stopSelectedSensor(String sensor) {
         switch(sensor) {
             case "Thermometer":
                 stopTemperatureCharacteristic();
@@ -74,8 +74,9 @@ public class SensortagSensor extends AbstractSensor {
                 break;
             default:
                 log.info("Sensor does not exist!, please input a valid sensor.");
-
+                return false;
         }
+        return true;
     }
 
     @Override
@@ -86,6 +87,41 @@ public class SensortagSensor extends AbstractSensor {
     @Override
     protected Flowable<SensorLog> logs() {
         return sensorLogPublisher.onBackpressureLatest();
+    }
+
+    public boolean alterSensorUpdateInterval(String sensor, byte[] period) {
+        BluetoothGattService service;
+        switch (sensor) {
+            case "Thermometer":
+                service = getService(SensortagUUID.UUID_TEMP_SENSOR_ENABLE);
+                BluetoothGattCharacteristic temperaturePeriod = service.find(SensortagUUID.UUID_TEMP_SENSOR_PERIOD.toString());
+                temperaturePeriod.writeValue(period);
+                break;
+            case "Barometer":
+                service = getService(SensortagUUID.UUID_BARO_SENSOR_ENABLE);
+                BluetoothGattCharacteristic baroPeriod = service.find(SensortagUUID.UUID_BARO_SENSOR_PERIOD.toString());
+                baroPeriod.writeValue(period);
+                break;
+            case "Hygrometer":
+                service = getService(SensortagUUID.UUID_HUM_SENSOR_ENABLE);
+                BluetoothGattCharacteristic humidityPeriod = service.find(SensortagUUID.UUID_HUM_SENSOR_PERIOD.toString());
+                humidityPeriod.writeValue(period);
+                break;
+            case "Luxometer":
+                service = getService(SensortagUUID.UUID_LUXO_SENSOR_ENABLE);
+                BluetoothGattCharacteristic luxoPeriod = service.find(SensortagUUID.UUID_LUXO_SENSOR_PERIOD.toString());
+                luxoPeriod.writeValue(period);
+                break;
+            case "Accelerometer":
+                service = getService(SensortagUUID.UUID_ACC_SENSOR_ENABLE);
+                BluetoothGattCharacteristic accelPeriod = service.find(SensortagUUID.UUID_ACC_SENSOR_PERIOD.toString());
+                accelPeriod.writeValue(period);
+                break;
+            default:
+                log.info("Sensor does not exist!, please input a valid sensor.");
+                return false;
+        }
+        return true;
     }
 
     private boolean startTemperatureCharacteristic() {
