@@ -1,37 +1,61 @@
 package org.maroubra.pemsserver.monitoring.nordic;
 
+import com.google.inject.assistedinject.Assisted;
+import com.google.inject.assistedinject.AssistedInject;
 import io.reactivex.Flowable;
 import io.reactivex.processors.FlowableProcessor;
 import io.reactivex.processors.PublishProcessor;
-import org.maroubra.pemsserver.monitoring.AbstractSensor;
+import org.maroubra.pemsserver.bluetooth.BluetoothService;
+import org.maroubra.pemsserver.monitoring.Sensor;
+import org.maroubra.pemsserver.monitoring.SensorConfig;
 import org.maroubra.pemsserver.monitoring.SensorLog;
+import org.maroubra.pemsserver.monitoring.annotations.ConfigClass;
+import org.maroubra.pemsserver.monitoring.annotations.FactoryClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tinyb.BluetoothDevice;
 import tinyb.BluetoothGattCharacteristic;
 import tinyb.BluetoothGattService;
+import tinyb.BluetoothNotification;
 
 import java.util.UUID;
 
-public class Thingy52Sensor extends AbstractSensor {
+/**
+ * Nordic Thingy52 Sensor. Enables subscription to a subset of bluetooth
+ * characteristics available to the sensor:
+ *  - Temperature
+ *  - Humidity
+ *  - Pressure
+ *  - Color
+ *  - Air Quality
+ */
+public class Thingy52Sensor implements Sensor {
 
     private static final Logger log = LoggerFactory.getLogger(Thingy52Sensor.class);
 
-    private final Thingy52SensorConfig config;
+    private final Config config;
     private final BluetoothDevice thingyDevice;
     private final FlowableProcessor<SensorLog> sensorLogPublisher = PublishProcessor.create();
 
-    public Thingy52Sensor(Thingy52SensorConfig config, BluetoothDevice thingyDevice) {
-        this.config = config;
-        this.thingyDevice = thingyDevice;
+    @AssistedInject
+    public Thingy52Sensor(@Assisted SensorConfig config, BluetoothService service) throws InterruptedException {
+        this.config = (Config) config;
+        this.thingyDevice = service.getDevice(this.config.address);
     }
+
     @Override
-    protected boolean start() {
+    public boolean start() {
         if (!thingyDevice.connect())
             return false;
 
+        BluetoothGattService weatherService = getService(Thingy52UUID.UUID_WEATHER_SERVICE);
+
         boolean allCharacteristicsStarted =
-                startTemperatureCharacteristic();
+                startCharacteristic(weatherService, Thingy52UUID.UUID_TEMP_SENSOR_DATA.toString(), new TemperatureNotification(config, sensorLogPublisher)) &&
+                startCharacteristic(weatherService, Thingy52UUID.UUID_COLOR_SENSOR_DATA.toString(), new ColorNotification(config, sensorLogPublisher)) &&
+                startCharacteristic(weatherService, Thingy52UUID.UUID_GAS_SENSOR_DATA.toString(), new AirQualityNotification(config, sensorLogPublisher)) &&
+                startCharacteristic(weatherService, Thingy52UUID.UUID_PRES_SENSOR_DATA.toString(), new PressureNotification(config, sensorLogPublisher)) &&
+                startCharacteristic(weatherService, Thingy52UUID.UUID_HUM_SENSOR_DATA.toString(), new HumidityNotification(config, sensorLogPublisher));
 
         if (!allCharacteristicsStarted) {
             thingyDevice.disconnect();
@@ -42,32 +66,90 @@ public class Thingy52Sensor extends AbstractSensor {
     }
 
     @Override
-    protected boolean stop() {
+    public boolean stop() {
         return thingyDevice.disconnect();
     }
 
     @Override
-    protected Flowable<SensorLog> logs() {
+    public Flowable<SensorLog> logs() {
         return sensorLogPublisher.onBackpressureLatest();
     }
 
-    private boolean startTemperatureCharacteristic() {
-        BluetoothGattService service = getService(Thingy52UUID.UUID_TEMP_SENSOR_ENABLE);
+    /**
+     * Start and subscribe to a bluetooth GATT characteristic on a Thingy52 service
+     * @param gattService Bluetooth GATT service containing characteristic
+     * @param characteristicUuid UUID of characteristic to subscribe too
+     * @param notificationCallback Notification callback to run on event
+     * @return successfully subscribed to bluetooth characteristic
+     */
+    private boolean startCharacteristic(BluetoothGattService gattService, String characteristicUuid, BluetoothNotification<byte[]> notificationCallback) {
+        BluetoothGattCharacteristic value = gattService.find(characteristicUuid);
 
-        BluetoothGattCharacteristic tempValue = service.find(Thingy52UUID.UUID_TEMP_SENSOR_DATA.toString());
-
-        if (tempValue == null) {
-            log.error("Could not find the correct characteristics.");
+        if (value == null) {
+            log.error("Could not find the characteristic for UUID {}.", characteristicUuid);
             return false;
         }
 
-        tempValue.enableValueNotifications(new TemperatureNotification(config, sensorLogPublisher));
-
+        value.enableValueNotifications(notificationCallback);
 
         return true;
     }
 
+    /**
+     * Gets a Thingy52 bluetooth GATT service
+     * @return Bluetooth service
+     */
     private BluetoothGattService getService(UUID uuid) {
         return thingyDevice.find(uuid.toString());
+    }
+
+    @FactoryClass
+    public interface Factory extends Sensor.Factory<Thingy52Sensor> {
+        @Override
+        Thingy52Sensor create(@Assisted SensorConfig config);
+
+        @Override
+        Config getConfig();
+    }
+
+    /**
+     * Configuration for the Thingy52 sensor
+     */
+    @ConfigClass
+    public static class Config implements SensorConfig {
+
+        private String id;
+        private String address;
+
+        @Override
+        public String getId() {
+            return id;
+        }
+
+        @Override
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        @Override
+        public String type() {
+            return Thingy52Sensor.class.getCanonicalName();
+        }
+
+        /**
+         * MAC address of Thingy52
+         * @return MAC address
+         */
+        public String getAddress() {
+            return address;
+        }
+
+        /**
+         * Set the MAC address
+         * @param address MAC address
+         */
+        public void setAddress(String address) {
+            this.address = address;
+        }
     }
 }
