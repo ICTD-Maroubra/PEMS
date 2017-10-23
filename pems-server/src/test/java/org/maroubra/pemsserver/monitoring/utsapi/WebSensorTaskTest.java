@@ -11,7 +11,7 @@ import static com.google.common.truth.Truth.assertThat;
 public class WebSensorTaskTest {
 
     @Test
-    public void getSensorData() {
+    public void testSensorTask() {
         WebSensor.Config webSensorConfig1 = new WebSensor.Config();
         webSensorConfig1.setId("Web001");
         webSensorConfig1.setConfig("wasp", "ES_B_05_416_7C15", "BAT");
@@ -24,7 +24,7 @@ public class WebSensorTaskTest {
 
         ReplayProcessor<SensorLog> processor = ReplayProcessor.create(10);
 
-        WebSensorTask webSensorTask = new WebSensorTask(webSensorConfig1, 60, processor, retrofit.create(UtsWebApi.class));
+        WebSensorTask webSensorTask = new WebSensorTask(webSensorConfig1, 360, processor, retrofit.create(UtsWebApi.class));
         webSensorTask.pollSensor();
 
         SensorLog createdLog = processor.blockingFirst();
