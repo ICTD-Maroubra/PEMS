@@ -2,7 +2,6 @@ package org.maroubra.pemsserver.bindings;
 
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.maroubra.pemsserver.monitoring.utsapi.UtsWebApi;
-import org.maroubra.pemsserver.monitoring.utsapi.WebSensor;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 

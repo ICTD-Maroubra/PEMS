@@ -51,7 +51,7 @@ public class WebSensorService implements Runnable{
     public void pollAllSensors() {
         for (Map.Entry<WebSensor,List<Object>> entry : webSensors.entrySet()) {
             List<Object> sensorData = entry.getValue();
-            sensorData.add(entry.getKey().pollSensor());
+            //sensorData.add(entry.getKey().pollSensor());
             entry.setValue(sensorData);
         }
     }
