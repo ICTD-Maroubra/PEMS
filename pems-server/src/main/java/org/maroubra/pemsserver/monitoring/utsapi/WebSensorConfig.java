@@ -27,7 +27,7 @@ public class WebSensorConfig implements SensorConfig{
         return ImmutableMap.of("rFamily", family, "rSensor", sensor, "rSubSensor", subSensor);
     }
 
-    public void setConfig(String family, String subSensor , String sensor) {
+    public void setConfig(String family, String sensor , String subSensor) {
         this.family = family;
         this.sensor = sensor;
         this.subSensor = subSensor;
