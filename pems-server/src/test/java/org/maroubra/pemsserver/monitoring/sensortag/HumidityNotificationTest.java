@@ -20,7 +20,8 @@ public class HumidityNotificationTest {
         double temperature = faker.number().randomDouble(4, -50, 50);
         int temperatureNorm = (int)((temperature + 40) / 165 * 65536);
 
-        SensortagSensorConfig config = new SensortagSensorConfig("some-temp-id");
+        SensortagSensor.Config config = new SensortagSensor.Config();
+        config.setId("some-id");
         ReplayProcessor<SensorLog> processor = ReplayProcessor.create(10);
 
         HumidityNotification notification = new HumidityNotification(config, processor);
@@ -30,7 +31,7 @@ public class HumidityNotificationTest {
         SensorLog createdLog = processor.blockingFirst();
 
         assertThat(createdLog).isNotNull();
-        assertThat(createdLog.getSensorId()).matches(config.id());
+        assertThat(createdLog.getSensorId()).matches(config.getId());
         assertThat(createdLog.getAttributeValue()).containsKey(HumidityNotification.HUMIDITY_VALUE_ID);
         assertThat(createdLog.getAttributeValue()).containsKey(HumidityNotification.TEMPERATURE_VALUE_ID);
         assertThat((float)createdLog.getAttributeValue().get(HumidityNotification.HUMIDITY_VALUE_ID)).isWithin(0.1f).of((float)humidity);

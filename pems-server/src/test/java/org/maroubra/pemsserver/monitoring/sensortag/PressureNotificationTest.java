@@ -15,7 +15,8 @@ public class PressureNotificationTest {
         double pressure = faker.number().randomDouble(2, 0, 5000);
         int pressureNorm = (int)(pressure * 100);
 
-        SensortagSensorConfig config = new SensortagSensorConfig("some-temp-id");
+        SensortagSensor.Config config = new SensortagSensor.Config();
+        config.setId("some-id");
         ReplayProcessor<SensorLog> processor = ReplayProcessor.create(10);
 
         PressureNotification notification = new PressureNotification(config, processor);
@@ -25,7 +26,7 @@ public class PressureNotificationTest {
         SensorLog createdLog = processor.blockingFirst();
 
         assertThat(createdLog).isNotNull();
-        assertThat(createdLog.getSensorId()).matches(config.id());
+        assertThat(createdLog.getSensorId()).matches(config.getId());
         assertThat(createdLog.getAttributeValue()).containsKey(PressureNotification.PRESSURE_VALUE_ID);
         assertThat((float)createdLog.getAttributeValue().get(PressureNotification.PRESSURE_VALUE_ID)).isWithin(0.1f).of((float)pressure);
     }

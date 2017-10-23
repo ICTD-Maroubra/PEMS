@@ -33,6 +33,10 @@ dependencies {
 
     compile 'org.glassfish.hk2:hk2-locator:2.4.0'
     compile 'org.glassfish.hk2:hk2-metadata-generator:2.4.0'
+    compile 'org.glassfish.hk2:guice-bridge:2.4.0'
+    compile 'com.google.inject:guice:4.1.0'
+    compile 'com.google.inject.extensions:guice-multibindings:4.1.0'
+    compile 'com.google.inject.extensions:guice-assistedinject:4.1.0'
 
     compile 'com.fasterxml.jackson.module:jackson-module-parameter-names:2.9.1'
     compile 'com.fasterxml.jackson.core:jackson-core:2.8.+'

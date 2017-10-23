@@ -3,10 +3,13 @@ package org.maroubra.pemsserver.database;
 import com.mongodb.rx.client.MongoCollection;
 import com.mongodb.rx.client.MongoDatabase;
 
+import javax.inject.Inject;
+
 public class MongoCollectionFactory {
 
     private final MongoDatabase mongoDatabase;
 
+    @Inject
     public MongoCollectionFactory(MongoDatabase mongoDatabase) {
         this.mongoDatabase = mongoDatabase;
     }

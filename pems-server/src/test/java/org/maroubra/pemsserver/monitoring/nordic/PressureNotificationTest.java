@@ -18,7 +18,8 @@ public class PressureNotificationTest {
 
         byte[] pressureBytes = Ints.toByteArray(pressure);
 
-        Thingy52SensorConfig config = new Thingy52SensorConfig("some-temp-id");
+        Thingy52Sensor.Config config = new Thingy52Sensor.Config();
+        config.setId("some-id");
         ReplayProcessor<SensorLog> processor = ReplayProcessor.create(10);
 
         PressureNotification notification = new PressureNotification(config, processor);
@@ -28,7 +29,7 @@ public class PressureNotificationTest {
         SensorLog createdLog = processor.blockingFirst();
 
         assertThat(createdLog).isNotNull();
-        assertThat(createdLog.getSensorId()).matches(config.id());
+        assertThat(createdLog.getSensorId()).matches(config.getId());
         assertThat(createdLog.getAttributeValue()).containsKey(PressureNotification.PRESSURE_VALUE_ID);
         assertThat((float)createdLog.getAttributeValue().get(PressureNotification.PRESSURE_VALUE_ID)).isWithin(0.01f).of(pressure + decimal);
     }

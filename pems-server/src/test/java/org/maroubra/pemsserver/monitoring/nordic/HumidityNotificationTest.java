@@ -14,7 +14,8 @@ public class HumidityNotificationTest {
         Faker faker = new Faker();
         int humidity = faker.number().numberBetween(0, 100);
 
-        Thingy52SensorConfig config = new Thingy52SensorConfig("some-temp-id");
+        Thingy52Sensor.Config config = new Thingy52Sensor.Config();
+        config.setId("some-id");
         ReplayProcessor<SensorLog> processor = ReplayProcessor.create(10);
 
         HumidityNotification notification = new HumidityNotification(config, processor);
@@ -24,7 +25,7 @@ public class HumidityNotificationTest {
         SensorLog createdLog = processor.blockingFirst();
 
         assertThat(createdLog).isNotNull();
-        assertThat(createdLog.getSensorId()).matches(config.id());
+        assertThat(createdLog.getSensorId()).matches(config.getId());
         assertThat(createdLog.getAttributeValue()).containsExactly(HumidityNotification.HUMIDITY_VALUE_ID, humidity);
     }
 }

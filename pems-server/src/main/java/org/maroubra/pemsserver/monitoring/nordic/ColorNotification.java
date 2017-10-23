@@ -18,12 +18,12 @@ public class ColorNotification implements BluetoothNotification<byte[]> {
     public static final String COLOUR_CLEAR_VALUE_ID = "colour_clear";
 
     // Configuration for the sensortag that is subscribed to this notification
-    private final Thingy52SensorConfig config;
+    private final Thingy52Sensor.Config config;
 
     // Sensorlog processor to publish events too
     private final FlowableProcessor<SensorLog> processor;
 
-    ColorNotification(Thingy52SensorConfig config, FlowableProcessor<SensorLog> processor) {
+    ColorNotification(Thingy52Sensor.Config config, FlowableProcessor<SensorLog> processor) {
         this.config = config;
         this.processor = processor;
     }
@@ -35,7 +35,7 @@ public class ColorNotification implements BluetoothNotification<byte[]> {
         int blue = decodeColor(bytes[5], bytes[4]);
         int clear = decodeColor(bytes[7], bytes[6]);
 
-        SensorLog sensorLog = new SensorLog(config.id(), ImmutableMap.of(COLOUR_RED_VALUE_ID, red, COLOUR_GREEN_VALUE_ID, green, COLOUR_BLUE_VALUE_ID, blue, COLOUR_CLEAR_VALUE_ID, clear));
+        SensorLog sensorLog = new SensorLog(config.getId(), ImmutableMap.of(COLOUR_RED_VALUE_ID, red, COLOUR_GREEN_VALUE_ID, green, COLOUR_BLUE_VALUE_ID, blue, COLOUR_CLEAR_VALUE_ID, clear));
         processor.onNext(sensorLog);
     }
 
