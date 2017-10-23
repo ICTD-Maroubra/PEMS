@@ -30,6 +30,6 @@ public class WebSensorConfig implements SensorConfig{
     public void setConfig(String family, String subSensor , String sensor) {
         this.family = family;
         this.sensor = sensor;
-        this.subSensor = sensor;
+        this.subSensor = subSensor;
     }
 }

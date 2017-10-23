@@ -53,6 +53,7 @@ public class WebSensorTask extends TimerTask {
         Call<List<String[]>> call = callWebApi();
         try {
             log.info(call.request().url().encodedQuery());
+            log.info(call.request().url().toString());
             data = call.execute().body();
             for (String[] dataArray: data) {
                 SensorLog sensorLog = new SensorLog(
