@@ -6,6 +6,8 @@ import org.maroubra.pemsserver.monitoring.SensorLog;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import java.util.concurrent.TimeUnit;
+
 import static com.google.common.truth.Truth.assertThat;
 
 public class WebSensorTaskTest {
@@ -27,7 +29,14 @@ public class WebSensorTaskTest {
         WebSensorTask webSensorTask = new WebSensorTask(webSensorConfig1, 360, processor, retrofit.create(UtsWebApi.class));
         webSensorTask.pollSensor();
 
-        SensorLog createdLog = processor.blockingFirst();
+        SensorLog createdLog = null;
+        try {
+            createdLog = processor.timeout(5000, TimeUnit.MILLISECONDS).blockingFirst();
+        }
+        catch (Exception e) {
+            if (e.getMessage().equals("java.util.concurrent.TimeoutException")) { }
+            else { throw e; }
+        }
 
         if (createdLog != null) {
             assertThat(createdLog.getSensorId()).matches(webSensorConfig1.getId());
