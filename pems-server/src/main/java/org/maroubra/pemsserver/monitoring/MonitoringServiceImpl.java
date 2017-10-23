@@ -18,9 +18,9 @@ public class MonitoringServiceImpl implements MonitoringService {
     private final MongoCollection<SensorConfig> sensorConfigCollection;
     private final MongoCollection<SensorLog> sensorLogsCollection;
 
-    private List<AbstractSensor> runningSensors;
+    private List<Sensor> runningSensors;
 
-    @Inject
+    //@Inject
     public MonitoringServiceImpl(SensorFactory sensorFactory, MongoCollection<SensorConfig> sensorConfigCollection, MongoCollection<SensorLog> sensorLogCollection) {
         this.sensorFactory = sensorFactory;
         this.sensorConfigCollection = sensorConfigCollection;
@@ -35,10 +35,14 @@ public class MonitoringServiceImpl implements MonitoringService {
     @Override
     public Completable initializeSensors() {
         return listSensors().flatMap(sensorConfig -> {
-            AbstractSensor sensor = sensorFactory.build(sensorConfig);
-            if (sensor.start()) {
-                runningSensors.add(sensor);
-                sensor.logs().subscribe(this::recordSensorLog);
+            try {
+                Sensor sensor = sensorFactory.build(sensorConfig.type(), sensorConfig);
+                if (sensor.start()) {
+                    runningSensors.add(sensor);
+                    sensor.logs().subscribe(this::recordSensorLog);
+                }
+            } catch (NoSuchSensorTypeException ex) {
+                log.error("Could not start sensor with getId {}, its type was not found.", sensorConfig.getId());
             }
 
             return null;

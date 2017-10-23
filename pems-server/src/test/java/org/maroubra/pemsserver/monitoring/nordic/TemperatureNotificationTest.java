@@ -15,7 +15,8 @@ public class TemperatureNotificationTest {
         int temp = faker.number().numberBetween(-50, 50);
         float decimal = (float)faker.number().randomDouble(5, 0, 1);
 
-        Thingy52SensorConfig config = new Thingy52SensorConfig("some-temp-id");
+        Thingy52Sensor.Config config = new Thingy52Sensor.Config();
+        config.setId("some-id");
         ReplayProcessor<SensorLog> processor = ReplayProcessor.create(10);
 
         TemperatureNotification notification = new TemperatureNotification(config, processor);
@@ -24,7 +25,7 @@ public class TemperatureNotificationTest {
         SensorLog createdLog = processor.blockingFirst();
 
         assertThat(createdLog).isNotNull();
-        assertThat(createdLog.getSensorId()).matches(config.id());
+        assertThat(createdLog.getSensorId()).matches(config.getId());
         assertThat(createdLog.getAttributeValue()).containsKey(TemperatureNotification.TEMP_VALUE_ID);
         assertThat((float)createdLog.getAttributeValue().get(TemperatureNotification.TEMP_VALUE_ID)).isWithin(0.01f).of(temp + decimal);
     }

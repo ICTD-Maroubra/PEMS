@@ -1,9 +1,15 @@
 package org.maroubra.pemsserver.monitoring.sensortag;
 
+import com.google.inject.assistedinject.Assisted;
+import com.google.inject.assistedinject.AssistedInject;
 import io.reactivex.Flowable;
 import io.reactivex.processors.PublishProcessor;
-import org.maroubra.pemsserver.monitoring.AbstractSensor;
+import org.maroubra.pemsserver.bluetooth.BluetoothService;
+import org.maroubra.pemsserver.monitoring.Sensor;
+import org.maroubra.pemsserver.monitoring.SensorConfig;
 import org.maroubra.pemsserver.monitoring.SensorLog;
+import org.maroubra.pemsserver.monitoring.annotations.ConfigClass;
+import org.maroubra.pemsserver.monitoring.annotations.FactoryClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tinyb.BluetoothDevice;
@@ -20,21 +26,22 @@ import java.util.UUID;
  *  - Barometer
  *  - Optical
  */
-public class SensortagSensor extends AbstractSensor {
+public class SensortagSensor implements Sensor {
 
     private static final Logger log = LoggerFactory.getLogger(SensortagSensor.class);
 
-    private final SensortagSensorConfig config;
+    private final Config config;
     private final BluetoothDevice sensortagDevice;
     private final PublishProcessor<SensorLog> sensorLogPublisher = PublishProcessor.create();
 
-    public SensortagSensor(SensortagSensorConfig config, BluetoothDevice sensortagDevice) {
-        this.config = config;
-        this.sensortagDevice = sensortagDevice;
+    @AssistedInject
+    public SensortagSensor(@Assisted SensorConfig config, BluetoothService bluetoothService) throws InterruptedException {
+        this.config = (Config) config;
+        this.sensortagDevice = bluetoothService.getDevice(this.config.address);
     }
 
     @Override
-    protected boolean start() {
+    public boolean start() {
         if (!sensortagDevice.connect())
             return false;
 
@@ -53,12 +60,12 @@ public class SensortagSensor extends AbstractSensor {
     }
 
     @Override
-    protected boolean stop() {
+    public boolean stop() {
         return sensortagDevice.disconnect();
     }
 
     @Override
-    protected Flowable<SensorLog> logs() {
+    public Flowable<SensorLog> logs() {
         return sensorLogPublisher.onBackpressureLatest();
     }
 
@@ -182,4 +189,49 @@ public class SensortagSensor extends AbstractSensor {
         return sensortagDevice.find(uuid.toString());
     }
 
+    @FactoryClass
+    public interface Factory extends Sensor.Factory<SensortagSensor> {
+        @Override
+        SensortagSensor create(@Assisted SensorConfig config);
+
+        @Override
+        Config getConfig();
+    }
+
+    @ConfigClass
+    public static class Config implements SensorConfig {
+        private String id;
+        private String address;
+
+        @Override
+        public String getId() {
+            return id;
+        }
+
+        @Override
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        @Override
+        public String type() {
+            return SensortagSensor.class.getCanonicalName();
+        }
+
+        /**
+         * MAC address of sensortag
+         * @return MAC address
+         */
+        public String getAddress() {
+            return address;
+        }
+
+        /**
+         * Set the MAC address
+         * @param address MAC address
+         */
+        public void setAddress(String address) {
+            this.address = address;
+        }
+    }
 }

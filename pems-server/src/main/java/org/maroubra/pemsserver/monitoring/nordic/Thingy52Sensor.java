@@ -1,10 +1,16 @@
 package org.maroubra.pemsserver.monitoring.nordic;
 
+import com.google.inject.assistedinject.Assisted;
+import com.google.inject.assistedinject.AssistedInject;
 import io.reactivex.Flowable;
 import io.reactivex.processors.FlowableProcessor;
 import io.reactivex.processors.PublishProcessor;
-import org.maroubra.pemsserver.monitoring.AbstractSensor;
+import org.maroubra.pemsserver.bluetooth.BluetoothService;
+import org.maroubra.pemsserver.monitoring.Sensor;
+import org.maroubra.pemsserver.monitoring.SensorConfig;
 import org.maroubra.pemsserver.monitoring.SensorLog;
+import org.maroubra.pemsserver.monitoring.annotations.ConfigClass;
+import org.maroubra.pemsserver.monitoring.annotations.FactoryClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tinyb.BluetoothDevice;
@@ -23,20 +29,22 @@ import java.util.UUID;
  *  - Color
  *  - Air Quality
  */
-public class Thingy52Sensor extends AbstractSensor {
+public class Thingy52Sensor implements Sensor {
 
     private static final Logger log = LoggerFactory.getLogger(Thingy52Sensor.class);
 
-    private final Thingy52SensorConfig config;
+    private final Config config;
     private final BluetoothDevice thingyDevice;
     private final FlowableProcessor<SensorLog> sensorLogPublisher = PublishProcessor.create();
 
-    public Thingy52Sensor(Thingy52SensorConfig config, BluetoothDevice thingyDevice) {
-        this.config = config;
-        this.thingyDevice = thingyDevice;
+    @AssistedInject
+    public Thingy52Sensor(@Assisted SensorConfig config, BluetoothService service) throws InterruptedException {
+        this.config = (Config) config;
+        this.thingyDevice = service.getDevice(this.config.address);
     }
+
     @Override
-    protected boolean start() {
+    public boolean start() {
         if (!thingyDevice.connect())
             return false;
 
@@ -58,12 +66,12 @@ public class Thingy52Sensor extends AbstractSensor {
     }
 
     @Override
-    protected boolean stop() {
+    public boolean stop() {
         return thingyDevice.disconnect();
     }
 
     @Override
-    protected Flowable<SensorLog> logs() {
+    public Flowable<SensorLog> logs() {
         return sensorLogPublisher.onBackpressureLatest();
     }
 
@@ -93,5 +101,55 @@ public class Thingy52Sensor extends AbstractSensor {
      */
     private BluetoothGattService getService(UUID uuid) {
         return thingyDevice.find(uuid.toString());
+    }
+
+    @FactoryClass
+    public interface Factory extends Sensor.Factory<Thingy52Sensor> {
+        @Override
+        Thingy52Sensor create(@Assisted SensorConfig config);
+
+        @Override
+        Config getConfig();
+    }
+
+    /**
+     * Configuration for the Thingy52 sensor
+     */
+    @ConfigClass
+    public static class Config implements SensorConfig {
+
+        private String id;
+        private String address;
+
+        @Override
+        public String getId() {
+            return id;
+        }
+
+        @Override
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        @Override
+        public String type() {
+            return Thingy52Sensor.class.getCanonicalName();
+        }
+
+        /**
+         * MAC address of Thingy52
+         * @return MAC address
+         */
+        public String getAddress() {
+            return address;
+        }
+
+        /**
+         * Set the MAC address
+         * @param address MAC address
+         */
+        public void setAddress(String address) {
+            this.address = address;
+        }
     }
 }

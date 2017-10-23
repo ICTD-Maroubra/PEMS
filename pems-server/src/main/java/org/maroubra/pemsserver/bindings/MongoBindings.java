@@ -1,13 +1,13 @@
 package org.maroubra.pemsserver.bindings;
 
+import com.google.inject.AbstractModule;
 import com.mongodb.rx.client.MongoClient;
 import com.mongodb.rx.client.MongoClients;
 import com.mongodb.rx.client.MongoDatabase;
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.maroubra.pemsserver.configuration.Configuration;
 import org.maroubra.pemsserver.configuration.MongoDbConfiguration;
 
-public class MongoBindings extends AbstractBinder{
+public class MongoBindings extends AbstractModule {
 
     @Override
     protected void configure() {
@@ -15,6 +15,6 @@ public class MongoBindings extends AbstractBinder{
         MongoClient client = MongoClients.create(configuration.connectionString);
         MongoDatabase db = client.getDatabase(configuration.databaseName);
 
-        bind(db);
+        bind(MongoDatabase.class).toInstance(db);
     }
 }
