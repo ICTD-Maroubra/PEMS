@@ -29,26 +29,35 @@ public class WebSensorTest {
                 .baseUrl("http://eif-research.feit.uts.edu.au/api/")
                 .addConverterFactory(JacksonConverterFactory.create())
                 .build();
+        UtsWebApi webApi = retrofit.create(UtsWebApi.class);
 
-        WebSensor webSensor1 = new WebSensor(webSensorConfig1, retrofit.create(UtsWebApi.class));
+        WebSensor webSensor1 = new WebSensor(webSensorConfig1, webApi);
         webSensor1.start();
         SensorLog createdLog = webSensor1.logs().blockingFirst();
 
-        assertThat(createdLog).isNotNull();
-        assertThat(createdLog.getSensorId()).matches(webSensorConfig1.getId());
-        assertThat(createdLog.getAttributeValue()).hasSize(2);
-
-        /*
-        List<List<String[]>> dataList = new ArrayList<>();
-        dataList.add(webSensor1.pollSensor());
-        dataList.add(webSensor1.pollSensor());
-        dataList.add(webSensor1.pollSensor());
-
-        for (List<String[]> data : dataList) {
-            if (data != null)
-                assertThat(data.get(0)).hasLength(2);
+        if (createdLog != null) {
+            assertThat(createdLog.getSensorId()).matches(webSensorConfig1.getId());
+            assertThat(createdLog.getAttributeValue()).hasSize(1);
         }
-        */
+
+        WebSensor webSensor2 = new WebSensor(webSensorConfig2, webApi);
+        webSensor2.start();
+        SensorLog createdLog2 = webSensor2.logs().blockingFirst();
+
+        if (createdLog2 != null) {
+            assertThat(createdLog.getSensorId()).matches(webSensorConfig1.getId());
+            assertThat(createdLog.getAttributeValue()).hasSize(1);
+        }
+
+        WebSensor webSensor3 = new WebSensor(webSensorConfig3, webApi);
+        webSensor3.start();
+        SensorLog createdLog3 = webSensor3.logs().blockingFirst();
+
+        if (createdLog3 != null) {
+            assertThat(createdLog.getSensorId()).matches(webSensorConfig1.getId());
+            assertThat(createdLog.getAttributeValue()).hasSize(1);
+        }
+
    }
 
 }
