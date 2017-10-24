@@ -1,80 +1,96 @@
 package org.maroubra.pemsserver.monitoring.utsapi;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.inject.assistedinject.Assisted;
+import com.google.inject.assistedinject.AssistedInject;
+import io.reactivex.Flowable;
+import io.reactivex.processors.PublishProcessor;
+import org.maroubra.pemsserver.monitoring.Sensor;
+import org.maroubra.pemsserver.monitoring.SensorConfig;
+import org.maroubra.pemsserver.monitoring.SensorLog;
+import org.maroubra.pemsserver.monitoring.annotations.ConfigClass;
+import org.maroubra.pemsserver.monitoring.annotations.FactoryClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import retrofit2.Call;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import java.util.*;
 
-import java.io.*;
-import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+public class WebSensor implements Sensor {
 
-public class WebSensor {
-    private LocalDateTime fromDate;
-    private LocalDateTime toDate;
+    private static final Logger log = LoggerFactory.getLogger(WebSensor.class);
+    private final UtsWebApi webAPi;
+    private final PublishProcessor<SensorLog> sensorLogPublisher = PublishProcessor.create();
     private int pollIntervalMinutes = 60;
-    private String family;
-    private String subSensor;
-    private String sensor;
-    private String apiLink = "http://eif-research.feit.uts.edu.au/api/";
-    private static Logger log = LoggerFactory.getLogger(WebSensor.class);
+    private Config config;
+    private TimerTask webSensorTask;
+    private Timer timer;
 
-    private Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl(apiLink)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build();
-
-    private WebApiRequest service = retrofit.create(WebApiRequest.class);
-
-    public WebSensor(String family, String sensor, String subSensor) {
-        this.family = family;
-        this.subSensor = subSensor;
-        this.sensor = sensor;
+    @AssistedInject
+    public WebSensor(@Assisted SensorConfig config, UtsWebApi webApi) {
+        this.config = (Config) config;
+        this.webAPi = webApi;
     }
 
-    public void setPollIntervalMinutes(int pollIntervalMinutes) {
-        this.pollIntervalMinutes = pollIntervalMinutes;
-    }
-
-    public void setDatesPollInterval() {
-        fromDate = LocalDateTime.now().minusMinutes(pollIntervalMinutes).withNano(0);
-        toDate = LocalDateTime.now().withNano(0);
-    }
-
-    public void setDates(LocalDateTime fromDate, LocalDateTime toDate) {
-        this.fromDate = fromDate;
-        this.toDate = toDate;
-    }
-
-
-    private Map<String, String> getQueryParameters() {
-        Map<String, String> parameters = new LinkedHashMap<>();
-        parameters.put("rSubSensor", subSensor);
-        parameters.put("rSensor", sensor);
-        parameters.put("rFamily", family);
-        parameters.put("rToDate", toDate.toString());
-        parameters.put("rFromDate", fromDate.toString());
-        return parameters;
-    }
-
-    public List<String[]> pollSensor() {
-        setDatesPollInterval();
-        List<String[]> data = null;
-        Call<List<String[]>> call = service.getJsonData(getQueryParameters());
-        try {
-            data = call.execute().body();
-        } catch (IOException e) {
-            e.getMessage();
-            log.warn("This sensor may not be returning data please check the sensor api webpage.");
-        }
-        return data;
-    }
+    public  void setPollIntervalMinutes(int pollIntervalMinutes) { this.pollIntervalMinutes = pollIntervalMinutes; }
 
     @Override
     public String toString() {
-        return "Sensor Family: " + family + " Sensor: " + sensor + " Sub Sensor: " + subSensor;
+        return "Sensor Family: " + config.getConfig().get("rFamily") + " Sensor: " + config.getConfig().get("rSensor")
+                + " Sub Sensor: " + config.getConfig().get("rSubSensor");
+    }
+
+    @Override
+    public boolean start() {
+        timer = new Timer(true);
+        webSensorTask = new WebSensorTask(config,pollIntervalMinutes, sensorLogPublisher, webAPi);
+        timer.schedule(webSensorTask, 0, pollIntervalMinutes * 60 * 1000);
+        return true;
+    }
+
+    @Override
+    public boolean stop() {
+        timer.cancel();
+        return true;
+    }
+
+    @Override
+    public Flowable<SensorLog> logs() { return sensorLogPublisher.onBackpressureLatest();  }
+
+    @FactoryClass
+    public interface Factory extends Sensor.Factory<WebSensor> {
+        @Override
+        WebSensor create(@Assisted SensorConfig config);
+
+        @Override
+        Config getConfig();
+    }
+
+    @ConfigClass
+    public static class Config implements SensorConfig {
+
+        private String id;
+        private String family;
+        private String subSensor;
+        private String sensor;
+
+        @Override
+        public String getId() { return id; }
+
+        @Override
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        @Override
+        public String type() { return WebSensor.class.getCanonicalName(); }
+
+        public Map<String,String> getConfig() {
+            return ImmutableMap.of("rFamily", family, "rSensor", sensor, "rSubSensor", subSensor);
+        }
+
+        public void setConfig(String family, String sensor , String subSensor) {
+            this.family = family;
+            this.sensor = sensor;
+            this.subSensor = subSensor;
+        }
     }
 }
