@@ -47,9 +47,14 @@ public class ActuatorControlTest {
         };
 
         TaskManager manager = new TaskManager();
+
+        // input order 2, 3, 1
         manager.add(myTask2);
         manager.add(myTask3);
         manager.add(myTask1);
+
+        // regardless of the input order,
+        // the order of outputs will always be 3, 2, 1
         manager.executeTasks();
     }
 }

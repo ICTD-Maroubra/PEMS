@@ -8,6 +8,7 @@ import rx.Completable;
 import rx.Observable;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MonitoringServiceImpl implements MonitoringService {
@@ -19,6 +20,7 @@ public class MonitoringServiceImpl implements MonitoringService {
     private final MongoCollection<SensorLog> sensorLogsCollection;
 
     private List<AbstractSensor> runningSensors;
+    private List<AbstractActuator> runningActuators;
 
     @Inject
     public MonitoringServiceImpl(SensorFactory sensorFactory, MongoCollection<SensorConfig> sensorConfigCollection, MongoCollection<SensorLog> sensorLogCollection) {
@@ -45,9 +47,23 @@ public class MonitoringServiceImpl implements MonitoringService {
         }).toCompletable();
     }
 
+    private void initializeActuators() {
+        runningActuators = new ArrayList<>();
+        runningActuators.add(ActuatorFactory.getActuator("SPRING"));
+        runningActuators.add(ActuatorFactory.getActuator("LINEAR"));
+        runningActuators.add(ActuatorFactory.getActuator("ELECTRIC"));
+    }
+
     @Override
     public Observable<SensorConfig> listSensors() {
         return sensorConfigCollection.find().toObservable();
+    }
+
+    @Override
+    public List<AbstractActuator> listActuators() {
+        if (runningActuators == null)
+            initializeActuators();
+        return runningActuators;
     }
 
     private void recordSensorLog(SensorLog sensorLog) {
