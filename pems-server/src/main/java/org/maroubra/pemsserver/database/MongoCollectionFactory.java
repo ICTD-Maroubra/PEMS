@@ -21,6 +21,6 @@ public class MongoCollectionFactory {
         }
         final String collectionName = collectionNameAnnotation.value();
 
-        return mongoDatabase.getCollection(collectionName, clazz);
+        return mongoDatabase.getCollection(collectionName, clazz).withCodecRegistry(mongoDatabase.getCodecRegistry());
     }
 }

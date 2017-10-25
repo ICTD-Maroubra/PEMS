@@ -8,7 +8,6 @@ import org.maroubra.pemsserver.bluetooth.BluetoothService;
 import org.maroubra.pemsserver.monitoring.Sensor;
 import org.maroubra.pemsserver.monitoring.SensorConfig;
 import org.maroubra.pemsserver.monitoring.SensorLog;
-import org.maroubra.pemsserver.monitoring.annotations.ConfigClass;
 import org.maroubra.pemsserver.monitoring.annotations.FactoryClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,14 +29,16 @@ public class SensortagSensor implements Sensor {
 
     private static final Logger log = LoggerFactory.getLogger(SensortagSensor.class);
 
-    private final Config config;
+    private static final String CONFIG_KEY_ADDRESS = "address";
+
+    private final SensorConfig config;
     private final BluetoothDevice sensortagDevice;
     private final PublishProcessor<SensorLog> sensorLogPublisher = PublishProcessor.create();
 
     @AssistedInject
     public SensortagSensor(@Assisted SensorConfig config, BluetoothService bluetoothService) throws InterruptedException {
-        this.config = (Config) config;
-        this.sensortagDevice = bluetoothService.getDevice(this.config.address);
+        this.config = config;
+        this.sensortagDevice = bluetoothService.getDevice(this.config.getProperty(CONFIG_KEY_ADDRESS));
     }
 
     @Override
@@ -67,6 +68,11 @@ public class SensortagSensor implements Sensor {
     @Override
     public Flowable<SensorLog> logs() {
         return sensorLogPublisher.onBackpressureLatest();
+    }
+
+    @Override
+    public SensorConfig getConfig() {
+        return config;
     }
 
     /**
@@ -193,45 +199,5 @@ public class SensortagSensor implements Sensor {
     public interface Factory extends Sensor.Factory<SensortagSensor> {
         @Override
         SensortagSensor create(@Assisted SensorConfig config);
-
-        @Override
-        Config getConfig();
-    }
-
-    @ConfigClass
-    public static class Config implements SensorConfig {
-        private String id;
-        private String address;
-
-        @Override
-        public String getId() {
-            return id;
-        }
-
-        @Override
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        @Override
-        public String type() {
-            return SensortagSensor.class.getCanonicalName();
-        }
-
-        /**
-         * MAC address of sensortag
-         * @return MAC address
-         */
-        public String getAddress() {
-            return address;
-        }
-
-        /**
-         * Set the MAC address
-         * @param address MAC address
-         */
-        public void setAddress(String address) {
-            this.address = address;
-        }
     }
 }

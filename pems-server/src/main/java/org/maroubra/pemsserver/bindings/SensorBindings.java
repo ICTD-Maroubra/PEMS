@@ -37,7 +37,7 @@ public class SensorBindings extends AbstractModule {
                         findInnerClassAnnotatedWith(FactoryClass.class, target, Sensor.Factory.class);
 
         if (factoryClass == null) {
-            log.error("Unable to find an inner class annotated with @FactoryClass in transport {}. This transport will not be available!",
+            log.error("Unable to find an inner class annotated with @FactoryClass in sensor {}. This sensor will not be available!",
                     target);
             return;
         }

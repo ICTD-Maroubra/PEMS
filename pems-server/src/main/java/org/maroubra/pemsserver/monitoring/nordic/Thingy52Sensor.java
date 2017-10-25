@@ -9,7 +9,6 @@ import org.maroubra.pemsserver.bluetooth.BluetoothService;
 import org.maroubra.pemsserver.monitoring.Sensor;
 import org.maroubra.pemsserver.monitoring.SensorConfig;
 import org.maroubra.pemsserver.monitoring.SensorLog;
-import org.maroubra.pemsserver.monitoring.annotations.ConfigClass;
 import org.maroubra.pemsserver.monitoring.annotations.FactoryClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,14 +32,16 @@ public class Thingy52Sensor implements Sensor {
 
     private static final Logger log = LoggerFactory.getLogger(Thingy52Sensor.class);
 
-    private final Config config;
+    private static final String CONFIG_KEY_ADDRESS = "address";
+
+    private final SensorConfig config;
     private final BluetoothDevice thingyDevice;
     private final FlowableProcessor<SensorLog> sensorLogPublisher = PublishProcessor.create();
 
     @AssistedInject
     public Thingy52Sensor(@Assisted SensorConfig config, BluetoothService service) throws InterruptedException {
-        this.config = (Config) config;
-        this.thingyDevice = service.getDevice(this.config.address);
+        this.config = config;
+        this.thingyDevice = service.getDevice(this.config.getProperty(CONFIG_KEY_ADDRESS));
     }
 
     @Override
@@ -75,6 +76,11 @@ public class Thingy52Sensor implements Sensor {
         return sensorLogPublisher.onBackpressureLatest();
     }
 
+    @Override
+    public SensorConfig getConfig() {
+        return config;
+    }
+
     /**
      * Start and subscribe to a bluetooth GATT characteristic on a Thingy52 service
      * @param gattService Bluetooth GATT service containing characteristic
@@ -107,49 +113,5 @@ public class Thingy52Sensor implements Sensor {
     public interface Factory extends Sensor.Factory<Thingy52Sensor> {
         @Override
         Thingy52Sensor create(@Assisted SensorConfig config);
-
-        @Override
-        Config getConfig();
-    }
-
-    /**
-     * Configuration for the Thingy52 sensor
-     */
-    @ConfigClass
-    public static class Config implements SensorConfig {
-
-        private String id;
-        private String address;
-
-        @Override
-        public String getId() {
-            return id;
-        }
-
-        @Override
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        @Override
-        public String type() {
-            return Thingy52Sensor.class.getCanonicalName();
-        }
-
-        /**
-         * MAC address of Thingy52
-         * @return MAC address
-         */
-        public String getAddress() {
-            return address;
-        }
-
-        /**
-         * Set the MAC address
-         * @param address MAC address
-         */
-        public void setAddress(String address) {
-            this.address = address;
-        }
     }
 }

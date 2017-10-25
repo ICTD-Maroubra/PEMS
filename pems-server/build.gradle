@@ -3,6 +3,7 @@ plugins {
     id 'application'
     id 'com.github.johnrengelman.shadow' version '2.0.1'
     id 'jacoco'
+    id 'net.ltgt.apt' version '0.12'
 }
 
 group 'org.maroubra'
@@ -66,6 +67,8 @@ dependencies {
     testCompile 'com.google.truth:truth:0.36'
     testCompile 'com.google.truth.extensions:truth-java8-extension:0.36'
     testCompile 'com.github.javafaker:javafaker:0.13'
+    testCompile 'org.mockito:mockito-core:2.10.0'
+    testCompile 'com.squareup.okhttp3:mockwebserver:3.9.0'
 }
 
 jacocoTestReport {

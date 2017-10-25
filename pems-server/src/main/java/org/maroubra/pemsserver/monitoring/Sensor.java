@@ -28,12 +28,9 @@ public interface Sensor {
      */
     Flowable<SensorLog> logs();
 
+    SensorConfig getConfig();
+
     interface Factory<T extends Sensor> {
         T create(@Assisted SensorConfig sensorConfig);
-        SensorConfig getConfig();
-    }
-
-    interface Config extends SensorConfig {
-
     }
 }

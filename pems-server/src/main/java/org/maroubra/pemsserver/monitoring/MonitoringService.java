@@ -7,4 +7,5 @@ public interface MonitoringService {
 
     Completable initializeSensors();
     Observable<SensorConfig> listSensors();
+    void createSensor(SensorConfig config);
 }

@@ -8,6 +8,7 @@ import rx.Completable;
 import rx.Observable;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MonitoringServiceImpl implements MonitoringService {
@@ -18,7 +19,7 @@ public class MonitoringServiceImpl implements MonitoringService {
     private final MongoCollection<SensorConfig> sensorConfigCollection;
     private final MongoCollection<SensorLog> sensorLogsCollection;
 
-    private List<Sensor> runningSensors;
+    private List<Sensor> runningSensors = new ArrayList<>();
 
     //@Inject
     public MonitoringServiceImpl(SensorFactory sensorFactory, MongoCollection<SensorConfig> sensorConfigCollection, MongoCollection<SensorLog> sensorLogCollection) {
@@ -36,11 +37,8 @@ public class MonitoringServiceImpl implements MonitoringService {
     public Completable initializeSensors() {
         return listSensors().flatMap(sensorConfig -> {
             try {
-                Sensor sensor = sensorFactory.build(sensorConfig.type(), sensorConfig);
-                if (sensor.start()) {
-                    runningSensors.add(sensor);
-                    sensor.logs().subscribe(this::recordSensorLog);
-                }
+                Sensor sensor = sensorFactory.build(sensorConfig.getType(), sensorConfig);
+                startSensor(sensor);
             } catch (NoSuchSensorTypeException ex) {
                 log.error("Could not start sensor with getId {}, its type was not found.", sensorConfig.getId());
             }
@@ -54,7 +52,28 @@ public class MonitoringServiceImpl implements MonitoringService {
         return sensorConfigCollection.find().toObservable();
     }
 
+    @Override
+    public void createSensor(SensorConfig config) {
+        Sensor sensor;
+        try {
+            sensor = sensorFactory.build(config.getType(), config);
+        } catch (NoSuchSensorTypeException ex) {
+            log.error("Could not start sensor with getId {}, its type was not found.", config.getId());
+            return;
+        }
+
+        sensorConfigCollection.insertOne(config).toBlocking().single();
+        startSensor(sensor);
+    }
+
+    private void startSensor(Sensor sensor) {
+        if (sensor.start()) {
+            runningSensors.add(sensor);
+            sensor.logs().subscribe(this::recordSensorLog);
+        }
+    }
+
     private void recordSensorLog(SensorLog sensorLog) {
-        sensorLogsCollection.insertOne(sensorLog);
+        sensorLogsCollection.insertOne(sensorLog).toBlocking().single();
     }
 }

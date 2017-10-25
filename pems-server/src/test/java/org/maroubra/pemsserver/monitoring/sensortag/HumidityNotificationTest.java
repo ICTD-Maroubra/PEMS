@@ -3,6 +3,7 @@ package org.maroubra.pemsserver.monitoring.sensortag;
 import com.github.javafaker.Faker;
 import io.reactivex.processors.ReplayProcessor;
 import org.junit.Test;
+import org.maroubra.pemsserver.monitoring.SensorConfig;
 import org.maroubra.pemsserver.monitoring.SensorLog;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -20,8 +21,7 @@ public class HumidityNotificationTest {
         double temperature = faker.number().randomDouble(4, -50, 50);
         int temperatureNorm = (int)((temperature + 40) / 165 * 65536);
 
-        SensortagSensor.Config config = new SensortagSensor.Config();
-        config.setId("some-id");
+        SensorConfig config = new SensorConfig("someId", "sensortag", null);
         ReplayProcessor<SensorLog> processor = ReplayProcessor.create(10);
 
         HumidityNotification notification = new HumidityNotification(config, processor);
