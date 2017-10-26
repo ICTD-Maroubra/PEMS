@@ -1,6 +1,6 @@
-package org.maroubra.pemsserver.monitoring.actuators;
+package org.maroubra.pemsserver.control.actuators;
 
-import org.maroubra.pemsserver.monitoring.AbstractActuator;
+import org.maroubra.pemsserver.control.AbstractActuator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

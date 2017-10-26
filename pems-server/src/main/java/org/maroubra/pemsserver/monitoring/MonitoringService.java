@@ -11,5 +11,4 @@ public interface MonitoringService {
     Observable<SensorConfig> listSensors();
     List<Sensor.Descriptor> listSensorTypes();
     Completable createSensor(SensorConfig config);
-    List<AbstractActuator> listActuators();
 }

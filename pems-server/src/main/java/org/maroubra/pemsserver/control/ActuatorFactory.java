@@ -1,8 +1,8 @@
-package org.maroubra.pemsserver.monitoring;
+package org.maroubra.pemsserver.control;
 
-import org.maroubra.pemsserver.monitoring.actuators.ElectricActuator;
-import org.maroubra.pemsserver.monitoring.actuators.LinearActuator;
-import org.maroubra.pemsserver.monitoring.actuators.SpringActuator;
+import org.maroubra.pemsserver.control.actuators.ElectricActuator;
+import org.maroubra.pemsserver.control.actuators.LinearActuator;
+import org.maroubra.pemsserver.control.actuators.SpringActuator;
 
 public class ActuatorFactory {
 

@@ -1,4 +1,4 @@
-package org.maroubra.pemsserver.monitoring.control;
+package org.maroubra.pemsserver.control.automation;
 
 public class TaskPriority {
     public static final int LOW = 0;

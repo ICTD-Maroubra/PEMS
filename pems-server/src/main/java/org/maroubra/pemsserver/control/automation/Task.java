@@ -1,6 +1,6 @@
-package org.maroubra.pemsserver.monitoring.control;
+package org.maroubra.pemsserver.control.automation;
 
-import org.maroubra.pemsserver.monitoring.AbstractActuator;
+import org.maroubra.pemsserver.control.AbstractActuator;
 
 import java.util.ArrayList;
 import java.util.Iterator;

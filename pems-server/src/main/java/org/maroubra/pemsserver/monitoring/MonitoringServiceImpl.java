@@ -20,7 +20,6 @@ public class MonitoringServiceImpl implements MonitoringService {
     private final MongoCollection<SensorLog> sensorLogsCollection;
 
     private List<Sensor> runningSensors = new ArrayList<>();
-    private List<AbstractActuator> runningActuators;
 
     public MonitoringServiceImpl(SensorFactory sensorFactory, MongoCollection<SensorConfig> sensorConfigCollection, MongoCollection<SensorLog> sensorLogCollection) {
         this.sensorFactory = sensorFactory;
@@ -45,13 +44,6 @@ public class MonitoringServiceImpl implements MonitoringService {
 
             return null;
         }).toCompletable();
-    }
-
-    private void initializeActuators() {
-        runningActuators = new ArrayList<>();
-        runningActuators.add(ActuatorFactory.getActuator("SPRING"));
-        runningActuators.add(ActuatorFactory.getActuator("LINEAR"));
-        runningActuators.add(ActuatorFactory.getActuator("ELECTRIC"));
     }
 
     @Override
@@ -82,13 +74,6 @@ public class MonitoringServiceImpl implements MonitoringService {
             runningSensors.add(sensor);
             sensor.logs().subscribe(this::recordSensorLog);
         }
-    }
-
-    @Override
-    public List<AbstractActuator> listActuators() {
-        if (runningActuators == null)
-            initializeActuators();
-        return runningActuators;
     }
 
     private void recordSensorLog(SensorLog sensorLog) {

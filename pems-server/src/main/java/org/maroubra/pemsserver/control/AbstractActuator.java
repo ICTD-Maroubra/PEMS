@@ -1,4 +1,4 @@
-package org.maroubra.pemsserver.monitoring;
+package org.maroubra.pemsserver.control;
 
 public abstract class AbstractActuator {
 

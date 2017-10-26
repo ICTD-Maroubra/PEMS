@@ -1,9 +1,12 @@
 package org.maroubra.pemsserver.monitoring.control;
 
 import org.junit.Test;
-import org.maroubra.pemsserver.monitoring.AbstractActuator;
-import org.maroubra.pemsserver.monitoring.ActuatorFactory;
-import org.maroubra.pemsserver.monitoring.actuators.*;
+import org.maroubra.pemsserver.control.AbstractActuator;
+import org.maroubra.pemsserver.control.ActuatorFactory;
+import org.maroubra.pemsserver.control.actuators.*;
+import org.maroubra.pemsserver.control.automation.Task;
+import org.maroubra.pemsserver.control.automation.TaskManager;
+import org.maroubra.pemsserver.control.automation.TaskPriority;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

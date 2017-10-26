@@ -1,4 +1,4 @@
-package org.maroubra.pemsserver.monitoring.control;
+package org.maroubra.pemsserver.control.automation;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
