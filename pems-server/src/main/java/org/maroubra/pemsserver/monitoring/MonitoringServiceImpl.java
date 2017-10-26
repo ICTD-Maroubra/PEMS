@@ -8,6 +8,7 @@ import rx.Completable;
 import rx.Observable;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MonitoringServiceImpl implements MonitoringService {
@@ -18,9 +19,8 @@ public class MonitoringServiceImpl implements MonitoringService {
     private final MongoCollection<SensorConfig> sensorConfigCollection;
     private final MongoCollection<SensorLog> sensorLogsCollection;
 
-    private List<AbstractSensor> runningSensors;
+    private List<Sensor> runningSensors = new ArrayList<>();
 
-    @Inject
     public MonitoringServiceImpl(SensorFactory sensorFactory, MongoCollection<SensorConfig> sensorConfigCollection, MongoCollection<SensorLog> sensorLogCollection) {
         this.sensorFactory = sensorFactory;
         this.sensorConfigCollection = sensorConfigCollection;
@@ -35,10 +35,11 @@ public class MonitoringServiceImpl implements MonitoringService {
     @Override
     public Completable initializeSensors() {
         return listSensors().flatMap(sensorConfig -> {
-            AbstractSensor sensor = sensorFactory.build(sensorConfig);
-            if (sensor.start()) {
-                runningSensors.add(sensor);
-                sensor.logs().subscribe(this::recordSensorLog);
+            try {
+                Sensor sensor = sensorFactory.build(sensorConfig.getType(), sensorConfig);
+                startSensor(sensor);
+            } catch (NoSuchSensorTypeException ex) {
+                log.error("Could not start sensor with getId {}, its type was not found.", sensorConfig.getId());
             }
 
             return null;
@@ -50,7 +51,32 @@ public class MonitoringServiceImpl implements MonitoringService {
         return sensorConfigCollection.find().toObservable();
     }
 
+    @Override
+    public List<Sensor.Descriptor> listSensorTypes() {
+        return sensorFactory.availableSensorDescriptors();
+    }
+
+    @Override
+    public Completable createSensor(SensorConfig config) {
+        Sensor sensor;
+        try {
+            sensor = sensorFactory.build(config.getType(), config);
+        } catch (NoSuchSensorTypeException ex) {
+            log.error("Could not start sensor with getId {}, its type was not found.", config.getId());
+            return Completable.error(ex);
+        }
+
+        return sensorConfigCollection.insertOne(config).toCompletable().doOnCompleted(() -> startSensor(sensor));
+    }
+
+    private void startSensor(Sensor sensor) {
+        if (sensor.start()) {
+            runningSensors.add(sensor);
+            sensor.logs().subscribe(this::recordSensorLog);
+        }
+    }
+
     private void recordSensorLog(SensorLog sensorLog) {
-        sensorLogsCollection.insertOne(sensorLog);
+        sensorLogsCollection.insertOne(sensorLog).toBlocking().single();
     }
 }

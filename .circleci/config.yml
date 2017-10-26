@@ -64,7 +64,7 @@ jobs:
 
       - save_cache:
           paths:
-            - ~/.m2
+            - ~/.gradle
           key: v1-dependencies-{{ checksum "pems-server/build.gradle" }}
       
       - run: cd pems-server && ./gradlew build
@@ -108,6 +108,24 @@ jobs:
       # run tests!
       #- run: yarn test
 
+  deploy_develop:
+    docker:
+      - image: circleci/openjdk:8-jdk
+    working_directory: ~/PEMS
+    steps:
+      - *attach_workspace
+      - *load_code
+      - add_ssh_keys:
+          fingerprints:
+            - "05:13:6d:97:79:f9:3a:b2:a9:ab:62:15:e2:66:7f:de"
+
+      - run: bash .circleci/setup-heroku.sh
+
+      - deploy:
+          name: Deploy Development to Heroku
+          command: |
+            git push --force git@heroku.com:pems-server.git `git subtree split --prefix pems-server master`:refs/heads/master
+
 workflows:
   version: 2
   build_test_deploy:
@@ -119,3 +137,11 @@ workflows:
       - build_frontend:
           requires:
               - checkout_code
+      - deploy_develop:
+          requires:
+              - build_backend
+              - build_frontend
+          filters:
+            branches:
+              only:
+                - develop

@@ -1,12 +1,12 @@
 package org.maroubra.pemsserver.bindings;
 
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import com.google.inject.AbstractModule;
 import org.maroubra.pemsserver.bluetooth.BluetoothService;
 import org.maroubra.pemsserver.configuration.BluetoothConfiguration;
 import org.maroubra.pemsserver.configuration.Configuration;
 import tinyb.BluetoothManager;
 
-public class BluetoothBindings extends AbstractBinder {
+public class BluetoothBindings extends AbstractModule {
     @Override
     protected void configure() {
         BluetoothConfiguration configuration = Configuration.getBluetoothConfiguration();
@@ -14,7 +14,9 @@ public class BluetoothBindings extends AbstractBinder {
         if (configuration.bluetoothEnabled) {
             System.loadLibrary("tinyb");
             System.loadLibrary("javatinyb");
-            bind(new BluetoothService(BluetoothManager.getBluetoothManager()));
+            bind(BluetoothManager.class).toInstance(BluetoothManager.getBluetoothManager());
         }
+
+        bind(BluetoothService.class).toInstance(new BluetoothService(null));
     }
 }

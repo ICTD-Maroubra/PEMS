@@ -3,6 +3,7 @@ plugins {
     id 'application'
     id 'com.github.johnrengelman.shadow' version '2.0.1'
     id 'jacoco'
+    id 'net.ltgt.apt' version '0.12'
 }
 
 group 'org.maroubra'
@@ -33,6 +34,10 @@ dependencies {
 
     compile 'org.glassfish.hk2:hk2-locator:2.4.0'
     compile 'org.glassfish.hk2:hk2-metadata-generator:2.4.0'
+    compile 'org.glassfish.hk2:guice-bridge:2.4.0'
+    compile 'com.google.inject:guice:4.1.0'
+    compile 'com.google.inject.extensions:guice-multibindings:4.1.0'
+    compile 'com.google.inject.extensions:guice-assistedinject:4.1.0'
 
     compile 'com.fasterxml.jackson.module:jackson-module-parameter-names:2.9.1'
     compile 'com.fasterxml.jackson.core:jackson-core:2.8.+'
@@ -50,12 +55,20 @@ dependencies {
     compile 'com.google.guava:guava:23.0'
 
     compile 'com.github.joschi:jadconfig:0.13.0'
+    
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+    compile 'com.squareup.retrofit2:converter-jackson:2.3.0'
+
+
 
     compile files('lib/tinyb/tinyb-0.5.0-23.jar')
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile 'com.google.truth:truth:0.36'
     testCompile 'com.google.truth.extensions:truth-java8-extension:0.36'
+    testCompile 'com.github.javafaker:javafaker:0.13'
+    testCompile 'org.mockito:mockito-core:2.10.0'
+    testCompile 'com.squareup.okhttp3:mockwebserver:3.9.0'
 }
 
 jacocoTestReport {
