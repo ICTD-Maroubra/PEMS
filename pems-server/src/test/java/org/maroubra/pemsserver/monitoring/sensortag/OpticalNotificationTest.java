@@ -3,6 +3,7 @@ package org.maroubra.pemsserver.monitoring.sensortag;
 import com.github.javafaker.Faker;
 import io.reactivex.processors.ReplayProcessor;
 import org.junit.Test;
+import org.maroubra.pemsserver.monitoring.SensorConfig;
 import org.maroubra.pemsserver.monitoring.SensorLog;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -16,7 +17,7 @@ public class OpticalNotificationTest {
         int exponent = faker.number().numberBetween(0, 16);
         float lux = mantissa * (float)Math.pow(2, exponent) / 100.0f;
 
-        SensortagSensorConfig config = new SensortagSensorConfig("some-temp-id");
+        SensorConfig config = new SensorConfig("someId", "thingy", null);
         ReplayProcessor<SensorLog> processor = ReplayProcessor.create(10);
 
         OpticalNotification notification = new OpticalNotification(config, processor);
@@ -26,7 +27,7 @@ public class OpticalNotificationTest {
         SensorLog createdLog = processor.blockingFirst();
 
         assertThat(createdLog).isNotNull();
-        assertThat(createdLog.getSensorId()).matches(config.id());
+        assertThat(createdLog.getSensorId()).matches(config.getId());
         assertThat(createdLog.getAttributeValue()).containsKey(OpticalNotification.LIGHT_INTENSITY_VALUE_ID);
         assertThat((float)createdLog.getAttributeValue().get(OpticalNotification.LIGHT_INTENSITY_VALUE_ID)).isWithin(0.1f).of(lux);
     }

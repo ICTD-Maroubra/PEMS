@@ -3,6 +3,7 @@ package org.maroubra.pemsserver.monitoring.sensortag;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.primitives.Ints;
 import io.reactivex.processors.FlowableProcessor;
+import org.maroubra.pemsserver.monitoring.SensorConfig;
 import org.maroubra.pemsserver.monitoring.SensorLog;
 import tinyb.BluetoothNotification;
 
@@ -16,12 +17,12 @@ public class PressureNotification implements BluetoothNotification<byte[]> {
     public static final String PRESSURE_VALUE_ID = "pressure";
 
     // Configuration for the sensortag that is subscribed to this notification
-    private final SensortagSensorConfig config;
+    private final SensorConfig config;
 
     // Sensorlog processor to publish events too
     private final FlowableProcessor<SensorLog> processor;
 
-    public PressureNotification(SensortagSensorConfig config, FlowableProcessor<SensorLog> processor) {
+    public PressureNotification(SensorConfig config, FlowableProcessor<SensorLog> processor) {
         this.config = config;
         this.processor = processor;
     }
@@ -30,7 +31,7 @@ public class PressureNotification implements BluetoothNotification<byte[]> {
     public void run(byte[] bytes) {
         float pressure = decodePressure(new byte[]{0x00, bytes[5], bytes[4], bytes[3]});
 
-        SensorLog sensorLog = new SensorLog(config.id(), ImmutableMap.of("pressure", pressure));
+        SensorLog sensorLog = new SensorLog(config.getId(), ImmutableMap.of("pressure", pressure));
         processor.onNext(sensorLog);
     }
 

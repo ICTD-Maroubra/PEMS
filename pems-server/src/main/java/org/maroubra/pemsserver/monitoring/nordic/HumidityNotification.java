@@ -2,6 +2,7 @@ package org.maroubra.pemsserver.monitoring.nordic;
 
 import com.google.common.collect.ImmutableMap;
 import io.reactivex.processors.FlowableProcessor;
+import org.maroubra.pemsserver.monitoring.SensorConfig;
 import org.maroubra.pemsserver.monitoring.SensorLog;
 import tinyb.BluetoothNotification;
 
@@ -15,12 +16,12 @@ public class HumidityNotification implements BluetoothNotification<byte[]> {
     public static final String HUMIDITY_VALUE_ID = "relative_humidity";
 
     // Configuration for the Thingy52 that is subscribed to this notification
-    private final Thingy52SensorConfig config;
+    private final SensorConfig config;
 
     // Sensorlog processor to publish events too
     private final FlowableProcessor<SensorLog> processor;
 
-    public HumidityNotification(Thingy52SensorConfig config, FlowableProcessor<SensorLog> processor) {
+    public HumidityNotification(SensorConfig config, FlowableProcessor<SensorLog> processor) {
         this.config = config;
         this.processor = processor;
     }
@@ -29,7 +30,7 @@ public class HumidityNotification implements BluetoothNotification<byte[]> {
     public void run(byte[] bytes) {
         int relativeHumidity = decodeHumidity(bytes[0]);
 
-        SensorLog sensorLog = new SensorLog(config.id(), ImmutableMap.of("relative_humidity", relativeHumidity));
+        SensorLog sensorLog = new SensorLog(config.getId(), ImmutableMap.of("relative_humidity", relativeHumidity));
         processor.onNext(sensorLog);
     }
 

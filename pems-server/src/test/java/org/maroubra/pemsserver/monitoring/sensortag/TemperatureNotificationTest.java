@@ -3,6 +3,7 @@ package org.maroubra.pemsserver.monitoring.sensortag;
 import com.github.javafaker.Faker;
 import io.reactivex.processors.ReplayProcessor;
 import org.junit.Test;
+import org.maroubra.pemsserver.monitoring.SensorConfig;
 import org.maroubra.pemsserver.monitoring.SensorLog;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -20,7 +21,7 @@ public class TemperatureNotificationTest {
         int objectTempNorm = ((objectTemp) << 7) | (int)(objectTempDecimal * 128);
         int ambientTempNorm = ((ambientTemp) << 7) | (int)(ambientTempDecimal * 128);
 
-        SensortagSensorConfig config = new SensortagSensorConfig("some-temp-id");
+        SensorConfig config = new SensorConfig("someId", "sensortag",null);
         ReplayProcessor<SensorLog> processor = ReplayProcessor.create(10);
 
         TemperatureNotification notification = new TemperatureNotification(config, processor);
@@ -29,7 +30,7 @@ public class TemperatureNotificationTest {
         SensorLog createdLog = processor.blockingFirst();
 
         assertThat(createdLog).isNotNull();
-        assertThat(createdLog.getSensorId()).matches(config.id());
+        assertThat(createdLog.getSensorId()).matches(config.getId());
         assertThat((float)createdLog.getAttributeValue().get(TemperatureNotification.OBJECT_TEMP_VALUE_ID)).isWithin(0.1f).of(objectTemp + objectTempDecimal);
         assertThat((float)createdLog.getAttributeValue().get(TemperatureNotification.AMBIENT_TEMP_VALUE_ID)).isWithin(0.1f).of(ambientTemp + ambientTempDecimal);
     }

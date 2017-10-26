@@ -9,5 +9,7 @@ public interface MonitoringService {
 
     Completable initializeSensors();
     Observable<SensorConfig> listSensors();
+    List<Sensor.Descriptor> listSensorTypes();
+    Completable createSensor(SensorConfig config);
     List<AbstractActuator> listActuators();
 }

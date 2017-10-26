@@ -1,34 +1,29 @@
 package org.maroubra.pemsserver.monitoring;
 
-import org.maroubra.pemsserver.bluetooth.BluetoothService;
-import org.maroubra.pemsserver.monitoring.sensortag.SensortagSensor;
-import org.maroubra.pemsserver.monitoring.sensortag.SensortagSensorConfig;
-import tinyb.BluetoothDevice;
+import javax.inject.Inject;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class SensorFactory {
 
-    private final BluetoothService bluetoothService;
+    private final Map<String, Sensor.Factory<? extends Sensor>> sensorFactories;
 
-    public SensorFactory(BluetoothService bluetoothService) {
-        this.bluetoothService = bluetoothService;
+    @Inject
+    public SensorFactory(Map<String, Sensor.Factory<? extends Sensor>> sensorFactories) {
+        this.sensorFactories = sensorFactories;
     }
 
-    public AbstractSensor build(SensorConfig config) {
-        if (config.getClass() == SensortagSensorConfig.class) {
-            return buildSensortagSensor((SensortagSensorConfig) config);
+    public Sensor build(String type, SensorConfig config) throws NoSuchSensorTypeException {
+        if (sensorFactories.containsKey(type)) {
+            final Sensor.Factory<? extends Sensor> factory = sensorFactories.get(type);
+            return factory.create(config);
         }
 
-        // TODO: throw better exception than this
-        throw new RuntimeException();
+        throw new NoSuchSensorTypeException("There is no input of type <" + type + "> registered.");
     }
 
-    private SensortagSensor buildSensortagSensor(SensortagSensorConfig sensorConfig) {
-        try {
-            BluetoothDevice device = bluetoothService.getDevice(sensorConfig.getAddress());
-            return new SensortagSensor(sensorConfig, device);
-        } catch (InterruptedException ex) {
-            // TODO: log and rethrow better error
-            return null;
-        }
+    public List<Sensor.Descriptor> availableSensorDescriptors() {
+        return sensorFactories.entrySet().stream().map(factory -> factory.getValue().getDescriptor()).collect(Collectors.toList());
     }
 }

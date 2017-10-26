@@ -3,6 +3,7 @@ package org.maroubra.pemsserver.monitoring.nordic;
 import com.google.common.primitives.Ints;
 import io.reactivex.processors.ReplayProcessor;
 import org.junit.Test;
+import org.maroubra.pemsserver.monitoring.SensorConfig;
 import org.maroubra.pemsserver.monitoring.SensorLog;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -16,7 +17,7 @@ public class AirQualityNotificationTest {
         int TVOC = 121;
         byte[] TVOCbytes = Ints.toByteArray(TVOC);
 
-        Thingy52SensorConfig config = new Thingy52SensorConfig("some-temp-id");
+        SensorConfig config = new SensorConfig("someId", "sensortag", null);
         ReplayProcessor<SensorLog> processor = ReplayProcessor.create(10);
 
         AirQualityNotification notification = new AirQualityNotification(config, processor);
@@ -26,7 +27,7 @@ public class AirQualityNotificationTest {
         SensorLog createdLog = processor.blockingFirst();
 
         assertThat(createdLog).isNotNull();
-        assertThat(createdLog.getSensorId()).matches(config.id());
+        assertThat(createdLog.getSensorId()).matches(config.getId());
         assertThat(createdLog.getAttributeValue()).containsExactly(AirQualityNotification.CO2_VALUE_ID, eCO2, AirQualityNotification.TVOC_VALUE_ID, TVOC);
     }
 }

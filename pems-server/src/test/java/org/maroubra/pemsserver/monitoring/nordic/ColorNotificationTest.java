@@ -3,6 +3,7 @@ package org.maroubra.pemsserver.monitoring.nordic;
 import com.github.javafaker.Faker;
 import io.reactivex.processors.ReplayProcessor;
 import org.junit.Test;
+import org.maroubra.pemsserver.monitoring.SensorConfig;
 import org.maroubra.pemsserver.monitoring.SensorLog;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -19,7 +20,7 @@ public class ColorNotificationTest {
         int blue = faker.number().numberBetween(0, 32768);
         int clear = faker.number().numberBetween(0, 32768);
 
-        Thingy52SensorConfig config = new Thingy52SensorConfig("some-temp-id");
+        SensorConfig config = new SensorConfig("someId", "sensortag", null);
         ReplayProcessor<SensorLog> processor = ReplayProcessor.create(10);
 
         ColorNotification notification = new ColorNotification(config, processor);
@@ -28,7 +29,7 @@ public class ColorNotificationTest {
         SensorLog createdLog = processor.blockingFirst();
 
         assertThat(createdLog).isNotNull();
-        assertThat(createdLog.getSensorId()).matches(config.id());
+        assertThat(createdLog.getSensorId()).matches(config.getId());
         assertThat(createdLog.getAttributeValue()).containsExactly(
                 ColorNotification.COLOUR_RED_VALUE_ID, red,
                 ColorNotification.COLOUR_GREEN_VALUE_ID, green,

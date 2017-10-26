@@ -2,6 +2,7 @@ package org.maroubra.pemsserver.monitoring.sensortag;
 
 import com.google.common.collect.ImmutableMap;
 import io.reactivex.processors.FlowableProcessor;
+import org.maroubra.pemsserver.monitoring.SensorConfig;
 import org.maroubra.pemsserver.monitoring.SensorLog;
 import tinyb.BluetoothNotification;
 
@@ -16,12 +17,12 @@ public class TemperatureNotification implements BluetoothNotification<byte[]> {
     public static final String AMBIENT_TEMP_VALUE_ID = "ambient_temperature";
 
     // Configuration for the sensortag that is subscribed to this notification
-    private final SensortagSensorConfig config;
+    private final SensorConfig config;
 
     // Sensorlog processor to publish events too
     private final FlowableProcessor<SensorLog> processor;
 
-    public TemperatureNotification(SensortagSensorConfig config, FlowableProcessor<SensorLog> processor) {
+    public TemperatureNotification(SensorConfig config, FlowableProcessor<SensorLog> processor) {
         this.config = config;
         this.processor = processor;
     }
@@ -31,7 +32,7 @@ public class TemperatureNotification implements BluetoothNotification<byte[]> {
         float objectTemp = decodeTemperature(bytes[1], bytes[0]);
         float ambientTemp = decodeTemperature(bytes[3], bytes[2]);
 
-        SensorLog sensorLog = new SensorLog(config.id(), ImmutableMap.of(OBJECT_TEMP_VALUE_ID, objectTemp, AMBIENT_TEMP_VALUE_ID, ambientTemp));
+        SensorLog sensorLog = new SensorLog(config.getId(), ImmutableMap.of(OBJECT_TEMP_VALUE_ID, objectTemp, AMBIENT_TEMP_VALUE_ID, ambientTemp));
         processor.onNext(sensorLog);
     }
 

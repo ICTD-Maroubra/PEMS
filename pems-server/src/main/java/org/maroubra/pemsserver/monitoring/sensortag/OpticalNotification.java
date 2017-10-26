@@ -2,6 +2,7 @@ package org.maroubra.pemsserver.monitoring.sensortag;
 
 import com.google.common.collect.ImmutableMap;
 import io.reactivex.processors.FlowableProcessor;
+import org.maroubra.pemsserver.monitoring.SensorConfig;
 import org.maroubra.pemsserver.monitoring.SensorLog;
 import tinyb.BluetoothNotification;
 
@@ -15,12 +16,12 @@ public class OpticalNotification implements BluetoothNotification<byte[]> {
     public static final String LIGHT_INTENSITY_VALUE_ID = "light_intensity";
 
     // Configuration for the sensortag that is subscribed to this notification
-    private final SensortagSensorConfig config;
+    private final SensorConfig config;
 
     // Sensorlog processor to publish events too
     private final FlowableProcessor<SensorLog> processor;
 
-    public OpticalNotification(SensortagSensorConfig config, FlowableProcessor<SensorLog> processor) {
+    public OpticalNotification(SensorConfig config, FlowableProcessor<SensorLog> processor) {
         this.config = config;
         this.processor = processor;
     }
@@ -29,7 +30,7 @@ public class OpticalNotification implements BluetoothNotification<byte[]> {
     public void run(byte[] bytes) {
         float lux = decodeLux(bytes[1], bytes[0]);
 
-        SensorLog sensorLog = new SensorLog(config.id(), ImmutableMap.of(LIGHT_INTENSITY_VALUE_ID, lux));
+        SensorLog sensorLog = new SensorLog(config.getId(), ImmutableMap.of(LIGHT_INTENSITY_VALUE_ID, lux));
         processor.onNext(sensorLog);
     }
 
