@@ -6,11 +6,13 @@ import io.reactivex.Flowable;
 import io.reactivex.processors.FlowableProcessor;
 import io.reactivex.processors.PublishProcessor;
 import org.maroubra.pemsserver.bluetooth.BluetoothService;
+import org.maroubra.pemsserver.monitoring.ConfigDescriptor;
 import org.maroubra.pemsserver.monitoring.Sensor;
 import org.maroubra.pemsserver.monitoring.SensorConfig;
 import org.maroubra.pemsserver.monitoring.SensorLog;
-import org.maroubra.pemsserver.monitoring.annotations.ConfigClass;
+import org.maroubra.pemsserver.monitoring.annotations.DescriptorClass;
 import org.maroubra.pemsserver.monitoring.annotations.FactoryClass;
+import org.maroubra.pemsserver.monitoring.configuration.ConfigField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tinyb.BluetoothDevice;
@@ -33,14 +35,16 @@ public class Thingy52Sensor implements Sensor {
 
     private static final Logger log = LoggerFactory.getLogger(Thingy52Sensor.class);
 
-    private final Config config;
+    private static final String CONFIG_KEY_ADDRESS = "address";
+
+    private final SensorConfig config;
     private final BluetoothDevice thingyDevice;
     private final FlowableProcessor<SensorLog> sensorLogPublisher = PublishProcessor.create();
 
     @AssistedInject
     public Thingy52Sensor(@Assisted SensorConfig config, BluetoothService service) throws InterruptedException {
-        this.config = (Config) config;
-        this.thingyDevice = service.getDevice(this.config.address);
+        this.config = config;
+        this.thingyDevice = service.getDevice(this.config.getStringProperty(CONFIG_KEY_ADDRESS));
     }
 
     @Override
@@ -73,6 +77,11 @@ public class Thingy52Sensor implements Sensor {
     @Override
     public Flowable<SensorLog> logs() {
         return sensorLogPublisher.onBackpressureLatest();
+    }
+
+    @Override
+    public SensorConfig getConfig() {
+        return config;
     }
 
     /**
@@ -109,47 +118,26 @@ public class Thingy52Sensor implements Sensor {
         Thingy52Sensor create(@Assisted SensorConfig config);
 
         @Override
-        Config getConfig();
+        Descriptor getDescriptor();
     }
 
-    /**
-     * Configuration for the Thingy52 sensor
-     */
-    @ConfigClass
-    public static class Config implements SensorConfig {
-
-        private String id;
-        private String address;
-
-        @Override
-        public String getId() {
-            return id;
-        }
-
-        @Override
-        public void setId(String id) {
-            this.id = id;
-        }
+    @DescriptorClass
+    public static class Descriptor implements Sensor.Descriptor {
 
         @Override
         public String type() {
             return Thingy52Sensor.class.getCanonicalName();
         }
 
-        /**
-         * MAC address of Thingy52
-         * @return MAC address
-         */
-        public String getAddress() {
-            return address;
-        }
+        @Override
+        public ConfigDescriptor configurationDescriptor() {
+            ConfigDescriptor descriptor = new ConfigDescriptor();
+            descriptor.addField(ConfigField.builder(CONFIG_KEY_ADDRESS)
+                    .required(true)
+                    .description("MAC address of the Thingy52")
+                    .build());
 
-        /**
-         * Set the MAC address
-         * @param address MAC address
-         */
-        public void setAddress(String address) {
-            this.address = address;
+            return descriptor;
         }
     }
 }

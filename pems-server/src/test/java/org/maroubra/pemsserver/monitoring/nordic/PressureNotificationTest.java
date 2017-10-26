@@ -4,6 +4,7 @@ import com.github.javafaker.Faker;
 import com.google.common.primitives.Ints;
 import io.reactivex.processors.ReplayProcessor;
 import org.junit.Test;
+import org.maroubra.pemsserver.monitoring.SensorConfig;
 import org.maroubra.pemsserver.monitoring.SensorLog;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -18,8 +19,7 @@ public class PressureNotificationTest {
 
         byte[] pressureBytes = Ints.toByteArray(pressure);
 
-        Thingy52Sensor.Config config = new Thingy52Sensor.Config();
-        config.setId("some-id");
+        SensorConfig config = new SensorConfig("someId", "thingy",null);
         ReplayProcessor<SensorLog> processor = ReplayProcessor.create(10);
 
         PressureNotification notification = new PressureNotification(config, processor);

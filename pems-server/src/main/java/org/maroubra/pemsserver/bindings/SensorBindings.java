@@ -6,6 +6,7 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.google.inject.multibindings.MapBinder;
 import org.maroubra.pemsserver.monitoring.Sensor;
+import org.maroubra.pemsserver.monitoring.annotations.DescriptorClass;
 import org.maroubra.pemsserver.monitoring.annotations.FactoryClass;
 import org.maroubra.pemsserver.monitoring.nordic.Thingy52Sensor;
 import org.maroubra.pemsserver.monitoring.sensortag.SensortagSensor;
@@ -36,13 +37,23 @@ public class SensorBindings extends AbstractModule {
                 (Class<? extends Sensor.Factory<? extends Sensor>>)
                         findInnerClassAnnotatedWith(FactoryClass.class, target, Sensor.Factory.class);
 
+        final Class<? extends Sensor.Descriptor> descriptorClass =
+                (Class<? extends Sensor.Descriptor>)
+                        findInnerClassAnnotatedWith(DescriptorClass.class, target, Sensor.Descriptor.class);
+
         if (factoryClass == null) {
-            log.error("Unable to find an inner class annotated with @FactoryClass in transport {}. This transport will not be available!",
+            log.error("Unable to find an inner class annotated with @FactoryClass in sensor {}. This sensor will not be available!",
                     target);
             return;
         }
 
-        install(new FactoryModuleBuilder().implement(Sensor.class, target).build(factoryClass));
+        if (descriptorClass == null) {
+            log.error("Unable to find an inner class annotated with @DescriptorClass in sensor {}. This sensor will not be available!",
+                    target);
+            return;
+        }
+
+        install(new FactoryModuleBuilder().implement(Sensor.class, target).implement(Sensor.Descriptor.class, descriptorClass).build(factoryClass));
         sensorMapBinder.addBinding(target.getCanonicalName()).to(Key.get(factoryClass));
     }
 
