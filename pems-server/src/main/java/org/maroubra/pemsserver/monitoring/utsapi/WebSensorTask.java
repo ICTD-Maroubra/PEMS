@@ -42,9 +42,9 @@ public class WebSensorTask extends TimerTask {
         Map<String, String> parameters = new LinkedHashMap<>();
         parameters.put("rFromDate", fromDate.toString());
         parameters.put("rToDate", toDate.toString());
-        parameters.put("rFamily", config.getProperty(WebSensor.CONFIG_KEY_FAMILY));
-        parameters.put("rSensor", config.getProperty(WebSensor.CONFIG_KEY_SENSOR));
-        parameters.put("rSubSensor", config.getProperty(WebSensor.CONFIG_KEY_SUB_SENSOR));
+        parameters.put("rFamily", config.getStringProperty(WebSensor.CONFIG_KEY_FAMILY));
+        parameters.put("rSensor", config.getStringProperty(WebSensor.CONFIG_KEY_SENSOR));
+        parameters.put("rSubSensor", config.getStringProperty(WebSensor.CONFIG_KEY_SUB_SENSOR));
         return  parameters;
     }
 
@@ -58,7 +58,7 @@ public class WebSensorTask extends TimerTask {
                 log.info("Time: " + dataArray[0] + " Data: " + dataArray[1]);
                 SensorLog sensorLog = new SensorLog(
                         config.getId(),
-                        ImmutableMap.of(config.getProperty(WebSensor.CONFIG_KEY_SUB_SENSOR), dataArray[1]),
+                        ImmutableMap.of(config.getStringProperty(WebSensor.CONFIG_KEY_SUB_SENSOR), dataArray[1]),
                         LocalDateTime.ofEpochSecond(Long.valueOf(dataArray[0]), 0, ZoneOffset.UTC));
                 processor.onNext(sensorLog);
 

@@ -21,7 +21,6 @@ public class MonitoringServiceImpl implements MonitoringService {
 
     private List<Sensor> runningSensors = new ArrayList<>();
 
-    //@Inject
     public MonitoringServiceImpl(SensorFactory sensorFactory, MongoCollection<SensorConfig> sensorConfigCollection, MongoCollection<SensorLog> sensorLogCollection) {
         this.sensorFactory = sensorFactory;
         this.sensorConfigCollection = sensorConfigCollection;
@@ -53,17 +52,21 @@ public class MonitoringServiceImpl implements MonitoringService {
     }
 
     @Override
-    public void createSensor(SensorConfig config) {
+    public List<Sensor.Descriptor> listSensorTypes() {
+        return sensorFactory.availableSensorDescriptors();
+    }
+
+    @Override
+    public Completable createSensor(SensorConfig config) {
         Sensor sensor;
         try {
             sensor = sensorFactory.build(config.getType(), config);
         } catch (NoSuchSensorTypeException ex) {
             log.error("Could not start sensor with getId {}, its type was not found.", config.getId());
-            return;
+            return Completable.error(ex);
         }
 
-        sensorConfigCollection.insertOne(config).toBlocking().single();
-        startSensor(sensor);
+        return sensorConfigCollection.insertOne(config).toCompletable().doOnCompleted(() -> startSensor(sensor));
     }
 
     private void startSensor(Sensor sensor) {

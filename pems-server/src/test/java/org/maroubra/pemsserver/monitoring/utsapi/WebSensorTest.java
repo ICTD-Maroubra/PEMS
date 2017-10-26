@@ -22,7 +22,7 @@ public class WebSensorTest {
     public void testWebSensorStart() throws IOException {
         final Logger log = LoggerFactory.getLogger(WebSensor.class);
 
-        SensorConfig webSensorConfig1 = new SensorConfig("someId", "web", ImmutableMap.of(
+        SensorConfig webSensorConfig1 = new SensorConfig("web", ImmutableMap.of(
                 WebSensor.CONFIG_KEY_FAMILY, "wasp",
                 WebSensor.CONFIG_KEY_SENSOR, "ES_B_05_416_7C15",
                 WebSensor.CONFIG_KEY_SUB_SENSOR, "BAT"

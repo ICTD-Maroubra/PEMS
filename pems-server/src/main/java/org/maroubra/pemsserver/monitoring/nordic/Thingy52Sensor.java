@@ -6,10 +6,13 @@ import io.reactivex.Flowable;
 import io.reactivex.processors.FlowableProcessor;
 import io.reactivex.processors.PublishProcessor;
 import org.maroubra.pemsserver.bluetooth.BluetoothService;
+import org.maroubra.pemsserver.monitoring.ConfigDescriptor;
 import org.maroubra.pemsserver.monitoring.Sensor;
 import org.maroubra.pemsserver.monitoring.SensorConfig;
 import org.maroubra.pemsserver.monitoring.SensorLog;
+import org.maroubra.pemsserver.monitoring.annotations.DescriptorClass;
 import org.maroubra.pemsserver.monitoring.annotations.FactoryClass;
+import org.maroubra.pemsserver.monitoring.configuration.ConfigField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tinyb.BluetoothDevice;
@@ -41,7 +44,7 @@ public class Thingy52Sensor implements Sensor {
     @AssistedInject
     public Thingy52Sensor(@Assisted SensorConfig config, BluetoothService service) throws InterruptedException {
         this.config = config;
-        this.thingyDevice = service.getDevice(this.config.getProperty(CONFIG_KEY_ADDRESS));
+        this.thingyDevice = service.getDevice(this.config.getStringProperty(CONFIG_KEY_ADDRESS));
     }
 
     @Override
@@ -113,5 +116,28 @@ public class Thingy52Sensor implements Sensor {
     public interface Factory extends Sensor.Factory<Thingy52Sensor> {
         @Override
         Thingy52Sensor create(@Assisted SensorConfig config);
+
+        @Override
+        Descriptor getDescriptor();
+    }
+
+    @DescriptorClass
+    public static class Descriptor implements Sensor.Descriptor {
+
+        @Override
+        public String type() {
+            return Thingy52Sensor.class.getCanonicalName();
+        }
+
+        @Override
+        public ConfigDescriptor configurationDescriptor() {
+            ConfigDescriptor descriptor = new ConfigDescriptor();
+            descriptor.addField(ConfigField.builder(CONFIG_KEY_ADDRESS)
+                    .required(true)
+                    .description("MAC address of the Thingy52")
+                    .build());
+
+            return descriptor;
+        }
     }
 }

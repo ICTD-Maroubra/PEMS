@@ -1,5 +1,6 @@
 package org.maroubra.pemsserver.utilities;
 
+import rx.Completable;
 import rx.Observable;
 
 import java.util.List;
@@ -12,6 +13,16 @@ public class RxUtils {
         observable
                 .doOnError(future::completeExceptionally)
                 .toList()
+                .forEach(future::complete);
+        return future;
+    }
+
+    public static CompletableFuture fromCompletable(Completable completable) {
+        final CompletableFuture future = new CompletableFuture();
+        completable
+                .doOnError(future::completeExceptionally)
+                .toObservable()
+                .single()
                 .forEach(future::complete);
         return future;
     }

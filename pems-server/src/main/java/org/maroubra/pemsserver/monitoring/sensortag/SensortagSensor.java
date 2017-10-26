@@ -5,10 +5,13 @@ import com.google.inject.assistedinject.AssistedInject;
 import io.reactivex.Flowable;
 import io.reactivex.processors.PublishProcessor;
 import org.maroubra.pemsserver.bluetooth.BluetoothService;
+import org.maroubra.pemsserver.monitoring.ConfigDescriptor;
 import org.maroubra.pemsserver.monitoring.Sensor;
 import org.maroubra.pemsserver.monitoring.SensorConfig;
 import org.maroubra.pemsserver.monitoring.SensorLog;
+import org.maroubra.pemsserver.monitoring.annotations.DescriptorClass;
 import org.maroubra.pemsserver.monitoring.annotations.FactoryClass;
+import org.maroubra.pemsserver.monitoring.configuration.ConfigField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tinyb.BluetoothDevice;
@@ -38,7 +41,7 @@ public class SensortagSensor implements Sensor {
     @AssistedInject
     public SensortagSensor(@Assisted SensorConfig config, BluetoothService bluetoothService) throws InterruptedException {
         this.config = config;
-        this.sensortagDevice = bluetoothService.getDevice(this.config.getProperty(CONFIG_KEY_ADDRESS));
+        this.sensortagDevice = bluetoothService.getDevice(this.config.getStringProperty(CONFIG_KEY_ADDRESS));
     }
 
     @Override
@@ -199,5 +202,28 @@ public class SensortagSensor implements Sensor {
     public interface Factory extends Sensor.Factory<SensortagSensor> {
         @Override
         SensortagSensor create(@Assisted SensorConfig config);
+
+        @Override
+        Descriptor getDescriptor();
+    }
+
+    @DescriptorClass
+    public static class Descriptor implements Sensor.Descriptor {
+
+        @Override
+        public String type() {
+            return SensortagSensor.class.getCanonicalName();
+        }
+
+        @Override
+        public ConfigDescriptor configurationDescriptor() {
+            ConfigDescriptor descriptor = new ConfigDescriptor();
+            descriptor.addField(ConfigField.builder(CONFIG_KEY_ADDRESS)
+                    .required(true)
+                    .description("MAC address of the Sensor Tag")
+                    .build());
+
+            return descriptor;
+        }
     }
 }

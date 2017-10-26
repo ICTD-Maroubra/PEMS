@@ -19,7 +19,7 @@ public class WebSensorTaskTest {
 
     @Test
     public void testSensorTask() throws IOException {
-        SensorConfig webSensorConfig1 = new SensorConfig("web001", "web", ImmutableMap.of(
+        SensorConfig webSensorConfig1 = new SensorConfig("web", ImmutableMap.of(
                 WebSensor.CONFIG_KEY_FAMILY, "wasp",
                 WebSensor.CONFIG_KEY_SENSOR, "ES_B_05_416_7C15",
                 WebSensor.CONFIG_KEY_SUB_SENSOR, "BAT"

@@ -7,17 +7,8 @@ import java.util.Map;
 @JsonAutoDetect
 public class CreateSensorRequest {
 
-    private String id;
     private String type;
-    private Map<String, String> configMap;
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getId() {
-        return id;
-    }
+    private Map<String, Object> configMap;
 
     public void setType(String type) {
         this.type = type;
@@ -27,11 +18,11 @@ public class CreateSensorRequest {
         return type;
     }
 
-    public void setConfigMap(Map<String, String> configMap) {
+    public void setConfigMap(Map<String, Object> configMap) {
         this.configMap = configMap;
     }
 
-    public Map<String, String> getConfigMap() {
+    public Map<String, Object> getConfigMap() {
         return configMap;
     }
 }

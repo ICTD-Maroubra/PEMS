@@ -32,5 +32,11 @@ public interface Sensor {
 
     interface Factory<T extends Sensor> {
         T create(@Assisted SensorConfig sensorConfig);
+        Descriptor getDescriptor();
+    }
+
+    interface Descriptor {
+        String type();
+        ConfigDescriptor configurationDescriptor();
     }
 }
