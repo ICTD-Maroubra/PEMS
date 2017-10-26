@@ -11,8 +11,6 @@ import io.swagger.models.License;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.maroubra.pemsserver.api.resources.HelloWorldResource;
 import org.maroubra.pemsserver.bindings.ObjectMapperFactory;
-import org.maroubra.pemsserver.configuration.Configuration;
-import org.maroubra.pemsserver.configuration.ServerConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,8 +21,6 @@ public class JerseyApplication extends ResourceConfig {
     public JerseyApplication() {
         log.info("setting up hk2");
         packages("org.maroubra.pemsserver", "org.maroubra.pemsserver.jersey");
-
-        ServerConfiguration serverConfiguration = Configuration.getServerConfiguration();
 
         JacksonJaxbJsonProvider jacksonJaxbJsonProvider = new JacksonJaxbJsonProvider();
         jacksonJaxbJsonProvider.setMapper(new ObjectMapperFactory().buildObjectMapper());
@@ -41,7 +37,6 @@ public class JerseyApplication extends ResourceConfig {
         BeanConfig beanConfig = new BeanConfig();
         beanConfig.setInfo(info);
         beanConfig.setSchemes(new String[]{"http"});
-        beanConfig.setHost(serverConfiguration.host + ":" + serverConfiguration.port);
         beanConfig.setBasePath("/");
         beanConfig.setResourcePackage(HelloWorldResource.class.getPackage().getName());
 
