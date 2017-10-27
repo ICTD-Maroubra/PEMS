@@ -15,6 +15,7 @@ render() {
       <div>
         <PageTitle title="Emergency"/>
         <SingleCard title= "Emergency" content="99"/>
+        <SuperSplit title= "split" content="90"/>
 
       </div>
     );
