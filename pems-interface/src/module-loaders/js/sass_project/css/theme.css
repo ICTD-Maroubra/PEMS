@@ -599,7 +599,12 @@ img.logo {
   width: 100%;
   margin: 20px;
   padding: 20px;
+<<<<<<< HEAD
+  height: 140px;
+  margin-right: 20px; }
+=======
   min-height: 140px; }
+>>>>>>> 7c105664454533a4d1e68233919adc160d9798c7
 
 .card-content {
   font-size: 65px;
@@ -624,6 +629,18 @@ img.logo {
   width: 33.33%;
   display: inline-flex; }
 
+<<<<<<< HEAD
+.supportsplit1 {
+  width: 60%;
+  display: inline-flex; }
+
+.card-icon-title {
+  text-align: -webkit-center;
+  font-size: 42px; }
+
+.card-icon {
+  text-align: -webkit-center; }
+=======
 .switch {
   display: inline-block;
   height: 34px;
@@ -674,6 +691,7 @@ input:checked + .slider:before {
 
 .chart {
   padding-top: 10px; }
+>>>>>>> 7c105664454533a4d1e68233919adc160d9798c7
 
 .Menu {
   width: 190px;
