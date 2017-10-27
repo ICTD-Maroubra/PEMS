@@ -1,5 +1,7 @@
 import React from "react";
 
+import SideMenu from "../components/Menu/SideMenu";
+
 import DoubleCards from "../components/Card/DoubleCards";
 import SingleCard from "../components/Card/SingleCard";
 import Button from "../components/Widgets/Button";
@@ -26,10 +28,16 @@ render() {
 
     ]
 
+    const currentPath= this.props.location.pathname;
     return (
       <div>
+      <SideMenu currentPath={currentPath}/>
+      <div class="body">
       <PageTitle title="Settings"/>
-      <DoubleCards title1= "Settings Subtitle 1" content1={ButtonList}   unit1=""  title2= "Settings Subtitle 2" content2={ToggleList} unit2=""/>
+      <div class="flex-box">
+      <SingleCard title= "Settings Subtitle 1" content={ButtonList} unit="" accContent=""/>
+      </div>
+      </div>
       </div>
     );
   }

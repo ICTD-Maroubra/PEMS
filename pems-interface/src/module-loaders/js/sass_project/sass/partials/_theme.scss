@@ -732,6 +732,9 @@ h1, h2 {
 
 .header{
   background:$white ;
+position: fixed;
+z-index: 1;
+width: 100%;
 }
 
 .body{
@@ -743,4 +746,9 @@ h1, h2 {
     padding: 17px;
     border-bottom: 1px solid #ddd;
     width: 100%;
+    padding-top: 73px;
+}
+
+.hideClass{
+  display:none !important;
 }

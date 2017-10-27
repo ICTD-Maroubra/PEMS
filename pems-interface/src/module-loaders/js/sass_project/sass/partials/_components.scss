@@ -10,7 +10,7 @@ img.logo {
   width: 100%;
   margin: 20px;
   padding: 20px;
-  height: 140px;
+  min-height: 160px;
   margin-right: 20px;
 }
 
@@ -27,6 +27,11 @@ img.logo {
     color:$tertiary-color;
 }
 
+
+img.icon {
+    height: 60px;
+}
+
 .split2 {
     width: 50%;
     display: inline-flex;
@@ -35,14 +40,189 @@ img.logo {
     width: 33.33%;
     display: inline-flex;
 }
-.supportsplit1 {
-    width: 60%;
+.split66 {
+    width: 66.6%;
     display: inline-flex;
 }
 .card-icon-title {
     text-align: -webkit-center;
     font-size: 42px;
+    font-weight: bold;
+    padding-top: 10px;
+    padding-bottom: 20px;
+    color: $tertiary-color;
 }
 .card-icon {
     text-align: -webkit-center;
+    padding-top: 35px;
+}
+
+.flex-box{
+  display: inline-flex;
+  width: 100%;
+}
+
+.tooltip {
+    position: relative;
+    text-align: -webkit-right;
+}
+
+.info-text {
+    width: 100%;
+    background-color: $tertiary-color;
+    color: white;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    z-index: 1;
+    height: 35px;
+    padding-top: 11px;
+}
+
+/* Acordeon styles */
+.tab {
+  position: relative;
+  margin-bottom: 1px;
+  width: 100%;
+  color: white;
+  border-top: 2px solid #e6e6e6;
+}
+input {
+  position: absolute;
+  opacity: 0;
+  z-index: -1;
+}
+label {
+  position: relative;
+  display: block;
+  padding: 0 0 0 1em;
+  background: #16a085;
+  font-weight: bold;
+  line-height: 3;
+  cursor: pointer;
+}
+
+.tab-content {
+  max-height: 0;
+  overflow: hidden;
+  background: $tertiary-color;
+  -webkit-transition: max-height .35s;
+  -o-transition: max-height .35s;
+  transition: max-height .35s;
+  border-radius: 5px;
+  margin-top: 30px;
+
+}
+
+.accordion-content-box{
+    padding: 8px;
+}
+
+.blue .tab-content {
+  background: $tertiary-color;
+}
+.tab-content p {
+  margin: 1em;
+}
+/* :checked */
+input:checked ~ .tab-content {
+  max-height: 10em;
+}
+/* Icon */
+label::after {
+  position: absolute;
+    right: 46%;
+    top: -16px;
+    display: block;
+    height: 3em;
+    line-height: 3;
+    text-align: center;
+    -webkit-transition: all .35s;
+    -o-transition: all .35s;
+    transition: all .35s;
+    color: $tertiary-color;
+    font-size: 20px;
+}
+input[type=checkbox] + .accordion-label::after {
+  content: "+";
+}
+input[type=radio] + .accordion-label::after {
+  content: "\25BC";
+}
+input[type=checkbox]:checked + .accordion-label::after {
+  transform: rotate(315deg);
+}
+input[type=radio]:checked + .accordion-label::after {
+  transform: rotateX(180deg);
+}
+
+/*Alarm Accordion*/
+.alarm-accordion {
+    margin: 20px;
+}
+
+.alarm-accordion .accordion-label {
+    background: white;
+    color: #414c53;
+    border-radius: 5px 5px 0px 0px;
+    font-size: 24px;
+}
+
+.alarm-accordion .tab-content {
+    margin-top: 0px;
+    border-radius: 0;
+  }
+
+  .alarm-accordion label::after {
+    right: 3%;
+    top: 4px;
+  }
+
+  .alarm-accordion .tab {
+      border: none;
+  }
+
+  .alarmitem-icon{
+    width:7%;
+    text-align: -webkit-center;
+    padding-top: 6px;
+  }
+
+  .alarmitem-content{
+    width:93%;
+  }
+
+  .alarmitemtable{
+  width:100%;
+  }
+
+  .alarm-item-icon{
+    height:30px;
+
+  }
+
+  .userLogin {
+      position: absolute;
+      right: 143px;
+      top: 1px;
+  }
+
+  .usernameHeader {
+      top: 12px;
+      position: absolute;
+      right: -90px;
+      font-size: 20px;
+      color: $tertiary-color;
+  }
+
+  .usernameHeader::after {
+content:"▼";
+font-size:12px;
+color: $tertiary-color;
+
+  }
+
+img.userLogo {
+    height: 33px;
+    padding: 8px;
 }

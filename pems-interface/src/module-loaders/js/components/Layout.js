@@ -15,10 +15,7 @@ render() {
     return (
       <div>
       <Header />
-      <SideMenu />
-      <div class="body">
       {this.props.children}
-      </div>
       <Footer />
       </div>
     );

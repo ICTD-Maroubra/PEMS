@@ -1,10 +1,14 @@
 import React from "react";
 
+import Accordion from "../Widgets/Accordion"
+
 export default class SingleCard extends React.Component {
 
   render() {
     console.log(this.props);
-    return (
+    const balloonIcon = "../../assets/images/edited/BalloonIcon.png";
+return (
+
 
 <div class="card">
   <div class="card-title">
@@ -13,6 +17,9 @@ export default class SingleCard extends React.Component {
   <div class="card-content">
     {this.props.content}
     {this.props.unit}
+  </div>
+  <div>
+    <Accordion id={this.props.accId} label={this.props.accLabel} content={this.props.accContent} />
   </div>
 </div>
 

@@ -1,6 +1,7 @@
 import React from "react";
 
 import AppTitle from "./Header/AppTitle";
+import UserLogin from "./Header/UserLogin";
 
 export default class Header extends React.Component {
 
@@ -8,6 +9,7 @@ export default class Header extends React.Component {
     return (
       <div class="header">
       <AppTitle />
+      <UserLogin />
       </div>
     );
   }
