@@ -12,12 +12,19 @@ export default class Dashboard extends React.Component {
   constructor(){
     super();
     this.state = {
-      chartData:{}
-      }
+      chartData:{},
+      test: []
+    };
     }
 
     componentWillMount(){
       this.getChartData();
+      this.APITest();
+    }
+
+    APITest() {
+    fetch('https://pems-server.herokuapp.com/api-browser/#/definitions/HelloWorldResponse')
+        .then(({ results }) => this.setState({ test: results }));
     }
 
   getChartData(){
@@ -29,7 +36,7 @@ export default class Dashboard extends React.Component {
                       {
                         label:"temp data",
                         data:[
-                              4,
+                              7,
                               2,
                               3,
                               6,
@@ -51,11 +58,13 @@ render() {
     <div><LineChart chartData={this.state.chartData} /></div>
   ]
 
+  console.log(this.state.test);
+
     return (
       <div>
         <PageTitle title="Dashboard"/>
 
-        <TripleCards title1= "Counter 1" content1="23"   unit1="°C" title2= "Counter 2" content2="23"   unit2="%"  title3= "Counter 3" content3="20" unit3="^"/>
+        <TripleCards title1= "Counter 1" content1={this.state.test}   unit1="°C" title2= "Counter 2" content2="23"   unit2="%"  title3= "Counter 3" content3="20" unit3="^"/>
         <div class="split1"> <SingleCard title= "Temperature Graph" content={InlineChart} unit=""/></div>
         <DoubleCards title1= "Counter 4" content1="99"   unit1="°C"  title2= "Counter 5" content2="100" unit2="%"/>
 
