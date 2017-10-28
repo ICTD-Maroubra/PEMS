@@ -1,5 +1,8 @@
 package org.maroubra.pemsserver.api.models;
 
+import com.google.common.collect.Queues;
+import javax.management.QueryExp;
+
 public class UserOffset {
     //Statements are initialised for testing the as the system is not yet integrated with UI
     public static int tempMax = 50;
@@ -9,7 +12,7 @@ public class UserOffset {
     public static int O2 = 40;
     public static int getUserOffset() {
         
-        Query query = new Query();
+        Queues query = new Queues();
         query.addCriteria(Criteria.where("name").is("appleB"));
         query.fields().include("name");
         

@@ -1,4 +1,5 @@
 package org.maroubra.pemsserver.api.models.alarms.responses;
+package org.maroubra.pemsserver.api.models.alarms.requests;
 
 import org.maroubra.pemsserver.api.models.UserOffset;
 import org.maroubra.pemsserver.api.models.sensors.responses.SensorListResponse;
