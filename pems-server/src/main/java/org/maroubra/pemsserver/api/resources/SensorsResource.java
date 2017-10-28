@@ -1,6 +1,5 @@
 package org.maroubra.pemsserver.api.resources;
 
-import com.sun.corba.se.impl.corba.CORBAObjectImpl;
 import io.swagger.annotations.*;
 import org.maroubra.pemsserver.api.models.sensors.requests.CreateSensorRequest;
 import org.maroubra.pemsserver.api.models.sensors.requests.UpdateSensorRequest;
@@ -10,7 +9,6 @@ import org.maroubra.pemsserver.monitoring.MonitoringService;
 import org.maroubra.pemsserver.monitoring.Sensor;
 import org.maroubra.pemsserver.monitoring.SensorConfig;
 import org.maroubra.pemsserver.monitoring.SensorLog;
-import org.omg.CORBA.Object;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,24 +85,7 @@ public class SensorsResource {
             @ApiResponse(code = 404, message = "Specified sensor does not exist")
     })
     public SensorHistoryResponse getHistory(@PathParam("id") String id, @PathParam("dataSize") int size) {
-        List<SensorLog> sensorLogs = null;
-        if (id.equals("kutlu")) {
-            ArrayList<SensorLog> sensorLogskutlu = new ArrayList<>();
-            Map<String, java.lang.Object> kutluMap = new HashMap<>();
-            kutluMap.put("kutlu", "something here");
-            kutluMap.put("kutlu1", "anotherthing here");
-            Map<String, java.lang.Object> kutluMap2 = new HashMap<>();
-            kutluMap2.put("kutlu2", "someotherthing here");
-            kutluMap2.put("kutlu3", "here");
-
-            sensorLogskutlu.add(new SensorLog(id, kutluMap, LocalDateTime.now()));
-            sensorLogskutlu.add(new SensorLog(id, kutluMap2, LocalDateTime.now()));
-
-            sensorLogs = sensorLogskutlu;
-        }
-        else {
-            sensorLogs = monitoringService.getSensorLogs(id, size);
-        }
+        List<SensorLog> sensorLogs = monitoringService.getSensorLogs(id, size);
         return SensorHistoryResponse.create(sensorLogs);
     }
 }
