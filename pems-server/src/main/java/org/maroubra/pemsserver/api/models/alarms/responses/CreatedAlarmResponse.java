@@ -1,7 +1,9 @@
 package org.maroubra.pemsserver.api.models.alarms.responses;
 
+package org.maroubra.pemsserver.api.models.alarms.requests;
+
 public class CreatedAlarmResponse {
-    package org.maroubra.pemsserver.api.models.alarms.requests;
+    
     
     import api.models.alarms.requests.CreateAlarmRequest;
     import api.models.alarms.requests.StartAlarmRequest;
@@ -23,7 +25,7 @@ public class CreatedAlarmResponse {
                 if (!sAlarmThread.isRunning()) {
                     CreateAlarmRequest.getInstance().post(new CreateAlarmRequest.StartAlarmRequest());
                 } else {
-                    CreateAlarmRequest.getInstance().post(new StopAlarmRequest());
+                    CreateAlarmRequest.getInstance().post(new CreateAlarmRequest.StopAlarmRequest());
                 }
             }
         }
