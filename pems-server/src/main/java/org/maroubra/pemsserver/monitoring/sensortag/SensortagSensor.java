@@ -60,11 +60,9 @@ public class SensortagSensor implements Sensor {
                 startAccelerometerCharacteristic();
 
         if (!allCharacteristicsStarted) {
-            log.info("Error in enabling sensors");
             sensortagDevice.disconnect();
             return false;
         }
-        log.info("Starting up works");
         return true;
     }
 
