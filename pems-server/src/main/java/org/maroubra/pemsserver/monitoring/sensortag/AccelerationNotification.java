@@ -9,6 +9,10 @@ import tinyb.BluetoothNotification;
 
 import java.text.DecimalFormat;
 
+/**
+ * A notification from the Sensortag Acceleration characteristic
+ * @see <a href="http://processors.wiki.ti.com/index.php/CC2650_SensorTag_User%27s_Guide#Movement_Sensor">Acceleration sensor spec</a>
+ */
 public class AccelerationNotification implements BluetoothNotification<byte[]> {
 
 
@@ -45,10 +49,16 @@ public class AccelerationNotification implements BluetoothNotification<byte[]> {
         processor.onNext(sensorLog);
     }
 
-    private Integer shortSignedAtOffset(byte[] c, int offset)
+    /**
+     * Decode the acceleration from bytes sent by the Sensortag
+     * @param bytes bytes of the acceleration notification (expects 18 bytes)
+     * @param offset byte position of the acceleration axis (6 - x axis, 8 - y axis, 10 - z axis)
+     * @return decoded acceleration (as integer)
+     */
+    private Integer shortSignedAtOffset(byte[] bytes, int offset)
     {
-        Integer lowerByte = c[offset] & 0xFF;
-        Integer upperByte = (int) c[offset + 1]; //Interpret MSB as singedan
+        Integer lowerByte = bytes[offset] & 0xFF;
+        Integer upperByte = (int) bytes[offset + 1]; //Interpret MSB as singedan
         return (upperByte << 8) + lowerByte;
     }
 
