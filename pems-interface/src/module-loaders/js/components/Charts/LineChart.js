@@ -28,8 +28,9 @@ static defaultProps = {
               scales: {
                   yAxes: [{
                       ticks: {
-                    beginAtZero: true,
-                    stepSize:1
+                    beginAtZero: false,
+                    stepSize:3,
+                    max: 36
                 }
             }]
         }

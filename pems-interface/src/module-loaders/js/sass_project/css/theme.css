@@ -615,6 +615,10 @@ img.logo {
   text-align: -webkit-center;
   color: #414b52; }
 
+.card-unit {
+  font-size: 30px;
+  margin-left: 6px; }
+
 .card-title {
   font-size: 25px;
   font-weight: 600;

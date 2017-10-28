@@ -35,17 +35,23 @@ export default class Dashboard extends React.Component {
     //AJAX CALL HERE
     this.setState({
       chartData:{
-          labels: ['R1', 'R2', 'R3', 'R4', 'R5', 'R6'],
+          labels: ['12:30', '13:00', '13:30', '14:00', '14:30', '15:00','15:30', '16:00', '16:30', '17:00', '17:30', '18:00'],
           datasets: [
                       {
                         label:"temp data",
                         data:[
-                              7,
-                              2,
-                              3,
-                              6,
-                              5,
-                              7
+                              17,
+                              20,
+                              23,
+                              26,
+                              25,
+                              27,
+                              23,
+                              20,
+                              23,
+                              26,
+                              25,
+                              27
                               ],
                         borderColor: [
                         'rgb(78, 94, 106)'
@@ -73,16 +79,16 @@ render() {
         <Alarms id="tab-seven" content=""/>
         </div>
 
-        <TripleCards title1= "Counter 1" content1="13"   unit1="°C" accId1="tab-one" accContent1="Content ONE"
-                     title2= "Counter 2" content2="23"   unit2="%" accId2="tab-two" accContent2="Content TWO"
-                     title3= "Counter 3" content3="20" unit3="°C" accId3="tab-three" accContent3="Content THREE"/>
+        <TripleCards title1= "Oxygen Level" content1="19.2"   unit1="%" accId1="tab-one" accContent1="Oxygen sensor description"
+                     title2= "Temperature" content2="23"   unit2="°C" accId2="tab-two" accContent2="Current temperature"
+                     title3= "Humidity" content3="45" unit3="%" accId3="tab-three" accContent3="Humidity sensor description"/>
 
         <div class="flex-box">
-        <SingleCard title= "Temperature Graph" content={InlineChart} unit="" accId="tab-six" accContent="Content SIX"/>
+        <SingleCard title= "Temperature Graph" content={InlineChart} unit="" accId="tab-six" accContent="Temperature Readings"/>
         </div>
 
-        <DoubleCards title1= "Counter 4" content1="99"   unit1="°C" accId1="tab-four" accContent1="Content FOUR"
-                     title2= "Counter 5" content2="100" unit2="%" accId2="tab-five" accContent2="Content FIVE"/>
+        <DoubleCards title1= "CO2" content1="389"   unit1="ppm" accId1="tab-four" accContent1="CO2 sensor description"
+                     title2= "Luminosity" content2="450" unit2="nm" accId2="tab-five" accContent2="Luminosity sensor description"/>
 
 </div>
       </div>
