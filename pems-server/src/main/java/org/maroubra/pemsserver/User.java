@@ -1,7 +1,6 @@
 package org.maroubra.pemsserver;
 
 public class User {
-    private static int TempMaxOffsetSlider;
     private static int TempMinOffsetSlider;
     private static int ActuatorActivate;
     private static int ActuatorTempMaxControlOffset;
@@ -21,7 +20,6 @@ public class User {
         return ActuatorActivate;
     }
     public static void TempSlider() {
-        TempMaxOffsetSlider = 25;
         TempMinOffsetSlider = 20;
     }
 
