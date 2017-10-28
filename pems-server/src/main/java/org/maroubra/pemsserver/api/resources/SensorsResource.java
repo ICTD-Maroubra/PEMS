@@ -33,6 +33,7 @@ import static org.maroubra.pemsserver.utilities.RxUtils.fromObservable;
 public class SensorsResource {
 
     private static final Logger log = LoggerFactory.getLogger(SensorsResource.class);
+    private static final int DEFAULT_SENSOR_HISTORY_SIZE = 5;
 
     private final MonitoringService monitoringService;
 
@@ -79,12 +80,15 @@ public class SensorsResource {
     }
 
     @GET
-    @Path("{id}/{dataSize}/history")
+    @Path("{id}/history")
     @ApiOperation(value = "Get a sensors history")
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Specified sensor does not exist")
     })
-    public SensorHistoryResponse getHistory(@PathParam("id") String id, @PathParam("dataSize") int size) {
+    public SensorHistoryResponse getHistory(@PathParam("id") String id, @QueryParam("dataSize") int size) {
+        if (size == 0) {
+            size = DEFAULT_SENSOR_HISTORY_SIZE;
+        }
         List<SensorLog> sensorLogs = monitoringService.getSensorLogs(id, size);
         return SensorHistoryResponse.create(sensorLogs);
     }

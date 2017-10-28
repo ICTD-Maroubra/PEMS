@@ -25,9 +25,17 @@ public class SensorHistoryResponse {
         List<Object> logTime =  new ArrayList<>();;
         for (SensorLog sensorLog : sensorLogList) {
             ImmutableMap log = ImmutableMap.copyOf(sensorLog.getAttributeValue());
-            logData.add(log.values().asList());
-            logType.add(log.keySet().asList());
+            if (log.values().asList().size() == 1) {
+                logData.addAll(log.values().asList());
+                logType.addAll(log.keySet().asList());
+            }
+            else {
+                logData.add(log.values().asList());
+                logType.add(log.keySet().asList());
+            }
             logTime.add(sensorLog.getTimestamp().toString());
+
+
         }
         sensorHistoryResponse.data = logData.toArray();
         sensorHistoryResponse.type = logType.toArray();
