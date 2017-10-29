@@ -41,6 +41,12 @@ public class SensortagSensor implements Sensor {
     private boolean luxometerSensorEnabled = false;
     private boolean accelerometerSensorEnabled = false;
 
+    public static final String THERMOMETER = "Thermometer";
+    public static final String HYGROMETER = "Hygrometer";
+    public static final String BAROMETER = "Barometer";
+    public static final String LUXOMETER = "Luxometer";
+    public static final String ACCELEROMETER = "Accelerometer";
+
     @AssistedInject
     public SensortagSensor(@Assisted SensorConfig config, BluetoothService bluetoothService) throws InterruptedException {
         this.config = (Config) config;
@@ -66,35 +72,6 @@ public class SensortagSensor implements Sensor {
         return true;
     }
 
-    /**
-     * Gets the specified characteristic on the Sensortag and disables it.
-     * @param sensor - sensor specified to be disabled
-     * @return successfully stopped the specified characteristic.
-     */
-    public boolean stopSelectedSensor(String sensor) {
-        switch(sensor) {
-            case "Thermometer":
-                stopTemperatureCharacteristic();
-                break;
-            case "Barometer":
-                stopBarometerCharacteristic();
-                break;
-            case "Hygrometer":
-                stopHumidityCharacteristic();
-                break;
-            case "Luxometer":
-                stopOpticalCharacteristic();
-                break;
-            case "Accelerometer":
-                stopAccelerationCharacteristic();
-                break;
-            default:
-                log.info("Sensor does not exist!, please input a valid sensor.");
-                return false;
-        }
-        return true;
-    }
-
     @Override
     public boolean stop() {
         return sensortagDevice.disconnect();
@@ -106,35 +83,65 @@ public class SensortagSensor implements Sensor {
     }
 
     /**
+     * Gets the specified characteristic on the Sensortag and disables it.
+     * @param sensor - sensor specified to be disabled
+     * @return successfully stopped the specified characteristic.
+     */
+    public boolean stopSelectedSensor(String sensor) {
+        switch(sensor) {
+            case THERMOMETER:
+                stopTemperatureCharacteristic();
+                break;
+            case BAROMETER:
+                stopBarometerCharacteristic();
+                break;
+            case HYGROMETER:
+                stopHumidityCharacteristic();
+                break;
+            case LUXOMETER:
+                stopOpticalCharacteristic();
+                break;
+            case ACCELEROMETER:
+                stopAccelerationCharacteristic();
+                break;
+            default:
+                log.info("Sensor does not exist!, please input a valid sensor.");
+                return false;
+        }
+        return true;
+    }
+
+
+    /**
      * Gets the specified characteristic on the Sensortag and configures the period.
-     * @param sensor sensor specified to be configured
-     * @param period the specified interval in which it updates in milliseconds. (300 ms (0x1E) is lowest interval that is stable)
+     * @param sensor - sensor specified to be configured
+     * @param period - the specified interval in which it updates in milliseconds. (300 ms (0x1E) is lowest interval that is stable)
      * @return successfully updated the period
      */
     public boolean alterSensorUpdateInterval(String sensor, byte[] period) {
         BluetoothGattService service;
         switch (sensor) {
-            case "Thermometer":
+            case THERMOMETER:
                 service = getService(SensortagUUID.UUID_TEMP_SENSOR_ENABLE);
                 BluetoothGattCharacteristic temperaturePeriod = service.find(SensortagUUID.UUID_TEMP_SENSOR_PERIOD.toString());
                 temperaturePeriod.writeValue(period);
                 break;
-            case "Barometer":
+            case BAROMETER:
                 service = getService(SensortagUUID.UUID_BARO_SENSOR_ENABLE);
                 BluetoothGattCharacteristic baroPeriod = service.find(SensortagUUID.UUID_BARO_SENSOR_PERIOD.toString());
                 baroPeriod.writeValue(period);
                 break;
-            case "Hygrometer":
+            case HYGROMETER:
                 service = getService(SensortagUUID.UUID_HUM_SENSOR_ENABLE);
                 BluetoothGattCharacteristic humidityPeriod = service.find(SensortagUUID.UUID_HUM_SENSOR_PERIOD.toString());
                 humidityPeriod.writeValue(period);
                 break;
-            case "Luxometer":
+            case LUXOMETER:
                 service = getService(SensortagUUID.UUID_LUXO_SENSOR_ENABLE);
                 BluetoothGattCharacteristic luxoPeriod = service.find(SensortagUUID.UUID_LUXO_SENSOR_PERIOD.toString());
                 luxoPeriod.writeValue(period);
                 break;
-            case "Accelerometer":
+            case ACCELEROMETER:
                 service = getService(SensortagUUID.UUID_ACC_SENSOR_ENABLE);
                 BluetoothGattCharacteristic accelPeriod = service.find(SensortagUUID.UUID_ACC_SENSOR_PERIOD.toString());
                 accelPeriod.writeValue(period);
@@ -152,7 +159,6 @@ public class SensortagSensor implements Sensor {
      * @return successfully subscribed to temperature characteristic
      */
     private boolean startTemperatureCharacteristic() {
-        log.info("checking...");
         BluetoothGattService service = getService(SensortagUUID.UUID_TEMP_SENSOR_ENABLE);
 
         BluetoothGattCharacteristic tempValue = service.find(SensortagUUID.UUID_TEMP_SENSOR_DATA.toString());
@@ -248,7 +254,7 @@ public class SensortagSensor implements Sensor {
     /**
      * Gets the barometer (pressure) characteristic on the Sensortag, configures, enables, and subscribes
      * to notifications from it.
-     * @return successfully subscribed to temperature characteristic
+     * @return successfully subscribed to barometer (pressure) characteristic
      */
     private boolean startBarometerCharacteristic() {
         BluetoothGattService service = getService(SensortagUUID.UUID_BARO_SENSOR_ENABLE);
@@ -297,7 +303,7 @@ public class SensortagSensor implements Sensor {
     /**
      * Gets the optical (light) characteristic on the Sensortag, configures, enables, and subscribes
      * to notifications from it.
-     * @return successfully subscribed to temperature characteristic
+     * @return successfully subscribed to optical (light) characteristic
      */
     private boolean startOpticalCharacteristic() {
         BluetoothGattService service = getService(SensortagUUID.UUID_LUXO_SENSOR_ENABLE);
@@ -325,7 +331,7 @@ public class SensortagSensor implements Sensor {
 
     /**
      * Gets the optical (light) characteristic on the Sensortag and disables it - stopping all notifications from it.
-     * @return successfully disabled optical characteristic
+     * @return successfully disabled optical (light) characteristic
      */
     private boolean stopOpticalCharacteristic() {
         BluetoothGattService service = getService(SensortagUUID.UUID_LUXO_SENSOR_ENABLE);
@@ -344,9 +350,9 @@ public class SensortagSensor implements Sensor {
     }
 
     /**
-     * Gets the optical (light) characteristic on the Sensortag, configures, enables, and subscribes
+     * Gets the acceleration characteristic on the Sensortag, configures, enables, and subscribes
      * to notifications from it.
-     * @return successfully subscribed to temperature characteristic
+     * @return successfully subscribed to acceleration characteristic
      */
     private boolean startAccelerometerCharacteristic() {
         BluetoothGattService service = getService(SensortagUUID.UUID_ACC_SENSOR_ENABLE);
