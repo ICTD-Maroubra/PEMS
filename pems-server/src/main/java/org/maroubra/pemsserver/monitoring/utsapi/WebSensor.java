@@ -55,6 +55,7 @@ public class WebSensor implements Sensor {
     @Override
     public boolean stop() {
         timer.cancel();
+        timer.purge();
         return true;
     }
 
