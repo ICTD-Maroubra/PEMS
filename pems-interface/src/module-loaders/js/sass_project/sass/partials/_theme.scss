@@ -1,0 +1,754 @@
+
+/*------------------------------------*\
+             Import Font
+\*------------------------------------*/
+@import url( 'https://fonts.googleapis.com/css?family=Saira+Extra+Condensed');
+
+/*------------------------------------*\
+ Font Definition
+\*------------------------------------*/
+/* html, body, a, select, form, fieldset, table, tr, td, img, input, button, select, textarea, optgroup, option {
+    font-family: 'Montserrat', sans-serif;
+} */
+
+a,
+body,
+button,
+fieldset,
+html,
+input,
+optgroup,
+option,
+select,
+select,
+textarea {
+    font-family: 'Saira Extra Condensed', sans-serif;
+}
+
+body,
+html {
+    font-family: 'Saira Extra Condensed';
+    font-weight: 400;
+    background-color: #efefef;
+    color: $black;
+    margin: 0px;
+}
+
+.Header_background {
+    background-color: $black;
+    border-bottom-color: $black;
+}
+
+.Header_title {
+    border-right-color: $header-color;
+}
+
+.Header_title a,
+.Header_title a:link,
+.Header_title a:visited,
+.Heading1,
+.Heading2,
+.Heading3,
+.Heading4 {
+    color: $text-color;
+    font-weight: 600;
+}
+
+.Heading1 {
+    font-size: 20pt;
+}
+
+.Heading2 {
+    font-size: 16pt;
+}
+
+.Heading3 {
+    font-size: 14pt;
+}
+
+.Heading4 {
+    font-size: 13pt;
+}
+
+.Menu_DropDownPanel {
+    background-color: $black;
+}
+
+.Header__activity,
+.LoginInfo,
+.Login_Text,
+.Text_black {
+    color: $black;
+}
+
+.Feedback_AjaxWait {
+    color: $secondary-color;
+}
+
+.AccordionVertical_item.open .AccordionVertical__header {
+    border-top: 2px solid $secondary-color;
+}
+
+.AccordionVertical_item.open .AccordionVertical___icon > .fa {
+    color: $secondary-color;
+}
+
+.Post_icon img {
+    border: 2px solid $secondary-color;
+}
+
+.expanded .SectionExpandable__icon.Heading2 > .fa {
+    color: $secondary-color;
+}
+
+.Panel .SectionExpandable__icon.Heading2 > .fa {
+    color: $secondary-color;
+    border: 1px solid $secondary-color;
+}
+
+.Panel .expanded .SectionExpandable__icon.Heading2 > .fa {
+    background-color: $secondary-color;
+    border: 1px solid $secondary-color;
+}
+
+div.calendarPattern tr.daynames {
+    border-top: 2px solid $secondary-color;
+}
+
+div.calendarPattern thead .button {
+    color: $secondary-color;
+}
+
+div.calendarPattern tbody td.selected {
+    background-color: $secondary-color;
+}
+
+.select2-container .select2-choice {
+    color: $secondary-color;
+}
+
+.IconBadge_number {
+    background-color: $secondary-color;
+}
+
+.desktop .NavigationBar a:hover,
+.desktop .NavigationBar a:link:hover {
+    color: $secondary-color;
+}
+
+.NavigationBar a.Active {
+    color: $secondary-color;
+}
+
+.NavigationBar a.Active:after,
+.desktop .NavigationBar a:hover:after,
+.desktop .NavigationBar a:link:hover:after {
+    background-color: $secondary-color;
+}
+
+.NavigationBar a.Active:not(.IE8):before {
+    border-bottom: 4px solid $secondary-color;
+}
+
+.NavigationBar.Vertical a.Active,
+.NavigationBar.Vertical a:link.Active,
+.desktop .NavigationBar.Vertical a:hover,
+.desktop .NavigationBar.Vertical a:link:hover {
+    border-color: $secondary-color;
+}
+
+.NavigationBar.Vertical a.Active:not(.IE8):before {
+    border-left: 4px solid $secondary-color;
+}
+
+.phone .NavigationBar .InlineDropdown:active,
+.phone .NavigationBar .InlineDropdown:link:active,
+.phone .NavigationBar a:active,
+.phone .NavigationBar a:link:active,
+.tablet .NavigationBar .InlineDropdown:active,
+.tablet .NavigationBar .InlineDropdown:link:active,
+.tablet .NavigationBar a:active,
+.tablet .NavigationBar a:link:active {
+    color: $secondary-color;
+}
+
+.phone .NavigationBar .InlineDropdown:active:after,
+.phone .NavigationBar .InlineDropdown:link:active:after,
+.phone .NavigationBar a:active:after,
+.phone .NavigationBar a:link:active:after,
+.tablet .NavigationBar .InlineDropdown:active:after,
+.tablet .NavigationBar .InlineDropdown:link:active:after,
+.tablet .NavigationBar a:active:after,
+.tablet .NavigationBar a:link:active:after {
+    background-color: $secondary-color;
+}
+
+.WizardStep.ActiveStep {
+    background: $black;
+}
+
+.WizardStep.Past {
+    background: $secondary-color;
+}
+
+.WizardStep.Past:before {
+    border-top-color: $secondary-color;
+    border-bottom-color: $secondary-color;
+}
+
+.WizardStep.ActiveStep:before {
+    border-top-color: $black;
+    border-bottom-color: $black;
+}
+
+div.os-internal-Popup .os-internal-ui-dialog .os-internal-ui-dialog-titlebar,
+div.os-internal-Popup.os-internal-ui-dialog .os-internal-ui-dialog-titlebar {
+    background: $black;
+}
+
+.Menu_DropDownPanel a.Menu_SubMenuItem:hover {
+    background-color: $black;
+}
+
+div.Menu_DropDownPanel a:hover,
+div.Menu_DropDownPanel a:link:hover,
+div.Menu_DropDownPanel a:visited:hover {
+    color: $secondary-color;
+}
+
+.Menu_DropDownButton.open .Menu_TopMenu .Menu_DropDownArrow {
+    border-top-color: $secondary-color;
+}
+
+.Title_Section {
+    background-color: $white;
+}
+
+.phone a.Header_ButtonMenu,
+.tablet a.Header_ButtonMenu {
+    color: $secondary-color;
+}
+
+.Page.active .Header_ButtonMenu {
+    color: $secondary-color;
+}
+
+.SectionIndex.vertical a.active,
+.SectionIndex.vertical a:hover {
+    color: $secondary-color;
+    border-left-color: $secondary-color;
+}
+
+.AccordionVertical___title {
+    color: $secondary-color;
+}
+
+.SectionExpandable.expanded .SectionExpandable_header .Heading2 {
+    color: $secondary-color;
+}
+
+.Calendar-day-selected,
+.Calendar-day-selected:hover {
+    background: $secondary-color;
+}
+
+.Calendar-navDisabled > div,
+.Calendar-time-am,
+.Calendar-time-down,
+.Calendar-time-up,
+.topBar-navDisabled .Calendar-navBtn > div {
+    color: $secondary-color;
+}
+
+.DropdownMenu .PH > a {
+    color: $secondary-color;
+}
+
+.SliderRange .ui-slider-range {
+    background-color: $secondary-color;
+}
+
+.select2-container .select2-choice span {
+    color: $secondary-color;
+}
+
+.select2-results .select2-highlighted {
+    background-color: $secondary-color;
+}
+
+.BottomMenu_item.active {
+    background-color: $secondary-color;
+}
+
+.EditableTable tr.RowControlGroup a:hover {
+    color: $secondary-color;
+}
+/******** TSS Theme specific configurations ********/
+
+.Header_content_wrap a,
+.Header_content_wrap a:link,
+.Header_content_wrap a:visited {
+    color: #ffffff;
+}
+
+a {
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+a[disabled="disabled"],
+a[disabled="disabled"]:hover {
+    color: #ccc;
+    text-decoration: none;
+}
+/******************************* Color Change ***********************/
+
+.Header {
+    background-color: $header-color;
+}
+
+.Text_Note,
+.hint {
+    /* increased contrast for WCAG AA requirement */
+    color: #767676;
+}
+
+.desktop .Content_Top .Top_carousel_item_content.active,
+.phone.landscape .Content_Top .Top_carousel_item_content.active,
+.tablet .Content_Top .Top_carousel_item_content.active {
+    border-bottom: 2px solid $primary-color;
+}
+
+.desktop .Content_Top .Top_carousel_item_content.active .fa,
+.phone .Content_Top .Top_carousel_item_content.active .fa,
+.tablet .Content_Top .Top_carousel_item_content.active .fa {
+    color: $primary-color;
+}
+
+.Header_Info {
+    border-bottom: 2px solid $primary-color;
+}
+
+.Menu_TopMenu:hover span.fa {
+    border-color: $primary-color;
+    color: $primary-color;
+}
+
+.Menu_TopMenuActive a span.fa {
+    border-color: $primary-color;
+    color: $primary-color;
+}
+
+.Menu_DropDownPanel a span.fa {
+    color: $primary-color;
+}
+
+.Breadcrumbs div a {
+    color: $primary-color;
+}
+
+.HeaderPage .BreadcrumbsContainer .Breadcrumbs,
+.HeaderPage .BreadcrumbsContainer .Breadcrumbs a,
+.HeaderPage .BreadcrumbsContainer .Breadcrumbs span {
+    color: $primary-color;
+}
+
+.TableRecords_Header {
+    & a {
+        color: $secondary-color;
+
+        &:active,
+        &:focus,
+        &:hover {
+            color: $primary-color;
+        }
+    }
+}
+
+.EditableTable thead th {
+    color: $secondary-color;
+}
+
+.Login_Form_Title {
+    border-bottom: 1px solid $primary-color;
+}
+
+.Login_Form_Body {
+    border-bottom: 0 solid $primary-color;
+}
+
+.Login_Form_Links a {
+    color: $primary-color;
+}
+
+.Login__Logo {
+    border-bottom: 0; //1px solid $text-color;
+}
+
+.Login_Box {
+    border: 1px solid $hr-color;
+    width: 100%;
+}
+
+.Login_Wrap {
+    width: 550px;
+    margin: 30px auto 40px;
+    position: relative;
+    left: auto;
+    top: 65px;
+}
+
+.Login__Footer {
+    position: fixed;
+    background-color: $primary-color;
+    /* background: -webkit-linear-gradient(90deg, #0079A7 0%, $secondary-color 100%);
+    background:    -moz-linear-gradient(90deg, #0079A7 0%, $secondary-color 100%);
+    background:     -ms-linear-gradient(90deg, #0079A7 0%, $secondary-color 100%);
+    background:      -o-linear-gradient(90deg, #0079A7 0%, $secondary-color 100%);
+    background:          linear-gradient(0deg, #0079A7 0%, $secondary-color 100%);
+    */
+}
+
+.AccordionVertical_item.open .AccordionVertical__header {
+    border-top: 2px solid $primary-color;
+}
+
+.AccordionVertical_item.open .AccordionVertical___icon > .fa {
+    background-color: $primary-color;
+    border: 1px solid $primary-color;
+}
+
+.Box.Blue {
+    background-color: $primary-color;
+}
+
+.owl-theme .owl-controls .owl-page.active span,
+.owl-theme .owl-controls.clickable .owl-page:hover span {
+    background-color: $primary-color;
+}
+
+.owl-theme .owl-controls .owl-buttons div {
+    color: $primary-color;
+}
+
+.Post_icon img {
+    border: 2px solid $primary-color;
+}
+
+.SectionIndex a.active,
+.SectionIndex a:hover {
+    border-bottom: solid 2px $primary-color;
+    color: $primary-color;
+}
+
+.SectionIndex.vertical a.active,
+.SectionIndex.vertical a:hover {
+    border-left-color: $primary-color;
+}
+
+.expanded .SectionExpandable__icon.Heading2 > .fa {
+    background-color: $primary-color;
+    border: 1px solid $primary-color;
+}
+
+.Panel .SectionExpandable__icon.Heading2 > .fa {
+    border: 1px solid $primary-color;
+}
+
+.Panel .expanded .SectionExpandable__icon.Heading2 > .fa {
+    background-color: $primary-color;
+    border: 1px solid $primary-color;
+}
+
+.Calendar-dayNames {
+    border-top: 2px solid $primary-color;
+}
+
+.Calendar-navBtn > div {
+    color: $primary-color;
+}
+
+.Calendar-time-am,
+.Calendar-time-down,
+.Calendar-time-up {
+    color: $primary-color;
+}
+
+.calendarPattern tr.daynames {
+    border-top: 2px solid $primary-color;
+}
+
+.calendarPattern thead .button {
+    color: $primary-color;
+}
+
+.Counter.Blue {
+    background-color: $primary-color;
+}
+
+.Tile.Blue {
+    background-color: $primary-color;
+}
+
+.UserInitials.Blue {
+    background-color: $primary-color;
+}
+
+.ListItem {
+    color: $primary-color;
+}
+
+.NavigationBar a.Active:after,
+.desktop .NavigationBar a:hover:after,
+.desktop .NavigationBar a:link:hover:after {
+    background-color: $primary-color;
+}
+
+.NavigationBar a.Active:not(.IE8):before {
+    border-bottom: 4px solid $primary-color;
+}
+/* NavigationBar: Vertical ******************************/
+
+.NavigationBar.Vertical a.Active,
+.NavigationBar.Vertical a:link.Active,
+.desktop .NavigationBar.Vertical a:hover,
+.desktop .NavigationBar.Vertical a:link:hover {
+    border-color: $primary-color;
+}
+
+.NavigationBar.Vertical a.Active:not(.IE8):before {
+    border-left: 4px solid $primary-color;
+}
+
+.phone .NavigationBar .InlineDropdown:active:after,
+.phone .NavigationBar .InlineDropdown:link:active:after,
+.phone .NavigationBar a:active:after,
+.phone .NavigationBar a:link:active:after,
+.tablet .NavigationBar .InlineDropdown:active:after,
+.tablet .NavigationBar .InlineDropdown:link:active:after,
+.tablet .NavigationBar a:active:after,
+.tablet .NavigationBar a:link:active:after {
+    background-color: $primary-color;
+}
+
+.phone .NavigationBar a.open:after,
+.tablet .NavigationBar a.open:after {
+    background-color: $primary-color;
+}
+
+.BottomMenu_item.active {
+    background-color: $primary-color;
+}
+
+.Blue {
+    background-color: $primary-color;
+}
+
+.Heading2 {
+    color: $primary-color;
+}
+
+.CustomChart .CustomChartTitle {
+    border-bottom: 1px solid $primary-color;
+}
+
+.FilterUnits .ButtonGroup_button.Button {
+    border-color: $primary-color;
+    color: $primary-color;
+}
+
+.FilterUnits .ButtonGroup_button.Button.active {
+    background: $primary-color;
+    border-color: $primary-color;
+}
+
+.CustomChart .ChartFilter .FilterPeriod .PeriodOption.active,
+.CustomChart .ChartFilter .FilterPeriod .PeriodOption.active .PeriodOptionLabel {
+    background: $primary-color;
+}
+
+.FilterBalloon .CustomChart .Balloon {
+    border: 1px solid $primary-color;
+}
+
+.Table_Label {
+    color: $primary-color;
+}
+/************ COMMON ******************/
+
+.BottomBorderBlueLine {
+    border-bottom-color: $primary-color;
+}
+
+.Section_header {
+    border-bottom: 1px solid $primary-color;
+}
+
+.BottomBorderBlueLine {
+    border-bottom-color: $primary-color;
+}
+
+.Login_Form_Title {
+    border-bottom: 1px solid $primary-color;
+}
+
+.BLueLink a {
+    color: $primary-color;
+}
+
+.BoxTitle {
+    background-color: $primary-color;
+}
+/***** Secondary Color ******* /
+
+/* Usefull Classes > Default Action Button */
+.Orange {
+    background-color: $primary-color;
+}
+
+.Text_gray {
+    color: $grey;
+}
+
+.TableRecords > tbody > tr > td a {
+    color: $primary-color;
+}
+
+.Accordion_Icon {
+    background-color: transparent;
+    border: 1px solid #ccc;
+    border-radius: 22px;
+    color: #999;
+    font-size: 20px;
+    height: 22px;
+    width: 22px;
+}
+
+.Accordion_Icon_Container {
+    border-left: 1px solid #ccc;
+    display: table-cell;
+    padding-left: 10px;
+    vertical-align: middle;
+}
+
+.Accordion_Seciton {
+    padding: 12px 14px;
+}
+/*
+.Form label.MandatoryLabel:after{
+    content: none;
+}
+
+*/
+
+.SectionExpandable_header {
+    cursor: auto;
+}
+
+.Form .ExternalSmartInputUndo a.SmartInput_Undo {
+    margin-left: 0;
+}
+
+.Form .NoSmartInputUndo a.SmartInput_Undo {
+    display: none !important;
+}
+
+.AccordionVerticalHeader {
+    display: table;
+    padding: 12px 14px;
+    width: 100%;
+}
+
+.Form .AccordionVertical_item:not(.open) input.SmartInput_Changed.ReadOnly + a.SmartInput_Undo,
+.Form .AccordionVertical_item:not(.open) select.SmartInput_Changed.ReadOnly + a.SmartInput_Undo,
+.Form .AccordionVertical_item:not(.open) textarea.SmartInput_Changed.ReadOnly + a.SmartInput_Undo {
+    display: none;
+}
+
+.NormalText {
+    font-size: 14px;
+    font-weight: normal;
+    color: #051629;
+    letter-spacing: 0;
+}
+
+.ValidationMessage {
+    display: none;
+}
+/* hide Undo, to sort of satisfy WCAG */
+
+a.SmartInput_Undo {
+    display: none !important;
+}
+/* stupid bug on select2, hide the unneeded pencil icon */
+
+.select2-search .FormEditPencil {
+    display: none;
+}
+
+tPencil {
+    display: none;
+}
+
+span.Bold.Heading3 {
+    font-size: 16px;
+}
+
+.DesktopAlignRight {
+    text-align: right;
+}
+
+.phone {
+    .PhoneAlignCenter {
+        text-align: center;
+    }
+}
+
+.tablet {
+    .TabletAlignCenter {
+        text-align: center;
+    }
+}
+h1, h2 {
+    margin: 0px;
+}
+
+.mainTitle {
+    margin: 0px;
+    top: -49px;
+    left: 54px;
+    position: relative;
+    font-size: 11px;
+}
+
+.appTitle {
+    height: 56px;
+}
+
+.header{
+  background:$white ;
+position: fixed;
+z-index: 1;
+width: 100%;
+}
+
+.body{
+  margin-left: 190px;
+  margin-right: 20px;
+}
+
+.pageTitle{
+    padding: 17px;
+    border-bottom: 1px solid #ddd;
+    width: 100%;
+    padding-top: 73px;
+}
+
+.hideClass{
+  display:none !important;
+}
