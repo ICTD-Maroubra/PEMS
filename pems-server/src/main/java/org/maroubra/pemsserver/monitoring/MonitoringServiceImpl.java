@@ -1,5 +1,6 @@
 package org.maroubra.pemsserver.monitoring;
 
+import com.mongodb.client.model.Filters;
 import com.mongodb.rx.client.MongoCollection;
 import org.maroubra.pemsserver.database.MongoCollectionFactory;
 import org.slf4j.Logger;
@@ -67,6 +68,10 @@ public class MonitoringServiceImpl implements MonitoringService {
         }
 
         return sensorConfigCollection.insertOne(config).toCompletable().doOnCompleted(() -> startSensor(sensor));
+    }
+
+    public List<SensorLog> getSensorLogs(String sensorId, int limit) {
+        return sensorLogsCollection.find(Filters.eq("sensorId",sensorId)).limit(limit).toObservable().toList().toBlocking().single();
     }
 
     private void startSensor(Sensor sensor) {
