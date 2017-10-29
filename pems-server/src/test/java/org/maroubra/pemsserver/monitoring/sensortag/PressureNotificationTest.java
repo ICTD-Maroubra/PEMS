@@ -3,6 +3,7 @@ package org.maroubra.pemsserver.monitoring.sensortag;
 import com.github.javafaker.Faker;
 import io.reactivex.processors.ReplayProcessor;
 import org.junit.Test;
+import org.maroubra.pemsserver.monitoring.SensorConfig;
 import org.maroubra.pemsserver.monitoring.SensorLog;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -15,8 +16,7 @@ public class PressureNotificationTest {
         double pressure = faker.number().randomDouble(2, 0, 5000);
         int pressureNorm = (int)(pressure * 100);
 
-        SensortagSensor.Config config = new SensortagSensor.Config();
-        config.setId("some-id");
+        SensorConfig config = new SensorConfig("someId", "sensortag",null);
         ReplayProcessor<SensorLog> processor = ReplayProcessor.create(10);
 
         PressureNotification notification = new PressureNotification(config, processor);

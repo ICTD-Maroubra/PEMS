@@ -3,6 +3,7 @@ package org.maroubra.pemsserver.monitoring.sensortag;
 import com.github.javafaker.Faker;
 import io.reactivex.processors.ReplayProcessor;
 import org.junit.Test;
+import org.maroubra.pemsserver.monitoring.SensorConfig;
 import org.maroubra.pemsserver.monitoring.SensorLog;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -16,8 +17,7 @@ public class OpticalNotificationTest {
         int exponent = faker.number().numberBetween(0, 16);
         float lux = mantissa * (float)Math.pow(2, exponent) / 100.0f;
 
-        SensortagSensor.Config config = new SensortagSensor.Config();
-        config.setId("some-id");
+        SensorConfig config = new SensorConfig("someId", "thingy", null);
         ReplayProcessor<SensorLog> processor = ReplayProcessor.create(10);
 
         OpticalNotification notification = new OpticalNotification(config, processor);

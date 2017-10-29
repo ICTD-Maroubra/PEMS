@@ -2,6 +2,7 @@ package org.maroubra.pemsserver.monitoring.nordic;
 
 import com.google.common.collect.ImmutableMap;
 import io.reactivex.processors.FlowableProcessor;
+import org.maroubra.pemsserver.monitoring.SensorConfig;
 import org.maroubra.pemsserver.monitoring.SensorLog;
 import tinyb.BluetoothNotification;
 
@@ -16,12 +17,12 @@ public class AirQualityNotification implements BluetoothNotification<byte[]> {
     public static final String TVOC_VALUE_ID = "TVOC";
 
     // Configuration for the Thingy52 that is subscribed to this notification
-    private final Thingy52Sensor.Config config;
+    private final SensorConfig config;
 
     // Sensorlog processor to publish events too
     private final FlowableProcessor<SensorLog> processor;
 
-    AirQualityNotification(Thingy52Sensor.Config config, FlowableProcessor<SensorLog> processor) {
+    AirQualityNotification(SensorConfig config, FlowableProcessor<SensorLog> processor) {
         this.config = config;
         this.processor = processor;
     }

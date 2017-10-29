@@ -2,6 +2,7 @@ package org.maroubra.pemsserver.monitoring.nordic;
 
 import com.google.common.collect.ImmutableMap;
 import io.reactivex.processors.FlowableProcessor;
+import org.maroubra.pemsserver.monitoring.SensorConfig;
 import org.maroubra.pemsserver.monitoring.SensorLog;
 import tinyb.BluetoothNotification;
 
@@ -18,12 +19,12 @@ public class ColorNotification implements BluetoothNotification<byte[]> {
     public static final String COLOUR_CLEAR_VALUE_ID = "colour_clear";
 
     // Configuration for the sensortag that is subscribed to this notification
-    private final Thingy52Sensor.Config config;
+    private final SensorConfig config;
 
     // Sensorlog processor to publish events too
     private final FlowableProcessor<SensorLog> processor;
 
-    ColorNotification(Thingy52Sensor.Config config, FlowableProcessor<SensorLog> processor) {
+    ColorNotification(SensorConfig config, FlowableProcessor<SensorLog> processor) {
         this.config = config;
         this.processor = processor;
     }

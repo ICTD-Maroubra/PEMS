@@ -1,80 +1,105 @@
 package org.maroubra.pemsserver.monitoring.utsapi;
 
+import com.google.inject.assistedinject.Assisted;
+import com.google.inject.assistedinject.AssistedInject;
+import io.reactivex.Flowable;
+import io.reactivex.processors.PublishProcessor;
+import org.maroubra.pemsserver.monitoring.ConfigDescriptor;
+import org.maroubra.pemsserver.monitoring.Sensor;
+import org.maroubra.pemsserver.monitoring.SensorConfig;
+import org.maroubra.pemsserver.monitoring.SensorLog;
+import org.maroubra.pemsserver.monitoring.annotations.DescriptorClass;
+import org.maroubra.pemsserver.monitoring.annotations.FactoryClass;
+import org.maroubra.pemsserver.monitoring.configuration.ConfigField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import retrofit2.Call;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import java.util.*;
 
-import java.io.*;
-import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+public class WebSensor implements Sensor {
 
-public class WebSensor {
-    private LocalDateTime fromDate;
-    private LocalDateTime toDate;
+    private static final Logger log = LoggerFactory.getLogger(WebSensor.class);
+
+    static final String CONFIG_KEY_FAMILY = "family";
+    static final String CONFIG_KEY_SENSOR = "sensor";
+    static final String CONFIG_KEY_SUB_SENSOR = "sub_sensor";
+
+    private final UtsWebApi webAPi;
+    private final PublishProcessor<SensorLog> sensorLogPublisher = PublishProcessor.create();
     private int pollIntervalMinutes = 60;
-    private String family;
-    private String subSensor;
-    private String sensor;
-    private String apiLink = "http://eif-research.feit.uts.edu.au/api/";
-    private static Logger log = LoggerFactory.getLogger(WebSensor.class);
+    private SensorConfig config;
+    private TimerTask webSensorTask;
+    private Timer timer;
 
-    private Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl(apiLink)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build();
-
-    private WebApiRequest service = retrofit.create(WebApiRequest.class);
-
-    public WebSensor(String family, String sensor, String subSensor) {
-        this.family = family;
-        this.subSensor = subSensor;
-        this.sensor = sensor;
+    @AssistedInject
+    public WebSensor(@Assisted SensorConfig config, UtsWebApi webApi) {
+        this.config = config;
+        this.webAPi = webApi;
     }
 
-    public void setPollIntervalMinutes(int pollIntervalMinutes) {
-        this.pollIntervalMinutes = pollIntervalMinutes;
-    }
-
-    public void setDatesPollInterval() {
-        fromDate = LocalDateTime.now().minusMinutes(pollIntervalMinutes).withNano(0);
-        toDate = LocalDateTime.now().withNano(0);
-    }
-
-    public void setDates(LocalDateTime fromDate, LocalDateTime toDate) {
-        this.fromDate = fromDate;
-        this.toDate = toDate;
-    }
-
-
-    private Map<String, String> getQueryParameters() {
-        Map<String, String> parameters = new LinkedHashMap<>();
-        parameters.put("rSubSensor", subSensor);
-        parameters.put("rSensor", sensor);
-        parameters.put("rFamily", family);
-        parameters.put("rToDate", toDate.toString());
-        parameters.put("rFromDate", fromDate.toString());
-        return parameters;
-    }
-
-    public List<String[]> pollSensor() {
-        setDatesPollInterval();
-        List<String[]> data = null;
-        Call<List<String[]>> call = service.getJsonData(getQueryParameters());
-        try {
-            data = call.execute().body();
-        } catch (IOException e) {
-            e.getMessage();
-            log.warn("This sensor may not be returning data please check the sensor api webpage.");
-        }
-        return data;
-    }
+    public void setPollIntervalMinutes(int pollIntervalMinutes) { this.pollIntervalMinutes = pollIntervalMinutes; }
 
     @Override
     public String toString() {
-        return "Sensor Family: " + family + " Sensor: " + sensor + " Sub Sensor: " + subSensor;
+        return "Sensor Family: " + config.getConfigMap().get(CONFIG_KEY_FAMILY) + " Sensor: " + config.getConfigMap().get(CONFIG_KEY_SENSOR)
+                + " Sub Sensor: " + config.getConfigMap().get(CONFIG_KEY_SUB_SENSOR);
+    }
+
+    @Override
+    public boolean start() {
+        timer = new Timer(true);
+        webSensorTask = new WebSensorTask(config, pollIntervalMinutes, sensorLogPublisher, webAPi);
+        timer.schedule(webSensorTask, 0, pollIntervalMinutes * 60 * 1000);
+        return true;
+    }
+
+    @Override
+    public boolean stop() {
+        timer.cancel();
+        return true;
+    }
+
+    @Override
+    public Flowable<SensorLog> logs() { return sensorLogPublisher.onBackpressureLatest();  }
+
+    @Override
+    public SensorConfig getConfig() {
+        return config;
+    }
+
+    @FactoryClass
+    public interface Factory extends Sensor.Factory<WebSensor> {
+        @Override
+        WebSensor create(@Assisted SensorConfig config);
+
+        @Override
+        Descriptor getDescriptor();
+    }
+
+    @DescriptorClass
+    public static class Descriptor implements Sensor.Descriptor {
+
+        @Override
+        public String type() {
+            return WebSensor.class.getCanonicalName();
+        }
+
+        @Override
+        public ConfigDescriptor configurationDescriptor() {
+            ConfigDescriptor descriptor = new ConfigDescriptor();
+            descriptor.addField(ConfigField.builder(CONFIG_KEY_FAMILY)
+                    .required(true)
+                    .description("Family of the UTS sensor. e.g. wasp")
+                    .build());
+            descriptor.addField(ConfigField.builder(CONFIG_KEY_SENSOR)
+                    .required(true)
+                    .description("Type of sensor")
+                    .build());
+            descriptor.addField(ConfigField.builder(CONFIG_KEY_SUB_SENSOR)
+                    .required(true)
+                    .description("Type of sub sensor")
+                    .build());
+
+            return descriptor;
+        }
     }
 }

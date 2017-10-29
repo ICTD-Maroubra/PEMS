@@ -3,6 +3,7 @@ package org.maroubra.pemsserver.monitoring.nordic;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.primitives.Ints;
 import io.reactivex.processors.FlowableProcessor;
+import org.maroubra.pemsserver.monitoring.SensorConfig;
 import org.maroubra.pemsserver.monitoring.SensorLog;
 import tinyb.BluetoothNotification;
 
@@ -16,12 +17,12 @@ public class PressureNotification implements BluetoothNotification<byte[]> {
     public static final String PRESSURE_VALUE_ID = "pressure";
 
     // Configuration for the Thingy52 that is subscribed to this notification
-    private final Thingy52Sensor.Config config;
+    private final SensorConfig config;
 
     // Sensorlog processor to publish events too
     private final FlowableProcessor<SensorLog> processor;
 
-    PressureNotification(Thingy52Sensor.Config config, FlowableProcessor<SensorLog> processor) {
+    PressureNotification(SensorConfig config, FlowableProcessor<SensorLog> processor) {
         this.config = config;
         this.processor = processor;
     }

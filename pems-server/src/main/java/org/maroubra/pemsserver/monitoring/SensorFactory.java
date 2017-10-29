@@ -1,7 +1,9 @@
 package org.maroubra.pemsserver.monitoring;
 
 import javax.inject.Inject;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class SensorFactory {
 
@@ -19,5 +21,9 @@ public class SensorFactory {
         }
 
         throw new NoSuchSensorTypeException("There is no input of type <" + type + "> registered.");
+    }
+
+    public List<Sensor.Descriptor> availableSensorDescriptors() {
+        return sensorFactories.entrySet().stream().map(factory -> factory.getValue().getDescriptor()).collect(Collectors.toList());
     }
 }
