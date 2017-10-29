@@ -13,5 +13,7 @@ public interface MonitoringService {
     Completable createSensor(SensorConfig config);
     List<SensorLog> getSensorLogs(String sensorId, int limit);
     boolean stopSensor(String sensorId);
+    boolean startSensor(String sensorId);
+
 
 }

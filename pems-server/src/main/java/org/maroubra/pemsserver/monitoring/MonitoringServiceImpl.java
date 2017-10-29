@@ -84,6 +84,23 @@ public class MonitoringServiceImpl implements MonitoringService {
         return false;
     }
 
+    public boolean startSensor (String id) {
+        SensorConfig sensorConfig = sensorConfigCollection.find(Filters.eq("_id",id)).toObservable().toBlocking().single();
+        Sensor sensor = null;
+        try {
+           sensor =  sensorFactory.build(sensorConfig.getType(), sensorConfig);
+        }
+        catch (NoSuchSensorTypeException e) {
+            e.printStackTrace();
+            return false;
+        }
+        if (sensor.start()) {
+            runningSensors.add(sensor);
+            return true;
+        }
+        return false;
+    }
+
     private void startSensor(Sensor sensor) {
         if (sensor.start()) {
             runningSensors.add(sensor);
