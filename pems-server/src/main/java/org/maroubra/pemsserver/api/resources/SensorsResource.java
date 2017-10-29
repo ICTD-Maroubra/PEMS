@@ -18,7 +18,6 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -85,11 +84,11 @@ public class SensorsResource {
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Specified sensor does not exist")
     })
-    public SensorHistoryResponse getHistory(@PathParam("id") String id, @QueryParam("dataSize") int size) {
+    public List<SensorHistoryResponse> getHistory(@PathParam("id") String id, @QueryParam("dataSize") int size) {
         if (size == 0) {
             size = DEFAULT_SENSOR_HISTORY_SIZE;
         }
         List<SensorLog> sensorLogs = monitoringService.getSensorLogs(id, size);
-        return SensorHistoryResponse.create(sensorLogs);
+        return sensorLogs.stream().map(SensorHistoryResponse::create).collect(Collectors.toList());
     }
 }

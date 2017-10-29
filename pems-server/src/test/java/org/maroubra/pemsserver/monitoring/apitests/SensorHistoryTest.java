@@ -15,8 +15,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 
@@ -59,12 +57,12 @@ public class SensorHistoryTest {
         if (createdLog != null) {
             assertThat(createdLog.getSensorId()).matches(webSensorConfig1.getId());
             assertThat(createdLog.getAttributeValue()).hasSize(1);
-            List<SensorLog> sensorLogs = new ArrayList<>();
-            sensorLogs.add(createdLog);
-
-            SensorHistoryResponse response = SensorHistoryResponse.create(sensorLogs);
-            assertThat(response.data).isNotNull();
-            log.info(response.data[0].toString());
+            SensorHistoryResponse response = SensorHistoryResponse.create(createdLog);
+            assertThat(response.data).isEqualTo(createdLog.getAttributeValue().values());
+            assertThat(response.type).isEqualTo(createdLog.getAttributeValue().keySet());
+            assertThat(response.id).isEqualTo(webSensor1.getConfig().getId());
+            assertThat(response.time).isEqualTo(createdLog.getTimestamp().toString());
+            log.info(response.data.toString());
 
         }
 
