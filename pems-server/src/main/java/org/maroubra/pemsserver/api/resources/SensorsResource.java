@@ -100,7 +100,7 @@ public class SensorsResource {
     }
 
     @GET
-    @Path("{id}/dysty")
+    @Path("{id}/start")
     @ApiOperation(value = "Starts a sensor given its id.")
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Specified sensor does not exist")
