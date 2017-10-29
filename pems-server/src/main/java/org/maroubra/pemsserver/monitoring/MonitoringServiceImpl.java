@@ -71,7 +71,7 @@ public class MonitoringServiceImpl implements MonitoringService {
     }
 
     public List<SensorLog> getSensorLogs(String sensorId, int limit) {
-        return sensorLogsCollection.find(Filters.eq("sensorID",sensorId)).limit(limit).toObservable().toList().toBlocking().single();
+        return sensorLogsCollection.find(Filters.eq("sensorId",sensorId)).limit(limit).toObservable().toList().toBlocking().single();
     }
 
     private void startSensor(Sensor sensor) {
