@@ -34,8 +34,6 @@ public class SensorHistoryResponse {
                 logType.add(log.keySet().asList());
             }
             logTime.add(sensorLog.getTimestamp().toString());
-
-
         }
         sensorHistoryResponse.data = logData.toArray();
         sensorHistoryResponse.type = logType.toArray();
