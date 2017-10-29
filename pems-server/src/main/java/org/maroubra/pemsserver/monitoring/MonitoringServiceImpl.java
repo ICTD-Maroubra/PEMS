@@ -74,6 +74,15 @@ public class MonitoringServiceImpl implements MonitoringService {
         return sensorLogsCollection.find(Filters.eq("sensorId",sensorId)).limit(limit).toObservable().toList().toBlocking().single();
     }
 
+    public boolean stopSensor (String id) {
+        for (Sensor sensor: runningSensors) {
+            if (sensor.getConfig().getId().equals(id)) {
+                return sensor.stop();
+            }
+        }
+        return false;
+    }
+
     private void startSensor(Sensor sensor) {
         if (sensor.start()) {
             runningSensors.add(sensor);
