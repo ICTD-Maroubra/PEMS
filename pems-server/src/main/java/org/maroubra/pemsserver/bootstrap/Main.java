@@ -1,13 +1,12 @@
 package org.maroubra.pemsserver.bootstrap;
 
-import com.github.joschi.jadconfig.JadConfig;
-import com.github.joschi.jadconfig.RepositoryException;
-import com.github.joschi.jadconfig.ValidationException;
-import com.github.joschi.jadconfig.repositories.EnvironmentRepository;
+import com.google.common.collect.ImmutableList;
+import com.google.inject.Module;
 import org.glassfish.grizzly.http.server.HttpServer;
-import org.glassfish.hk2.api.ServiceLocator;
-import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
-import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
+import org.glassfish.jersey.grizzly2.servlet.GrizzlyWebContainerFactory;
+import org.glassfish.jersey.servlet.ServletContainer;
+import org.maroubra.pemsserver.bindings.*;
+import org.maroubra.pemsserver.configuration.Configuration;
 import org.maroubra.pemsserver.configuration.ServerConfiguration;
 import org.maroubra.pemsserver.jersey.JerseyApplication;
 import org.slf4j.Logger;
@@ -15,19 +14,21 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.List;
 
 public class Main {
     private static Logger log = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) {
-        ServiceLocator locator = ServiceLocatorUtilities.createAndPopulateServiceLocator();
-        ServerConfiguration serverConfiguration = loadConfiguration();
+        ServerConfiguration serverConfiguration = Configuration.getServerConfiguration();
 
         log.info("Attempting to start application on " + serverConfiguration.fullHost());
 
-        HttpServer httpServer = GrizzlyHttpServerFactory.createHttpServer(URI.create(serverConfiguration.fullHost()), new JerseyApplication(), locator);
-
         try {
+            GuiceInjectorHolder.createInjector(getInjectModules());
+            ServletContainer sc = new ServletContainer(new JerseyApplication());
+            HttpServer httpServer = GrizzlyWebContainerFactory.create(URI.create(serverConfiguration.fullHost()), sc, null, null);
+
             httpServer.start();
 
             System.out.println(String.format("Jersey app started at %s", serverConfiguration.fullHost()));
@@ -42,18 +43,16 @@ public class Main {
         }
     }
 
-    private static ServerConfiguration loadConfiguration() {
-        ServerConfiguration serverConfiguration = new ServerConfiguration();
-        JadConfig jadConfig = new JadConfig(new EnvironmentRepository("PEMS_"), serverConfiguration);
+    private static List<Module> getInjectModules() {
+        final ImmutableList.Builder<Module> modules = ImmutableList.builder();
+        modules.add(
+                new ServerBindings(),
+                new MongoBindings(),
+                new BluetoothBindings(),
+                new SensorBindings(),
+                new UtsApiBindings()
+        );
 
-        try {
-            jadConfig.process();
-        } catch (RepositoryException ex) {
-
-        } catch (ValidationException ex) {
-
-        }
-
-        return serverConfiguration;
+        return modules.build();
     }
 }

@@ -56,21 +56,24 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "build.gradle" }}
+          - v1-dependencies-{{ checksum "pems-server/build.gradle" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
-      - run: gradle dependencies
+      - run: cd pems-server && ./gradlew dependencies
 
       - save_cache:
           paths:
-            - ~/.m2
-          key: v1-dependencies-{{ checksum "build.gradle" }}
+            - ~/.gradle
+          key: v1-dependencies-{{ checksum "pems-server/build.gradle" }}
       
-      - run: gradle build
+      - run: cd pems-server && ./gradlew build
       
-      # run tests!
-      #- run: gradle test
+      # Run tests
+      - run: cd pems-server && ./gradlew test
+
+      # Run code coverage
+      - run: cd pems-server && ./gradlew jacocoTestReport && bash <(curl -s https://codecov.io/bash)
 
   build_frontend:
     docker:
@@ -91,7 +94,7 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package.json" }}
+          - v1-dependencies-{{ checksum "pems-interface/package.json" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
@@ -100,10 +103,28 @@ jobs:
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+          key: v1-dependencies-{{ checksum "pems-interface/package.json" }}
         
       # run tests!
       #- run: yarn test
+
+  deploy_develop:
+    docker:
+      - image: circleci/openjdk:8-jdk
+    working_directory: ~/PEMS
+    steps:
+      - *attach_workspace
+      - *load_code
+      - add_ssh_keys:
+          fingerprints:
+            - "05:13:6d:97:79:f9:3a:b2:a9:ab:62:15:e2:66:7f:de"
+
+      - run: bash .circleci/setup-heroku.sh
+
+      - deploy:
+          name: Deploy Development to Heroku
+          command: |
+            git push --force git@heroku.com:pems-server.git `git subtree split --prefix pems-server master`:refs/heads/master
 
 workflows:
   version: 2
@@ -116,3 +137,11 @@ workflows:
       - build_frontend:
           requires:
               - checkout_code
+      - deploy_develop:
+          requires:
+              - build_backend
+              - build_frontend
+          filters:
+            branches:
+              only:
+                - develop

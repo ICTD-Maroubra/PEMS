@@ -1,14 +1,19 @@
 package org.maroubra.pemsserver.bindings;
 
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
-import org.maroubra.pemsserver.database.MongoConnection;
-import org.maroubra.pemsserver.database.MongoConnectionImpl;
+import com.google.inject.AbstractModule;
+import org.maroubra.pemsserver.control.ControlService;
+import org.maroubra.pemsserver.control.ControlServiceImpl;
+import org.maroubra.pemsserver.monitoring.MonitoringService;
+import org.maroubra.pemsserver.monitoring.MonitoringServiceImpl;
 
+import javax.activation.MimetypesFileTypeMap;
 import javax.inject.Singleton;
 
-public class ServerBindings extends AbstractBinder {
+public class ServerBindings extends AbstractModule {
     @Override
     protected void configure() {
-        bind(MongoConnectionImpl.class).to(MongoConnection.class).in(Singleton.class);
+        bind(MonitoringService.class).to(MonitoringServiceImpl.class).in(Singleton.class);
+        bind(ControlService.class).to(ControlServiceImpl.class).in(Singleton.class);
+        bind(MimetypesFileTypeMap.class).toInstance(new MimetypesFileTypeMap());
     }
 }
