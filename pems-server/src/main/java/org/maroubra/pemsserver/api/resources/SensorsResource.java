@@ -81,31 +81,38 @@ public class SensorsResource {
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Specified sensor does not exist")
     })
-    public List<SensorHistoryResponse> getHistory(@PathParam("id") String id, @QueryParam("dataSize") int size) {
+    public void getHistory(@Suspended AsyncResponse asyncResponse, @PathParam("id") String id, @QueryParam("dataSize") int size) {
         if (size == 0) {
             size = DEFAULT_SENSOR_HISTORY_SIZE;
         }
-        List<SensorLog> sensorLogs = monitoringService.getSensorLogs(id, size);
-        return sensorLogs.stream().map(SensorHistoryResponse::create).collect(Collectors.toList());
+        CompletableFuture<List<SensorLog>> sensorLogsFuture = fromObservable(monitoringService.getSensorLogs(id, size));
+
+        sensorLogsFuture.thenApply(sensorLogs -> asyncResponse.resume(sensorLogs.stream().map(SensorHistoryResponse::create).collect(Collectors.toList())));
     }
 
-    @GET
+    @POST
     @Path("{id}/stop")
     @ApiOperation(value = "Stops a sensor given its id.")
     @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Sensor successfully stopped"),
+            @ApiResponse(code = 400, message = "Specified sensor does not exist or was unable to be stopped"),
             @ApiResponse(code = 404, message = "Specified sensor does not exist")
     })
-    public boolean stopSensor(@PathParam("id")String id) {
-        return monitoringService.stopSensor(id);
+    public Response stopSensor(@PathParam("id")String id) {
+        boolean result = monitoringService.stopSensor(id);
+        return result ? Response.ok().build() : Response.status(400).build();
     }
 
-    @GET
+    @POST
     @Path("{id}/start")
     @ApiOperation(value = "Starts a sensor given its id.")
     @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Sensor successfully started"),
+            @ApiResponse(code = 400, message = "Specified sensor does not exist or was unable to be started"),
             @ApiResponse(code = 404, message = "Specified sensor does not exist")
     })
-    public boolean startSensor(@PathParam("id")String id) {
-            return monitoringService.startSensor(id);
+    public Response startSensor(@PathParam("id")String id) {
+        boolean result = monitoringService.startSensor(id);
+        return result ? Response.ok().build() : Response.status(400).build();
     }
 }
