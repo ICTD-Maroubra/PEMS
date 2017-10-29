@@ -1,8 +1,8 @@
 package org.maroubra.pemsserver.monitoring;
 
 import com.mongodb.client.model.Filters;
-import com.mongodb.rx.client.MongoCollection;
 import com.mongodb.client.model.Sorts;
+import com.mongodb.rx.client.MongoCollection;
 import org.maroubra.pemsserver.database.MongoCollectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,8 +71,8 @@ public class MonitoringServiceImpl implements MonitoringService {
         return sensorConfigCollection.insertOne(config).toCompletable().doOnCompleted(() -> startSensor(sensor));
     }
 
-    public List<SensorLog> getSensorLogs(String sensorId, int limit) {
-        return sensorLogsCollection.find(Filters.eq("sensorId",sensorId)).sort(Sorts.descending("_id")).limit(limit).toObservable().toList().toBlocking().single();
+    public Observable<SensorLog> getSensorLogs(String sensorId, int limit) {
+        return sensorLogsCollection.find(Filters.eq("sensorId",sensorId)).sort(Sorts.descending("timestamp")).limit(limit).toObservable();
     }
 
     public boolean stopSensor (String id) {
@@ -86,6 +86,9 @@ public class MonitoringServiceImpl implements MonitoringService {
     }
 
     public boolean startSensor (String id) {
+        if (runningSensors.stream().anyMatch(sensor -> sensor.getConfig().getId().equals(id)))
+            return true;
+
         SensorConfig sensorConfig = sensorConfigCollection.find(Filters.eq("_id",id)).toObservable().toBlocking().single();
         Sensor sensor = null;
         try {
@@ -95,12 +98,8 @@ public class MonitoringServiceImpl implements MonitoringService {
             e.printStackTrace();
             return false;
         }
-        if (sensor.start()) {
-            runningSensors.add(sensor);
-            sensor.logs().subscribe(this::recordSensorLog);
-            return true;
-        }
-        return false;
+        startSensor(sensor);
+        return true;
     }
 
     private void startSensor(Sensor sensor) {
