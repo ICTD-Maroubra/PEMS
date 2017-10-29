@@ -7,19 +7,18 @@ import java.util.List;
 
 public class ControlServiceImpl implements ControlService {
 
-    private final ActuatorFactory actuatorFactory;
     private final List<AbstractActuator> runningActuators;
 
     @Inject
-    public ControlServiceImpl(ActuatorFactory actuatorFactory) {
-        this.actuatorFactory = actuatorFactory;
+    public ControlServiceImpl() {
         this.runningActuators = Lists.newArrayList();
     }
 
     @Override
     public List<AbstractActuator> listActuators() {
-        if (runningActuators == null)
+        if (runningActuators.size()== 0) {
             initializeActuators();
+        }
         return runningActuators;
     }
 
