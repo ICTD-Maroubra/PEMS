@@ -59,7 +59,8 @@ public class WebSensorTask extends TimerTask {
                 SensorLog sensorLog = new SensorLog(
                         config.getId(),
                         ImmutableMap.of(config.getStringProperty(WebSensor.CONFIG_KEY_SUB_SENSOR), dataArray[1]),
-                        LocalDateTime.ofEpochSecond(Long.valueOf(dataArray[0]), 0, ZoneOffset.UTC));
+                        LocalDateTime.ofEpochSecond(Long.valueOf(dataArray[0])/1000, 0, ZoneOffset.UTC)
+                );
                 processor.onNext(sensorLog);
 
             }

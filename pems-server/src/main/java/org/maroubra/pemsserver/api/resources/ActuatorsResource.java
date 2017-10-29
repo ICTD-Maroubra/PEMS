@@ -2,20 +2,31 @@ package org.maroubra.pemsserver.api.resources;
 
 import io.swagger.annotations.*;
 import org.maroubra.pemsserver.api.models.actuators.requests.UpdateActuatorRequest;
-import org.maroubra.pemsserver.api.models.actuators.responses.ActuatorsListResponse;
+import org.maroubra.pemsserver.api.models.actuators.responses.ActuatorsDescriptorResponse;
+import org.maroubra.pemsserver.control.ControlService;
 
+import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Api(value = "Actuators")
 @Path("/actuators")
 @Produces(MediaType.APPLICATION_JSON)
 public class ActuatorsResource {
 
+    private final ControlService controlService;
+
+    @Inject
+    public ActuatorsResource(ControlService controlService) {
+        this.controlService = controlService;
+    }
+
     @GET
     @ApiOperation(value = "List actuators")
-    public ActuatorsListResponse listActuators() {
-        throw new UnsupportedOperationException();
+    public List<ActuatorsDescriptorResponse> listActuators() {
+        return controlService.listActuators().stream().map(ActuatorsDescriptorResponse::create).collect(Collectors.toList());
     }
 
     @PUT

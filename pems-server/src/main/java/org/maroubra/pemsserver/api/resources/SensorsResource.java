@@ -5,9 +5,7 @@ import org.maroubra.pemsserver.api.models.sensors.requests.CreateSensorRequest;
 import org.maroubra.pemsserver.api.models.sensors.requests.UpdateSensorRequest;
 import org.maroubra.pemsserver.api.models.sensors.responses.SensorDescriptorResponse;
 import org.maroubra.pemsserver.api.models.sensors.responses.SensorHistoryResponse;
-import org.maroubra.pemsserver.monitoring.MonitoringService;
-import org.maroubra.pemsserver.monitoring.Sensor;
-import org.maroubra.pemsserver.monitoring.SensorConfig;
+import org.maroubra.pemsserver.monitoring.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +15,7 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
@@ -31,6 +29,7 @@ import static org.maroubra.pemsserver.utilities.RxUtils.fromObservable;
 public class SensorsResource {
 
     private static final Logger log = LoggerFactory.getLogger(SensorsResource.class);
+    private static final int DEFAULT_SENSOR_HISTORY_SIZE = 5;
 
     private final MonitoringService monitoringService;
 
@@ -80,9 +79,40 @@ public class SensorsResource {
     @Path("{id}/history")
     @ApiOperation(value = "Get a sensors history")
     @ApiResponses(value = {
-            @ApiResponse(code = 404, message = "Specified actuator does not exist")
+            @ApiResponse(code = 404, message = "Specified sensor does not exist")
     })
-    public SensorHistoryResponse getHistory(@PathParam("id") String id) {
-        throw new UnsupportedOperationException();
+    public void getHistory(@Suspended AsyncResponse asyncResponse, @PathParam("id") String id, @QueryParam("dataSize") int size) {
+        if (size == 0) {
+            size = DEFAULT_SENSOR_HISTORY_SIZE;
+        }
+        CompletableFuture<List<SensorLog>> sensorLogsFuture = fromObservable(monitoringService.getSensorLogs(id, size));
+
+        sensorLogsFuture.thenApply(sensorLogs -> asyncResponse.resume(sensorLogs.stream().map(SensorHistoryResponse::create).collect(Collectors.toList())));
+    }
+
+    @POST
+    @Path("{id}/stop")
+    @ApiOperation(value = "Stops a sensor given its id.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Sensor successfully stopped"),
+            @ApiResponse(code = 400, message = "Specified sensor does not exist or was unable to be stopped"),
+            @ApiResponse(code = 404, message = "Specified sensor does not exist")
+    })
+    public Response stopSensor(@PathParam("id")String id) {
+        boolean result = monitoringService.stopSensor(id);
+        return result ? Response.ok().build() : Response.status(400).build();
+    }
+
+    @POST
+    @Path("{id}/start")
+    @ApiOperation(value = "Starts a sensor given its id.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Sensor successfully started"),
+            @ApiResponse(code = 400, message = "Specified sensor does not exist or was unable to be started"),
+            @ApiResponse(code = 404, message = "Specified sensor does not exist")
+    })
+    public Response startSensor(@PathParam("id")String id) {
+        boolean result = monitoringService.startSensor(id);
+        return result ? Response.ok().build() : Response.status(400).build();
     }
 }

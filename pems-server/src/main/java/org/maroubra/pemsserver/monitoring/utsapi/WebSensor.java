@@ -19,9 +19,9 @@ public class WebSensor implements Sensor {
 
     private static final Logger log = LoggerFactory.getLogger(WebSensor.class);
 
-    static final String CONFIG_KEY_FAMILY = "family";
-    static final String CONFIG_KEY_SENSOR = "sensor";
-    static final String CONFIG_KEY_SUB_SENSOR = "sub_sensor";
+    public static final String CONFIG_KEY_FAMILY = "family";
+    public static final String CONFIG_KEY_SENSOR = "sensor";
+    public static final String CONFIG_KEY_SUB_SENSOR = "sub_sensor";
 
     private final UtsWebApi webAPi;
     private final PublishProcessor<SensorLog> sensorLogPublisher = PublishProcessor.create();
@@ -55,6 +55,7 @@ public class WebSensor implements Sensor {
     @Override
     public boolean stop() {
         timer.cancel();
+        timer.purge();
         return true;
     }
 

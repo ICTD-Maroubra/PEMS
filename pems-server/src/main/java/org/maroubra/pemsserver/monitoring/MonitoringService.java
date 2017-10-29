@@ -11,4 +11,9 @@ public interface MonitoringService {
     Observable<SensorConfig> listSensors();
     List<Sensor.Descriptor> listSensorTypes();
     Completable createSensor(SensorConfig config);
+    Observable<SensorLog> getSensorLogs(String sensorId, int limit);
+    boolean stopSensor(String sensorId);
+    boolean startSensor(String sensorId);
+
+
 }

@@ -1,5 +1,7 @@
 package org.maroubra.pemsserver.monitoring;
 
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Sorts;
 import com.mongodb.rx.client.MongoCollection;
 import org.maroubra.pemsserver.database.MongoCollectionFactory;
 import org.slf4j.Logger;
@@ -67,6 +69,37 @@ public class MonitoringServiceImpl implements MonitoringService {
         }
 
         return sensorConfigCollection.insertOne(config).toCompletable().doOnCompleted(() -> startSensor(sensor));
+    }
+
+    public Observable<SensorLog> getSensorLogs(String sensorId, int limit) {
+        return sensorLogsCollection.find(Filters.eq("sensorId",sensorId)).sort(Sorts.descending("timestamp")).limit(limit).toObservable();
+    }
+
+    public boolean stopSensor (String id) {
+        for (Sensor sensor: runningSensors) {
+            if (sensor.getConfig().getId().equals(id)) {
+                runningSensors.remove(sensor);
+                return sensor.stop();
+            }
+        }
+        return false;
+    }
+
+    public boolean startSensor (String id) {
+        if (runningSensors.stream().anyMatch(sensor -> sensor.getConfig().getId().equals(id)))
+            return true;
+
+        SensorConfig sensorConfig = sensorConfigCollection.find(Filters.eq("_id",id)).toObservable().toBlocking().single();
+        Sensor sensor = null;
+        try {
+           sensor =  sensorFactory.build(sensorConfig.getType(), sensorConfig);
+        }
+        catch (NoSuchSensorTypeException e) {
+            e.printStackTrace();
+            return false;
+        }
+        startSensor(sensor);
+        return true;
     }
 
     private void startSensor(Sensor sensor) {
