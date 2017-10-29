@@ -5,10 +5,7 @@ import org.maroubra.pemsserver.api.models.sensors.requests.CreateSensorRequest;
 import org.maroubra.pemsserver.api.models.sensors.requests.UpdateSensorRequest;
 import org.maroubra.pemsserver.api.models.sensors.responses.SensorDescriptorResponse;
 import org.maroubra.pemsserver.api.models.sensors.responses.SensorHistoryResponse;
-import org.maroubra.pemsserver.monitoring.MonitoringService;
-import org.maroubra.pemsserver.monitoring.Sensor;
-import org.maroubra.pemsserver.monitoring.SensorConfig;
-import org.maroubra.pemsserver.monitoring.SensorLog;
+import org.maroubra.pemsserver.monitoring.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,5 +87,25 @@ public class SensorsResource {
         }
         List<SensorLog> sensorLogs = monitoringService.getSensorLogs(id, size);
         return sensorLogs.stream().map(SensorHistoryResponse::create).collect(Collectors.toList());
+    }
+
+    @GET
+    @Path("{id}/stop")
+    @ApiOperation(value = "Stops a sensor given its id.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "Specified sensor does not exist")
+    })
+    public boolean stopSensor(@PathParam("id")String id) {
+        return monitoringService.stopSensor(id);
+    }
+
+    @GET
+    @Path("{id}/start")
+    @ApiOperation(value = "Starts a sensor given its id.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "Specified sensor does not exist")
+    })
+    public boolean startSensor(@PathParam("id")String id) {
+            return monitoringService.startSensor(id);
     }
 }
