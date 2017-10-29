@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.maroubra.pemsserver.control.AbstractActuator;
 import org.maroubra.pemsserver.monitoring.ConfigDescriptor;
 
-public class ActuatorsListResponse {
+public class ActuatorsDescriptorResponse {
 
     @JsonProperty("id")
     public String id;
@@ -15,11 +15,11 @@ public class ActuatorsListResponse {
     @JsonProperty("config")
     public ConfigDescriptor config;
 
-    public static ActuatorsListResponse create(AbstractActuator actuator) {
-        ActuatorsListResponse actuatorsListResponse = new ActuatorsListResponse();
-        actuatorsListResponse.id = String.valueOf(actuator.getId());
-        actuatorsListResponse.name = actuator.getName();
-        actuatorsListResponse.config = null;
-        return actuatorsListResponse;
+    public static ActuatorsDescriptorResponse create(AbstractActuator actuator) {
+        ActuatorsDescriptorResponse actuatorsResponse = new ActuatorsDescriptorResponse();
+        actuatorsResponse.id = String.valueOf(actuator.getId());
+        actuatorsResponse.name = actuator.getName();
+        actuatorsResponse.config = null;
+        return actuatorsResponse;
     }
 }
