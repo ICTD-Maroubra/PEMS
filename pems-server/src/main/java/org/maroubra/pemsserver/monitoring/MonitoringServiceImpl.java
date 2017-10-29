@@ -77,6 +77,7 @@ public class MonitoringServiceImpl implements MonitoringService {
     public boolean stopSensor (String id) {
         for (Sensor sensor: runningSensors) {
             if (sensor.getConfig().getId().equals(id)) {
+                runningSensors.remove(sensor);
                 return sensor.stop();
             }
         }

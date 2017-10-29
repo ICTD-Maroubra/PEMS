@@ -91,4 +91,15 @@ public class SensorsResource {
         List<SensorLog> sensorLogs = monitoringService.getSensorLogs(id, size);
         return sensorLogs.stream().map(SensorHistoryResponse::create).collect(Collectors.toList());
     }
+
+
+    @GET
+    @Path("{id}/stop")
+    @ApiOperation(value = "Stops a sensor given its id.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "Specified sensor does not exist")
+    })
+    public boolean stopSensor(@PathParam("id")String id) {
+        return monitoringService.stopSensor(id);
+    }
 }
