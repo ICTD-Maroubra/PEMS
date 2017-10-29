@@ -5,11 +5,6 @@ import AlarmItem from "./AlarmItem";
 
 export default class Alarms extends React.Component {
 
-  constructor()
-  {
-    super();
-
-  }
 
   render() {
     const AlarmItemList = [

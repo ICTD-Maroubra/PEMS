@@ -7,10 +7,6 @@ import SideMenu from "./Menu/SideMenu";
 
 export default class Layout extends React.Component {
 
-constructor(){
-  super();
-}
-
 render() {
     return (
       <div>
