@@ -96,6 +96,7 @@ public class MonitoringServiceImpl implements MonitoringService {
         }
         if (sensor.start()) {
             runningSensors.add(sensor);
+            sensor.logs().subscribe(this::recordSensorLog);
             return true;
         }
         return false;
